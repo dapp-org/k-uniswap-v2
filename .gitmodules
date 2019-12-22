@@ -1,0 +1,4 @@
+[submodule "uniswap-v2-core"]
+	path = uniswap-v2-core
+	url = git@github.com:dapp-org/uniswap-v2-core.git
+  ignore=dirty
