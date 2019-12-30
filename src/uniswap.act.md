@@ -168,3 +168,30 @@ if
 
 returns 1
 ```
+
+### Burn
+
+```act
+behaviour burn of ERC20
+interface burn(uint value)
+
+types
+
+    Bal_src   : uint256
+    Bal_total : uint256
+
+
+storage
+
+    balanceOf[CALLER_ID] |-> Bal_src   => Bal_src - value
+    totalSupply          |-> Bal_total => Bal_total - value
+
+iff
+
+    VCallValue == 0
+
+iff in range uint256
+
+    Bal_src - value
+    Bal_total - value
+```
