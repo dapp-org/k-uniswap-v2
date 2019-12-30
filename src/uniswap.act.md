@@ -109,3 +109,62 @@ iff
 
 returns Nonce
 ```
+
+## Mutators
+
+### Transfer
+
+```act
+behaviour transfer-diff of ERC20
+interface transfer(address to, uint value)
+
+types
+
+    Bal_src : uint256
+    Bal_dst : uint256
+
+storage
+
+    balanceOf[CALLER_ID] |-> Bal_src => Bal_src - value
+    balanceOf[to]        |-> Bal_dst => Bal_dst + value
+
+iff
+
+    VCallValue == 0
+
+iff in range uint256
+
+    Bal_src - value
+    Bal_dst + value
+
+if
+    to =/= CALLER_ID
+
+returns 1
+```
+
+```act
+behaviour transfer-same of ERC20
+interface transfer(address to, uint value)
+
+types
+
+    Bal_src : uint256
+
+storage
+
+    balanceOf[CALLER_ID] |-> Bal_src => Bal_src
+
+iff
+
+    VCallValue == 0
+
+iff in range uint256
+
+    Bal_src - value
+
+if
+    to == CALLER_ID
+
+returns 1
+```
