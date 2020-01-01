@@ -120,13 +120,13 @@ interface transfer(address to, uint value)
 
 types
 
-    Bal_src : uint256
-    Bal_dst : uint256
+    SrcBal : uint256
+    DstBal : uint256
 
 storage
 
-    balanceOf[CALLER_ID] |-> Bal_src => Bal_src - value
-    balanceOf[to]        |-> Bal_dst => Bal_dst + value
+    balanceOf[CALLER_ID] |-> SrcBal => SrcBal - value
+    balanceOf[to]        |-> DstBal => DstBal + value
 
 iff
 
@@ -134,8 +134,8 @@ iff
 
 iff in range uint256
 
-    Bal_src - value
-    Bal_dst + value
+    SrcBal - value
+    DstBal + value
 
 if
     to =/= CALLER_ID
@@ -149,11 +149,11 @@ interface transfer(address to, uint value)
 
 types
 
-    Bal_src : uint256
+    SrcBal : uint256
 
 storage
 
-    balanceOf[CALLER_ID] |-> Bal_src => Bal_src
+    balanceOf[CALLER_ID] |-> SrcBal => SrcBal
 
 iff
 
@@ -161,7 +161,7 @@ iff
 
 iff in range uint256
 
-    Bal_src - value
+    SrcBal - value
 
 if
     to == CALLER_ID
@@ -177,14 +177,14 @@ interface burn(uint value)
 
 types
 
-    Bal_src   : uint256
-    Bal_total : uint256
+    SrcBal : uint256
+    Supply : uint256
 
 
 storage
 
-    balanceOf[CALLER_ID] |-> Bal_src   => Bal_src - value
-    totalSupply          |-> Bal_total => Bal_total - value
+    balanceOf[CALLER_ID] |-> SrcBal => SrcBal - value
+    totalSupply          |-> Supply => Supply - value
 
 iff
 
@@ -192,8 +192,8 @@ iff
 
 iff in range uint256
 
-    Bal_src - value
-    Bal_total - value
+    SrcBal - value
+    Supply - value
 ```
 
 ### Approve
