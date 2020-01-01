@@ -109,3 +109,137 @@ iff
 
 returns Nonce
 ```
+
+## Mutators
+
+### Transfer
+
+```act
+behaviour transfer-diff of ERC20
+interface transfer(address to, uint value)
+
+types
+
+    Bal_src : uint256
+    Bal_dst : uint256
+
+storage
+
+    balanceOf[CALLER_ID] |-> Bal_src => Bal_src - value
+    balanceOf[to]        |-> Bal_dst => Bal_dst + value
+
+iff
+
+    VCallValue == 0
+
+iff in range uint256
+
+    Bal_src - value
+    Bal_dst + value
+
+if
+    to =/= CALLER_ID
+
+returns 1
+```
+
+```act
+behaviour transfer-same of ERC20
+interface transfer(address to, uint value)
+
+types
+
+    Bal_src : uint256
+
+storage
+
+    balanceOf[CALLER_ID] |-> Bal_src => Bal_src
+
+iff
+
+    VCallValue == 0
+
+iff in range uint256
+
+    Bal_src - value
+
+if
+    to == CALLER_ID
+
+returns 1
+```
+
+### Burn
+
+```act
+behaviour burn of ERC20
+interface burn(uint value)
+
+types
+
+    Bal_src   : uint256
+    Bal_total : uint256
+
+
+storage
+
+    balanceOf[CALLER_ID] |-> Bal_src   => Bal_src - value
+    totalSupply          |-> Bal_total => Bal_total - value
+
+iff
+
+    VCallValue == 0
+
+iff in range uint256
+
+    Bal_src - value
+    Bal_total - value
+```
+
+### Approve
+
+```act
+behaviour approve-diff of ERC20
+interface approve(address spender, uint value)
+
+types
+
+    Allowance : uint256
+
+storage
+
+    allowance[CALLER_ID][spender] |-> Allowance => Value
+
+iff
+
+    VCallValue == 0
+
+if
+
+    CALLER_ID =/= spender
+
+returns 1
+```
+
+```act
+behaviour approve-same of ERC20
+interface approve(address spender, uint value)
+
+types
+
+    Allowance : uint256
+
+storage
+
+    allowance[CALLER_ID][CALLER_ID] |-> Allowance => Value
+
+iff
+
+    VCallValue == 0
+
+if
+
+    CALLER_ID == spender
+
+returns 1
+```
