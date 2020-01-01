@@ -304,3 +304,31 @@ if
 
 returns 1
 ```
+
+### BurnFrom
+
+```act
+behaviour burnFrom of ERC20
+interface burnFrom(address from, uint value)
+
+types
+
+    FromBal : uint256
+    Allowed : uint256
+    Supply  : uint256
+
+storage
+
+    allowance[from][CALLER_ID] |-> Allowed => #if (Allowed == maxUInt256) #then Allowed #else Allowed - value #fi
+    balanceOf[from]            |-> FromBal => FromBal - value
+    totalSupply                |-> Supply  => Supply - value
+
+iff in range uint256
+
+    FromBal - value
+    Supply - value
+
+iff
+    value <= Allowed
+    VCallValue == 0
+```
