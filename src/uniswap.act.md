@@ -199,7 +199,7 @@ iff in range uint256
 ### Approve
 
 ```act
-behaviour approve-diff of ERC20
+behaviour approve of ERC20
 interface approve(address spender, uint value)
 
 types
@@ -213,33 +213,6 @@ storage
 iff
 
     VCallValue == 0
-
-if
-
-    CALLER_ID =/= spender
-
-returns 1
-```
-
-```act
-behaviour approve-same of ERC20
-interface approve(address spender, uint value)
-
-types
-
-    Allowance : uint256
-
-storage
-
-    allowance[CALLER_ID][CALLER_ID] |-> Allowance => Value
-
-iff
-
-    VCallValue == 0
-
-if
-
-    CALLER_ID == spender
 
 returns 1
 ```
