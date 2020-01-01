@@ -243,3 +243,36 @@ if
 
 returns 1
 ```
+
+### TransferFrom
+
+```act
+behaviour transferFrom-diff of ERC20
+interface transferFrom(address from, address to, uint value)
+
+types
+
+    SrcBal  : uint256
+    DstBal  : uint256
+    Allowed : uint256
+
+storage
+
+    allowance[from][CALLER_ID] |-> Allowed => #if (Allowed == maxUInt256) #then Allowed #else Allowed - value #fi
+    balanceOf[from]            |-> SrcBal  => SrcBal - value
+    balanceOf[to]              |-> DstBal  => DstBal + value
+
+iff in range uint256
+
+    SrcBal - value
+    DstBal + value
+
+iff
+    value <= Allowed
+    VCallValue == 0
+
+if
+    from =/= to
+
+returns 1
+```
