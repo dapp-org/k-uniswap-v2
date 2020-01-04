@@ -22,9 +22,6 @@ rule #ERC20.allowance[A][B] => #hashedLocation("Solidity", 5, A B)
 syntax Int ::= "#ERC20.DOMAIN_SEPARATOR" [function]
 rule #ERC20.DOMAIN_SEPARATOR => 6
 
-syntax Int ::= "#ERC20.PERMIT_TYPEHASH" [function]
-rule #ERC20.PERMIT_TYPEHASH => 7
-
 syntax Int ::= "#ERC20.nonces" "[" Int "]" [function]
-rule #ERC20.nonces[A] => #hashedLocation("Solidity", 8, A)
+rule #ERC20.nonces[A] => #hashedLocation("Solidity", 7, A)
 ```
