@@ -88,7 +88,8 @@ iff
 
     VCallValue == 0
 
-returns keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 expiration)"))
+returns keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"))
+
 ```
 
 ```act
