@@ -24,6 +24,25 @@ returns Name
 ```
 
 ```act
+behaviour symbol of ERC20
+interface symbol()
+
+types
+
+    Symbol : bytes32
+
+storage
+
+    symbol |-> Symbol
+
+iff
+
+    VCallValue == 0
+
+returns Symbol
+```
+
+```act
 behaviour decimals of ERC20
 interface decimals()
 
