@@ -10,7 +10,7 @@ interface name()
 
 types
 
-    Name : bytes32
+    Name : string
 
 storage
 
@@ -19,6 +19,9 @@ storage
 iff
 
     VCallValue == 0
+
+if
+    #sizeWordStack(WS) <=Int 31
 
 returns Name
 ```
@@ -29,7 +32,7 @@ interface symbol()
 
 types
 
-    Symbol : bytes32
+    Symbol : string
 
 storage
 
@@ -38,6 +41,9 @@ storage
 iff
 
     VCallValue == 0
+
+if
+    #sizeWordStack(WS) <=Int 31
 
 returns Symbol
 ```
