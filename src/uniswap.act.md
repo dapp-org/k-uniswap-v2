@@ -5,6 +5,25 @@ UniswapV2 liquidity token behaviour.
 ## Accessors
 
 ```act
+behaviour name of ERC20
+interface name()
+
+types
+
+    Name : bytes32
+
+storage
+
+    name |-> Name
+
+iff
+
+    VCallValue == 0
+
+returns Name
+```
+
+```act
 behaviour decimals of ERC20
 interface decimals()
 
