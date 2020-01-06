@@ -5,6 +5,25 @@ UniswapV2 liquidity token behaviour.
 ## Accessors
 
 ```act
+behaviour decimals of ERC20
+interface decimals()
+
+types
+
+    Decimals : uint8
+
+storage
+
+    decimals |-> Decimals
+
+iff
+
+    VCallValue == 0
+
+returns Decimals
+```
+
+```act
 behaviour totalSupply of ERC20
 interface totalSupply()
 
