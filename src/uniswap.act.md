@@ -21,7 +21,7 @@ iff
     VCallValue == 0
 
 if
-    #sizeWordStack(WS) <=Int 31
+    (#nthbyteof(Name, 31, 32) modInt 2) == 0
 
 returns Name
 ```
