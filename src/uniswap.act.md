@@ -21,7 +21,7 @@ iff
     VCallValue == 0
 
 if
-    (#nthbyteof(Name, 31, 32) modInt 2) == 0
+    (#nthbyteof(Name, 31, 32) modInt 2) ==Int 0
 
 returns Name
 ```
