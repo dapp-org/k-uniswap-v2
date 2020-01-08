@@ -1,3 +1,10 @@
+# `string` storage
+
+```k
+syntax Bool ::= #isShortString ( Int ) [function]
+rule #isShortString(S) => #sizeWordStack(#asByteStack(S)) <=Int 31
+```
+
 # ERC20
 
 ```k

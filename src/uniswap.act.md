@@ -22,7 +22,7 @@ iff
 
 if
 
-    #rangeBytes(31, Name)
+    #isShortString(Name)
 
 returns 1 : Name
 ```
