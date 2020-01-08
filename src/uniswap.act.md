@@ -10,20 +10,21 @@ interface name()
 
 types
 
-    Name : string
+    Name : bytes32
 
 storage
 
-    name |-> Name
+    name |-> #packBytes(#asByteStack(Name))
 
 iff
 
     VCallValue == 0
 
 if
-    (nthbyteof(Name, 31, 32) modInt 2) ==Int 0
 
-returns Name
+    #rangeBytes(31, Name)
+
+returns 1 : Name
 ```
 
 ```act
