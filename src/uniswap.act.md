@@ -108,6 +108,30 @@ iff
 returns Price1
 ```
 
+### initialize
+
+```act
+behaviour initialize of UniswapV2
+interface initialize(address tkn0, address tkn1)
+
+for all
+
+    Factory : address
+
+storage
+
+    factory |-> Factory
+    token0  |-> _ => tkn0
+    token1  |-> _ => tkn1
+
+iff
+
+    VCallValue == 0
+    tkn0       == 0
+    tkn1       == 0
+    CALLER_ID  == Factory
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviour.
