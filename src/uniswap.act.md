@@ -298,8 +298,8 @@ returns 1
 ### Burn
 
 ```act
-behaviour burn of UniswapV2
-interface burn(uint value)
+behaviour forfeit of UniswapV2
+interface forfeit(uint value)
 
 for all
 
@@ -407,8 +407,8 @@ returns 1
 ### BurnFrom
 
 ```act
-behaviour burnFrom of UniswapV2
-interface burnFrom(address from, uint value)
+behaviour forfeitFrom of UniswapV2
+interface forfeitFrom(address from, uint value)
 
 for all
 
