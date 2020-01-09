@@ -9,7 +9,7 @@ UniswapV2
 behaviour factory of UniswapV2
 interface factory()
 
-types
+for all
 
     Factory : address
 
@@ -30,7 +30,7 @@ returns Factory
 behaviour token0 of UniswapV2
 interface token0()
 
-types
+for all
 
     Token0 : address
 
@@ -51,7 +51,7 @@ returns Token0
 behaviour token1 of UniswapV2
 interface token1()
 
-types
+for all
 
     Token1 : address
 
@@ -72,7 +72,7 @@ returns Token1
 behaviour price0CumulativeLast of UniswapV2
 interface price0CumulativeLast()
 
-types
+for all
 
     Price0 : uint256
 
@@ -93,7 +93,7 @@ returns Price0
 behaviour price1CumulativeLast of UniswapV2
 interface price1CumulativeLast()
 
-types
+for all
 
     Price1 : uint256
 
@@ -118,7 +118,7 @@ UniswapV2 liquidity token behaviour.
 behaviour decimals of ERC20
 interface decimals()
 
-types
+for all
 
     Decimals : uint8
 
