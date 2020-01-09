@@ -22,9 +22,9 @@ iff
 
 if
 
-    #isShortString(Name)
+    #sizeWordStack(#asByteStack(Name)) <=Int 31
 
-returns 1 : Name
+returns #sizeWordStack(#asByteStack(Name)) : Name
 ```
 
 ```act
