@@ -1,3 +1,113 @@
+UniswapV2
+=========
+
+## Accessors
+
+### factory
+
+```act
+behaviour factory of UniswapV2
+interface factory()
+
+for all
+
+    Factory : address
+
+storage
+
+    factory |-> Factory
+
+iff
+
+    VCallValue == 0
+
+returns Factory
+```
+
+### token0
+
+```act
+behaviour token0 of UniswapV2
+interface token0()
+
+for all
+
+    Token0 : address
+
+storage
+
+    token0 |-> Token0
+
+iff
+
+    VCallValue == 0
+
+returns Token0
+```
+
+### token1
+
+```act
+behaviour token1 of UniswapV2
+interface token1()
+
+for all
+
+    Token1 : address
+
+storage
+
+    token1 |-> Token1
+
+iff
+
+    VCallValue == 0
+
+returns Token1
+```
+
+### price0CumulativeLast
+
+```act
+behaviour price0CumulativeLast of UniswapV2
+interface price0CumulativeLast()
+
+for all
+
+    Price0 : uint256
+
+storage
+
+    price0CumulativeLast |-> Price0
+
+iff
+
+    VCallValue == 0
+
+returns Price0
+```
+
+### price1CumulativeLast
+
+```act
+behaviour price1CumulativeLast of UniswapV2
+interface price1CumulativeLast()
+
+for all
+
+    Price1 : uint256
+
+storage
+
+    price1CumulativeLast |-> Price1
+
+iff
+
+    VCallValue == 0
+
+returns Price1
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviour.
@@ -8,7 +118,7 @@ UniswapV2 liquidity token behaviour.
 behaviour decimals of ERC20
 interface decimals()
 
-types
+for all
 
     Decimals : uint8
 
