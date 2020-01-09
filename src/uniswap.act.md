@@ -27,7 +27,7 @@ returns Decimals
 behaviour totalSupply of ERC20
 interface totalSupply()
 
-types
+for all
 
     Supply : uint256
 
@@ -46,7 +46,7 @@ returns Supply
 behaviour balanceOf of ERC20
 interface balanceOf(address who)
 
-types
+for all
 
     BalanceOf : uint256
 
@@ -65,7 +65,7 @@ returns BalanceOf
 behaviour allowance of ERC20
 interface allowance(address holder, address spender)
 
-types
+for all
 
     Allowed : uint256
 
@@ -84,7 +84,7 @@ returns Allowed
 behaviour DOMAIN_SEPARATOR of ERC20
 interface DOMAIN_SEPARATOR()
 
-types
+for all
 
     Dom : uint256
 
@@ -115,7 +115,7 @@ returns keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 
 behaviour nonces of ERC20
 interface nonces(address who)
 
-types
+for all
 
     Nonce : uint256
 
@@ -138,7 +138,7 @@ returns Nonce
 behaviour transfer-diff of ERC20
 interface transfer(address to, uint value)
 
-types
+for all
 
     SrcBal : uint256
     DstBal : uint256
@@ -167,7 +167,7 @@ returns 1
 behaviour transfer-same of ERC20
 interface transfer(address to, uint value)
 
-types
+for all
 
     SrcBal : uint256
 
@@ -195,7 +195,7 @@ returns 1
 behaviour burn of ERC20
 interface burn(uint value)
 
-types
+for all
 
     SrcBal : uint256
     Supply : uint256
@@ -222,7 +222,7 @@ iff in range uint256
 behaviour approve of ERC20
 interface approve(address spender, uint value)
 
-types
+for all
 
     Allowance : uint256
 
@@ -243,7 +243,7 @@ returns 1
 behaviour transferFrom-diff of ERC20
 interface transferFrom(address from, address to, uint value)
 
-types
+for all
 
     SrcBal  : uint256
     DstBal  : uint256
@@ -274,7 +274,7 @@ returns 1
 behaviour transferFrom-same of ERC20
 interface transferFrom(address from, address to, uint value)
 
-types
+for all
 
     FromBal : uint256
     Allowed : uint256
@@ -304,7 +304,7 @@ returns 1
 behaviour burnFrom of ERC20
 interface burnFrom(address from, uint value)
 
-types
+for all
 
     FromBal : uint256
     Allowed : uint256
@@ -353,7 +353,7 @@ function permit(
 behaviour permit of ERC20
 interface permit(address owner, address spender, uint value, uint nonce, uint deadline, uint8 v, bytes32 r, bytes32 s)
 
-types
+for all
 
     Nonce   : uint256
     Allowed : uint256
