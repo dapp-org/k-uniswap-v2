@@ -440,3 +440,26 @@ if
 
     #rangeUInt(256, Nonce + 1)
 ```
+
+# UniswapV2Factory
+
+### updating the fee setter
+
+The current fee setter can assign a new fee setter
+
+```act
+behaviour setFeeToSetter of UniswapV2Factory
+interface setFeeToSetter(address who)
+
+for all
+
+    CurrentSetter : address
+
+storage
+
+    feeToSetter |-> CurrentSetter => who
+
+iff
+    VCallValue == 0
+    CALLER_ID == CurrentSetter
+```
