@@ -128,7 +128,7 @@ iff
 
     VCallValue == 0
 
-returns Reserve0 : Reserve1 : BlockNumber
+returns Reserve0 : Reserve1 : BlockNumberLast
 ```
 
 # ERC20
