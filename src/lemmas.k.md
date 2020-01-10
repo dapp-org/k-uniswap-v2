@@ -24,22 +24,12 @@ rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 ### Packing { uint112 uint112 uint32 }
 
 ```k
-rule (Z *Int pow224 +Int Y *Int pow112 +Int X) <Int pow256 => true
+rule (maxUInt112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => X
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
 
-rule maxUInt32 &Int (Z *Int pow224 +Int Y *Int pow112 +Int X) /Int pow224 => Z
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-rule maxUInt112 &Int (Z *Int pow224 +Int Y *Int pow112 +Int X) /Int pow112 => Y
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-rule (Z *Int pow224 +Int Y *Int pow112 +Int X) /Int pow112 => X
+rule (maxUInt112 &Int (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) /Int pow112)) => Y
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
