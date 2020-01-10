@@ -112,7 +112,7 @@ returns Price1
 
 ```act
 behaviour initialize of UniswapV2
-interface initialize(address tkn0, address tkn1)
+interface initialize(address _token0, address _token1)
 
 for all
 
@@ -123,8 +123,8 @@ for all
 storage
 
     factory |-> Factory
-    token0  |-> Token0 => tkn0
-    token1  |-> Token1 => tkn1
+    token0  |-> Token0 => _token0
+    token1  |-> Token1 => _token1
 
 iff
 
