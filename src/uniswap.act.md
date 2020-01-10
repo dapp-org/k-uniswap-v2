@@ -117,12 +117,14 @@ interface initialize(address tkn0, address tkn1)
 for all
 
     Factory : address
+    Token0  : address
+    Token1  : address
 
 storage
 
     factory |-> Factory
-    token0  |-> _ => tkn0
-    token1  |-> _ => tkn1
+    token0  |-> Token0 => tkn0
+    token1  |-> Token1 => tkn1
 
 iff
 
