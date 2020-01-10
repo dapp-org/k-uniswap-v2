@@ -108,7 +108,34 @@ iff
 returns Price1
 ```
 
-## ERC20 Accessors
+### getReserves
+
+```act
+behaviour getReserves of UniswapV2Exchange
+interface getReserves()
+
+for all
+
+    Reserve0        : uint112
+    Reserve1        : uint112
+    BlockNumberLast : uint32
+
+storage
+
+    reserves |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockNumberLast)
+
+iff
+
+    VCallValue == 0
+
+returns Reserve0 : Reserve1 : BlockNumber
+```
+
+# ERC20
+
+UniswapV2 liquidity token behaviours.
+
+## Accessors
 
 ```act
 behaviour totalSupply of UniswapV2Exchange
