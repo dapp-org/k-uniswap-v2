@@ -12,6 +12,9 @@
   "implementations": {
     "UniswapV2": {
       "src": "contracts/UniswapV2.sol"
+    },
+    "UniswapV2Factory": {
+      "src": "contracts/UniswapV2Factory.sol"
     }
   },
   "dapp_root": "./uniswap-v2-core"
