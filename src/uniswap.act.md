@@ -122,7 +122,7 @@ for all
 
 storage
 
-    reserves |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockNumberLast)
+    reserve0_reserve1_blockNumberLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockNumberLast)
 
 iff
 

@@ -41,8 +41,8 @@ rule #UniswapV2.token0 => 9
 syntax Int ::= "#UniswapV2.token1" [function]
 rule #UniswapV2.token1 => 10
 
-syntax Int ::= "#UniswapV2.reserves" [function]
-rule #UniswapV2.reserves => 11
+syntax Int ::= "#UniswapV2.reserve0_reserve1_blockNumberLast" [function]
+rule #UniswapV2.reserve0_reserve1_blockNumberLast => 11
 
 syntax Int ::= "#UniswapV2.price0CumulativeLast" [function]
 rule #UniswapV2.price0CumulativeLast => 12
