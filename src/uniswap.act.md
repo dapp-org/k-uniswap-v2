@@ -108,14 +108,10 @@ iff
 returns Price1
 ```
 
-# ERC20
-
-UniswapV2 liquidity token behaviour.
-
-## Accessors
+## ERC20 Accessors
 
 ```act
-behaviour decimals of ERC20
+behaviour decimals of UniswapV2
 interface decimals()
 
 for all
@@ -134,7 +130,7 @@ returns Decimals
 ```
 
 ```act
-behaviour totalSupply of ERC20
+behaviour totalSupply of UniswapV2
 interface totalSupply()
 
 for all
@@ -153,7 +149,7 @@ returns Supply
 ```
 
 ```act
-behaviour balanceOf of ERC20
+behaviour balanceOf of UniswapV2
 interface balanceOf(address who)
 
 for all
@@ -172,7 +168,7 @@ returns BalanceOf
 ```
 
 ```act
-behaviour allowance of ERC20
+behaviour allowance of UniswapV2
 interface allowance(address holder, address spender)
 
 for all
@@ -191,7 +187,7 @@ returns Allowed
 ```
 
 ```act
-behaviour DOMAIN_SEPARATOR of ERC20
+behaviour DOMAIN_SEPARATOR of UniswapV2
 interface DOMAIN_SEPARATOR()
 
 for all
@@ -210,7 +206,7 @@ returns Dom
 ```
 
 ```act
-behaviour PERMIT_TYPEHASH of ERC20
+behaviour PERMIT_TYPEHASH of UniswapV2
 interface PERMIT_TYPEHASH()
 
 iff
@@ -222,7 +218,7 @@ returns keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 
 ```
 
 ```act
-behaviour nonces of ERC20
+behaviour nonces of UniswapV2
 interface nonces(address who)
 
 for all
@@ -245,7 +241,7 @@ returns Nonce
 ### Transfer
 
 ```act
-behaviour transfer-diff of ERC20
+behaviour transfer-diff of UniswapV2
 interface transfer(address to, uint value)
 
 for all
@@ -274,7 +270,7 @@ returns 1
 ```
 
 ```act
-behaviour transfer-same of ERC20
+behaviour transfer-same of UniswapV2
 interface transfer(address to, uint value)
 
 for all
@@ -302,7 +298,7 @@ returns 1
 ### Burn
 
 ```act
-behaviour burn of ERC20
+behaviour burn of UniswapV2
 interface burn(uint value)
 
 for all
@@ -329,7 +325,7 @@ iff in range uint256
 ### Approve
 
 ```act
-behaviour approve of ERC20
+behaviour approve of UniswapV2
 interface approve(address spender, uint value)
 
 for all
@@ -350,7 +346,7 @@ returns 1
 ### TransferFrom
 
 ```act
-behaviour transferFrom-diff of ERC20
+behaviour transferFrom-diff of UniswapV2
 interface transferFrom(address from, address to, uint value)
 
 for all
@@ -381,7 +377,7 @@ returns 1
 ```
 
 ```act
-behaviour transferFrom-same of ERC20
+behaviour transferFrom-same of UniswapV2
 interface transferFrom(address from, address to, uint value)
 
 for all
@@ -411,7 +407,7 @@ returns 1
 ### BurnFrom
 
 ```act
-behaviour burnFrom of ERC20
+behaviour burnFrom of UniswapV2
 interface burnFrom(address from, uint value)
 
 for all
@@ -460,7 +456,7 @@ function permit(
 ```
 
 ```act
-behaviour permit of ERC20
+behaviour permit of UniswapV2
 interface permit(address owner, address spender, uint value, uint nonce, uint deadline, uint8 v, bytes32 r, bytes32 s)
 
 for all
