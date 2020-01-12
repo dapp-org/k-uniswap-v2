@@ -53,39 +53,41 @@ The current fee setter can appoint a new fee setter
 
 ```act
 behaviour setFeeToSetter of UniswapV2Factory
-interface setFeeToSetter(address who)
+interface setFeeToSetter(address usr)
 
 for all
 
-    CurrentSetter : address
+    Setter : address
 
 storage
 
-    feeToSetter |-> CurrentSetter => who
+    feeToSetter |-> Setter => usr
 
 iff
     VCallValue == 0
-    CALLER_ID == CurrentSetter
+    CALLER_ID == Setter
 ```
 
 ### updating the fee recipient
 
-The current fee setter can appoint a new recipient
+The current fee setter can appoint a new fee recipient
 
 ```act
 behaviour setFeeTo of UniswapV2Factory
-interface setFeeTo(address who)
+interface setFeeTo(address usr)
 
 for all
 
-    CurrentRecipient : address
+    FeeTo  : address
+    Setter : address
 
 storage
 
     feeToSetter |-> Setter
-    feeTo       |-> CurrentRecipient => who
+    feeTo       |-> FeeTo => usr
 
 iff
+
     VCallValue == 0
     CALLER_ID == Setter
 ```
