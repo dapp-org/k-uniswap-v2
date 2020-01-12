@@ -24,6 +24,27 @@ iff
 returns Setter
 ```
 
+### feeTo
+
+```act
+behaviour feeTo of UniswapV2Factory
+interface feeTo()
+
+for all
+
+    To : address
+
+storage
+
+    feeTo |-> To
+
+iff
+
+    VCallValue == 0
+
+returns To
+```
+
 ## Mutators
 
 ### updating the fee setter
