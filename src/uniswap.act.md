@@ -1,6 +1,29 @@
 UniswapV2Factory
 ================
 
+## Accessors
+
+### feeToSetter
+
+```act
+behaviour feeToSetter of UniswapV2Factory
+interface feeToSetter()
+
+for all
+
+    Setter : address
+
+storage
+
+    feeToSetter |-> Setter
+
+iff
+
+    VCallValue == 0
+
+returns Setter
+```
+
 ## Mutators
 
 ### updating the fee setter
