@@ -45,6 +45,34 @@ iff
 returns To
 ```
 
+### sortTokens
+
+```act
+behaviour sortTokens-lt of UniswapV2Factory
+interface sortTokens(address tokenA, address tokenB)
+
+iff
+    VCallValue == 0
+
+if
+    tokenA < tokenB
+
+returns tokenA : tokenB
+```
+
+```act
+behaviour sortTokens-gt of UniswapV2Factory
+interface sortTokens(address tokenA, address tokenB)
+
+iff
+    VCallValue == 0
+
+if
+    tokenA > tokenB
+
+returns tokenB : tokenA
+```
+
 ### getExchange
 
 ```act
