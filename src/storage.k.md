@@ -32,8 +32,8 @@ rule #UniswapV2Exchange.token0 => 6
 syntax Int ::= "#UniswapV2Exchange.token1" [function]
 rule #UniswapV2Exchange.token1 => 7
 
-syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockNumberLast" [function]
-rule #UniswapV2Exchange.reserve0_reserve1_blockNumberLast => 8
+syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockTimestampLast" [function]
+rule #UniswapV2Exchange.reserve0_reserve1_blockTimestampLast => 8
 
 syntax Int ::= "#UniswapV2Exchange.price0CumulativeLast" [function]
 rule #UniswapV2Exchange.price0CumulativeLast => 9
@@ -43,6 +43,9 @@ rule #UniswapV2Exchange.price1CumulativeLast => 10
 
 syntax Int ::= "#UniswapV2Exchange.kLast" [function]
 rule #UniswapV2Exchange.kLast => 11
+
+syntax Int ::= "#UniswapV2Exchange.unlocked" [function]
+rule #UniswapV2Exchange.unlocked => 12
 ```
 
 # UniswapV2Factory
