@@ -45,6 +45,50 @@ iff
 returns To
 ```
 
+### getExchange
+
+```act
+behaviour getExchange-lt of UniswapV2Factory
+interface getExchange(address tokenA, address tokenB)
+
+for all
+
+    Exchange : address
+
+storage
+
+    getExchange_[tokenA][tokenB] |-> Exchange
+
+iff
+    VCallValue == 0
+
+if
+    tokenA < tokenB
+
+returns Exchange
+```
+
+```act
+behaviour getExchange-gt of UniswapV2Factory
+interface getExchange(address tokenA, address tokenB)
+
+for all
+
+    Exchange : address
+
+storage
+
+    getExchange_[tokenB][tokenA] |-> Exchange
+
+iff
+    VCallValue == 0
+
+if
+    tokenA > tokenB
+
+returns Exchange
+```
+
 ## Mutators
 
 ### updating the fee setter
@@ -87,7 +131,6 @@ storage
     feeTo       |-> FeeTo => usr
 
 iff
-
     VCallValue == 0
     CALLER_ID == Setter
 ```
