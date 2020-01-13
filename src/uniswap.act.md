@@ -236,7 +236,7 @@ iff
 returns Nonce
 ```
 
-## Mutators
+## ERC20 Mutators
 
 ### Transfer
 
@@ -433,27 +433,6 @@ iff
 ```
 
 ### Permit
-
-```solidity
-function permit(
-    address owner, address spender, uint value, uint nonce, uint deadline, uint8 v, bytes32 r, bytes32 s
-)
-    external
-{
-    require(nonce == nonces[owner]++, "ERC20: INVALID_NONCE");
-    require(deadline > block.timestamp, "ERC20: EXPIRED"); // solium-disable-line security/no-block-members
-    require(v == 27 || v == 28, "ERC20: INVALID_V");
-    require(s <= 0x7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0, "ERC20: INVALID_S");
-    bytes32 digest = keccak256(abi.encodePacked(
-        "\x19\x01",
-        DOMAIN_SEPARATOR,
-        keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonce, deadline))
-    ));
-    address recoveredAddress = ecrecover(digest, v, r, s);
-    require(recoveredAddress != address(0) && recoveredAddress == owner, "ERC20: INVALID_SIGNATURE");
-    _approve(owner, spender, value);
-}
-```
 
 ```act
 behaviour permit of UniswapV2
