@@ -466,3 +466,24 @@ if
 
     #rangeUInt(256, Nonce + 1)
 ```
+
+## ERC20 Lemmas
+
+### Add
+
+```act
+behaviour add of UniswapV2
+interface add(uint x, uint y) internal
+
+stack
+
+    y : x : JMPTO : WS => JMPTO : x + y : WS
+
+iff in range uint256
+
+    x + y
+
+if
+
+    #sizeWordStack(WS) <= 100
+```
