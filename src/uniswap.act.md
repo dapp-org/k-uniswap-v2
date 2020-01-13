@@ -131,6 +131,20 @@ iff
 returns Reserve0 : Reserve1 : BlockNumberLast
 ```
 
+## Mutators
+
+### Sync
+
+```solidity
+// force reserves to match balances
+function sync() external lock {
+    _update(IERC20(token0).balanceOf(address(this)), IERC20(token1).balanceOf(address(this)), reserve0, reserve1);
+}
+```
+
+```act
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviours.

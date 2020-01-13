@@ -12,6 +12,9 @@
   "implementations": {
     "UniswapV2": {
       "src": "contracts/UniswapV2.sol"
+    },
+    "ERC20": {
+      "src": "contracts/ERC20.sol"
     }
   },
   "dapp_root": "./uniswap-v2-core"
