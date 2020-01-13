@@ -15,6 +15,9 @@
     },
     "UniswapV2Factory": {
       "src": "contracts/UniswapV2Factory.sol"
+    },
+    "UniswapV2ERC20": {
+      "src": "contracts/UniswapV2ERC20.sol"
     }
   },
   "dapp_root": "./uniswap-v2-core"

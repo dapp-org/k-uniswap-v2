@@ -40,6 +40,19 @@ rule #UniswapV2Exchange.price0CumulativeLast => 9
 
 syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [function]
 rule #UniswapV2Exchange.price1CumulativeLast => 10
+
+syntax Int ::= "#UniswapV2Exchange.invariantLast" [function]
+rule #UniswapV2Exchange.invariantLast => 11
+
+syntax Int ::= "#UniswapV2Exchange.unlocked" [function]
+rule #UniswapV2Exchange.unlocked => 12
+```
+
+# UniswapV2ERC20
+
+```k
+syntax Int ::= "#UniswapV2ERC20.balanceOf" "[" Int "]" [function]
+rule #UniswapV2ERC20.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 ```
 
 # UniswapV2Factory

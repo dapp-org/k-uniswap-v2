@@ -7,8 +7,10 @@ rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
 ### Macros
 
 ```k
+syntax Int ::= "pow32"  [function]
 syntax Int ::= "pow112" [function]
 syntax Int ::= "pow224" [function]
+rule pow112 => 4294967296                                                           [macro]
 rule pow112 => 5192296858534827628530496329220096                                   [macro]
 rule pow224 => 26959946667150639794667015087019630673637144422540572481103610249216 [macro]
 

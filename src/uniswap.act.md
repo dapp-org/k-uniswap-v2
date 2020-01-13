@@ -250,6 +250,55 @@ iff
 returns Reserve0 : Reserve1 : BlockNumberLast
 ```
 
+## Mutators
+
+### Sync
+
+```act
+behaviour sync of UniswapV2Exchange
+interface sync()
+
+for all
+
+    Unlocked        : bool
+    Token0          : address UniswapV2ERC20
+    Token1          : address UniswapV2ERC20
+    Price0          : uint256
+    Price1          : uint256
+    Balance0        : uint256
+    Balance1        : uint256
+    Reserve0        : uint112
+    Reserve1        : uint112
+    BlockNumberLast : uint32
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+    price0CumulativeLast |-> Price0 => Price0 +Int ((Reserve1 /Int Reserve0) *Int ((BLOCK_NUMBER %Int pow32) -Int BlockNumberLast))
+    price1CumulativeLast |-> Price1 => Price1 +Int ((Reserve0 /Int Reserve1) *Int ((BLOCK_NUMBER %Int pow32) -Int BlockNumberLast))
+    reserve0_reserve1_blockNumberLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockNumberLast) => #WordPackUInt112UInt112UInt32(Balance0, Balance1, BLOCK_NUMBER %Int pow32)
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff
+
+    Unlocked == 1
+    VCallValue == 0
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviours.
