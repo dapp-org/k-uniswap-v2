@@ -111,25 +111,6 @@ returns Price1
 ## ERC20 Accessors
 
 ```act
-behaviour decimals of UniswapV2Exchange
-interface decimals()
-
-for all
-
-    Decimals : uint8
-
-storage
-
-    decimals |-> Decimals
-
-iff
-
-    VCallValue == 0
-
-returns Decimals
-```
-
-```act
 behaviour totalSupply of UniswapV2Exchange
 interface totalSupply()
 
