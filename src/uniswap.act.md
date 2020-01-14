@@ -295,33 +295,6 @@ if
 returns 1
 ```
 
-### Burn
-
-```act
-behaviour forfeit of UniswapV2
-interface forfeit(uint value)
-
-for all
-
-    SrcBal : uint256
-    Supply : uint256
-
-
-storage
-
-    balanceOf[CALLER_ID] |-> SrcBal => SrcBal - value
-    totalSupply          |-> Supply => Supply - value
-
-iff
-
-    VCallValue == 0
-
-iff in range uint256
-
-    SrcBal - value
-    Supply - value
-```
-
 ### Approve
 
 ```act
@@ -402,34 +375,6 @@ if
     from == to
 
 returns 1
-```
-
-### BurnFrom
-
-```act
-behaviour forfeitFrom of UniswapV2
-interface forfeitFrom(address from, uint value)
-
-for all
-
-    FromBal : uint256
-    Allowed : uint256
-    Supply  : uint256
-
-storage
-
-    allowance[from][CALLER_ID] |-> Allowed => #if (Allowed == maxUInt256) #then Allowed #else Allowed - value #fi
-    balanceOf[from]            |-> FromBal => FromBal - value
-    totalSupply                |-> Supply  => Supply - value
-
-iff in range uint256
-
-    FromBal - value
-    Supply - value
-
-iff
-    value <= Allowed
-    VCallValue == 0
 ```
 
 ### Permit
