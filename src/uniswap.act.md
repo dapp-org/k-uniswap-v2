@@ -48,27 +48,27 @@ returns To
 ### sortTokens
 
 ```act
-behaviour sortTokens-lt of UniswapV2Factory
+behaviour sortTokens-lte of UniswapV2Factory
 interface sortTokens(address tokenA, address tokenB)
 
 iff
     VCallValue == 0
 
 if
-    tokenA < tokenB
+    tokenA <= tokenB
 
 returns tokenA : tokenB
 ```
 
 ```act
-behaviour sortTokens-gt of UniswapV2Factory
+behaviour sortTokens-gte of UniswapV2Factory
 interface sortTokens(address tokenA, address tokenB)
 
 iff
     VCallValue == 0
 
 if
-    tokenA > tokenB
+    tokenA >= tokenB
 
 returns tokenB : tokenA
 ```
@@ -76,7 +76,7 @@ returns tokenB : tokenA
 ### getExchange
 
 ```act
-behaviour getExchange-lt of UniswapV2Factory
+behaviour getExchange-lte of UniswapV2Factory
 interface getExchange(address tokenA, address tokenB)
 
 for all
@@ -91,13 +91,13 @@ iff
     VCallValue == 0
 
 if
-    tokenA < tokenB
+    tokenA <= tokenB
 
 returns Exchange
 ```
 
 ```act
-behaviour getExchange-gt of UniswapV2Factory
+behaviour getExchange-gte of UniswapV2Factory
 interface getExchange(address tokenA, address tokenB)
 
 for all
@@ -112,7 +112,7 @@ iff
     VCallValue == 0
 
 if
-    tokenA > tokenB
+    tokenA >= tokenB
 
 returns Exchange
 ```
