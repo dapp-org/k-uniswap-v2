@@ -8,45 +8,36 @@ rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
 
-syntax Int ::= "#UniswapV2Exchange.name" [function]
-rule #UniswapV2Exchange.name => 0
-
-syntax Int ::= "#UniswapV2Exchange.symbol" [function]
-rule #UniswapV2Exchange.symbol => 1
-
-syntax Int ::= "#UniswapV2Exchange.decimals" [function]
-rule #UniswapV2Exchange.decimals => 2
-
 syntax Int ::= "#UniswapV2Exchange.totalSupply" [function]
-rule #UniswapV2Exchange.totalSupply => 3
+rule #UniswapV2Exchange.totalSupply => 0
 
 syntax Int ::= "#UniswapV2Exchange.balanceOf" "[" Int "]" [function]
-rule #UniswapV2Exchange.balanceOf[A] => #hashedLocation("Solidity", 4, A)
+rule #UniswapV2Exchange.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 
 syntax Int ::= "#UniswapV2Exchange.allowance" "[" Int "][" Int "]" [function]
-rule #UniswapV2Exchange.allowance[A][B] => #hashedLocation("Solidity", 5, A B)
+rule #UniswapV2Exchange.allowance[A][B] => #hashedLocation("Solidity", 2, A B)
 
 syntax Int ::= "#UniswapV2Exchange.DOMAIN_SEPARATOR" [function]
-rule #UniswapV2Exchange.DOMAIN_SEPARATOR => 6
+rule #UniswapV2Exchange.DOMAIN_SEPARATOR => 3
 
 syntax Int ::= "#UniswapV2Exchange.nonces" "[" Int "]" [function]
-rule #UniswapV2Exchange.nonces[A] => #hashedLocation("Solidity", 7, A)
+rule #UniswapV2Exchange.nonces[A] => #hashedLocation("Solidity", 4, A)
 
 syntax Int ::= "#UniswapV2Exchange.factory" [function]
-rule #UniswapV2Exchange.factory => 8
+rule #UniswapV2Exchange.factory => 5
 
 syntax Int ::= "#UniswapV2Exchange.token0" [function]
-rule #UniswapV2Exchange.token0 => 9
+rule #UniswapV2Exchange.token0 => 6
 
 syntax Int ::= "#UniswapV2Exchange.token1" [function]
-rule #UniswapV2Exchange.token1 => 10
+rule #UniswapV2Exchange.token1 => 7
 
 syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockNumber" [function]
-rule #UniswapV2Exchange.reserve0_reserve1_blockNumber => 11
+rule #UniswapV2Exchange.reserve0_reserve1_blockNumber => 8
 
 syntax Int ::= "#UniswapV2Exchange.price0CumulativeLast" [function]
-rule #UniswapV2Exchange.price0CumulativeLast => 12
+rule #UniswapV2Exchange.price0CumulativeLast => 9
 
 syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [function]
-rule #UniswapV2Exchange.price1CumulativeLast => 13
+rule #UniswapV2Exchange.price1CumulativeLast => 10
 ```
