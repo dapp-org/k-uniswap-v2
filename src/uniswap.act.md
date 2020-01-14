@@ -1,12 +1,12 @@
-UniswapV2
-=========
+UniswapV2Exchange
+================
 
 ## Accessors
 
 ### factory
 
 ```act
-behaviour factory of UniswapV2
+behaviour factory of UniswapV2Exchange
 interface factory()
 
 for all
@@ -27,7 +27,7 @@ returns Factory
 ### token0
 
 ```act
-behaviour token0 of UniswapV2
+behaviour token0 of UniswapV2Exchange
 interface token0()
 
 for all
@@ -48,7 +48,7 @@ returns Token0
 ### token1
 
 ```act
-behaviour token1 of UniswapV2
+behaviour token1 of UniswapV2Exchange
 interface token1()
 
 for all
@@ -69,7 +69,7 @@ returns Token1
 ### price0CumulativeLast
 
 ```act
-behaviour price0CumulativeLast of UniswapV2
+behaviour price0CumulativeLast of UniswapV2Exchange
 interface price0CumulativeLast()
 
 for all
@@ -90,7 +90,7 @@ returns Price0
 ### price1CumulativeLast
 
 ```act
-behaviour price1CumulativeLast of UniswapV2
+behaviour price1CumulativeLast of UniswapV2Exchange
 interface price1CumulativeLast()
 
 for all
@@ -111,7 +111,7 @@ returns Price1
 ## ERC20 Accessors
 
 ```act
-behaviour decimals of UniswapV2
+behaviour decimals of UniswapV2Exchange
 interface decimals()
 
 for all
@@ -130,7 +130,7 @@ returns Decimals
 ```
 
 ```act
-behaviour totalSupply of UniswapV2
+behaviour totalSupply of UniswapV2Exchange
 interface totalSupply()
 
 for all
@@ -149,7 +149,7 @@ returns Supply
 ```
 
 ```act
-behaviour balanceOf of UniswapV2
+behaviour balanceOf of UniswapV2Exchange
 interface balanceOf(address who)
 
 for all
@@ -168,7 +168,7 @@ returns BalanceOf
 ```
 
 ```act
-behaviour allowance of UniswapV2
+behaviour allowance of UniswapV2Exchange
 interface allowance(address holder, address spender)
 
 for all
@@ -187,7 +187,7 @@ returns Allowed
 ```
 
 ```act
-behaviour DOMAIN_SEPARATOR of UniswapV2
+behaviour DOMAIN_SEPARATOR of UniswapV2Exchange
 interface DOMAIN_SEPARATOR()
 
 for all
@@ -206,7 +206,7 @@ returns Dom
 ```
 
 ```act
-behaviour PERMIT_TYPEHASH of UniswapV2
+behaviour PERMIT_TYPEHASH of UniswapV2Exchange
 interface PERMIT_TYPEHASH()
 
 iff
@@ -218,7 +218,7 @@ returns keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 
 ```
 
 ```act
-behaviour nonces of UniswapV2
+behaviour nonces of UniswapV2Exchange
 interface nonces(address who)
 
 for all
@@ -241,7 +241,7 @@ returns Nonce
 ### Transfer
 
 ```act
-behaviour transfer-diff of UniswapV2
+behaviour transfer-diff of UniswapV2Exchange
 interface transfer(address to, uint value)
 
 for all
@@ -270,7 +270,7 @@ returns 1
 ```
 
 ```act
-behaviour transfer-same of UniswapV2
+behaviour transfer-same of UniswapV2Exchange
 interface transfer(address to, uint value)
 
 for all
@@ -325,7 +325,7 @@ iff in range uint256
 ### Approve
 
 ```act
-behaviour approve of UniswapV2
+behaviour approve of UniswapV2Exchange
 interface approve(address spender, uint value)
 
 for all
@@ -346,7 +346,7 @@ returns 1
 ### TransferFrom
 
 ```act
-behaviour transferFrom-diff of UniswapV2
+behaviour transferFrom-diff of UniswapV2Exchange
 interface transferFrom(address from, address to, uint value)
 
 for all
@@ -377,7 +377,7 @@ returns 1
 ```
 
 ```act
-behaviour transferFrom-same of UniswapV2
+behaviour transferFrom-same of UniswapV2Exchange
 interface transferFrom(address from, address to, uint value)
 
 for all
@@ -456,7 +456,7 @@ function permit(
 ```
 
 ```act
-behaviour permit of UniswapV2
+behaviour permit of UniswapV2Exchange
 interface permit(address owner, address spender, uint value, uint nonce, uint deadline, uint8 v, bytes32 r, bytes32 s)
 
 for all
