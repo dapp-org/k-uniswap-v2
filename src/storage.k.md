@@ -1,4 +1,4 @@
-# UniswapV2
+# UniswapV2Exchange
 
 ```k
 // pack { uint112 uint112 uint32 }
@@ -8,45 +8,36 @@ rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
 
-syntax Int ::= "#UniswapV2.name" [function]
-rule #UniswapV2.name => 0
+syntax Int ::= "#UniswapV2Exchange.totalSupply" [function]
+rule #UniswapV2Exchange.totalSupply => 0
 
-syntax Int ::= "#UniswapV2.symbol" [function]
-rule #UniswapV2.symbol => 1
+syntax Int ::= "#UniswapV2Exchange.balanceOf" "[" Int "]" [function]
+rule #UniswapV2Exchange.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 
-syntax Int ::= "#UniswapV2.decimals" [function]
-rule #UniswapV2.decimals => 2
+syntax Int ::= "#UniswapV2Exchange.allowance" "[" Int "][" Int "]" [function]
+rule #UniswapV2Exchange.allowance[A][B] => #hashedLocation("Solidity", 2, A B)
 
-syntax Int ::= "#UniswapV2.totalSupply" [function]
-rule #UniswapV2.totalSupply => 3
+syntax Int ::= "#UniswapV2Exchange.DOMAIN_SEPARATOR" [function]
+rule #UniswapV2Exchange.DOMAIN_SEPARATOR => 3
 
-syntax Int ::= "#UniswapV2.balanceOf" "[" Int "]" [function]
-rule #UniswapV2.balanceOf[A] => #hashedLocation("Solidity", 4, A)
+syntax Int ::= "#UniswapV2Exchange.nonces" "[" Int "]" [function]
+rule #UniswapV2Exchange.nonces[A] => #hashedLocation("Solidity", 4, A)
 
-syntax Int ::= "#UniswapV2.allowance" "[" Int "][" Int "]" [function]
-rule #UniswapV2.allowance[A][B] => #hashedLocation("Solidity", 5, A B)
+syntax Int ::= "#UniswapV2Exchange.factory" [function]
+rule #UniswapV2Exchange.factory => 5
 
-syntax Int ::= "#UniswapV2.DOMAIN_SEPARATOR" [function]
-rule #UniswapV2.DOMAIN_SEPARATOR => 6
+syntax Int ::= "#UniswapV2Exchange.token0" [function]
+rule #UniswapV2Exchange.token0 => 6
 
-syntax Int ::= "#UniswapV2.nonces" "[" Int "]" [function]
-rule #UniswapV2.nonces[A] => #hashedLocation("Solidity", 7, A)
+syntax Int ::= "#UniswapV2Exchange.token1" [function]
+rule #UniswapV2Exchange.token1 => 7
 
-syntax Int ::= "#UniswapV2.factory" [function]
-rule #UniswapV2.factory => 8
+syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockNumber" [function]
+rule #UniswapV2Exchange.reserve0_reserve1_blockNumber => 8
 
-syntax Int ::= "#UniswapV2.token0" [function]
-rule #UniswapV2.token0 => 9
+syntax Int ::= "#UniswapV2Exchange.price0CumulativeLast" [function]
+rule #UniswapV2Exchange.price0CumulativeLast => 9
 
-syntax Int ::= "#UniswapV2.token1" [function]
-rule #UniswapV2.token1 => 10
-
-syntax Int ::= "#UniswapV2.reserve0_reserve1_blockNumber" [function]
-rule #UniswapV2.reserve0_reserve1_blockNumber => 11
-
-syntax Int ::= "#UniswapV2.price0CumulativeLast" [function]
-rule #UniswapV2.price0CumulativeLast => 12
-
-syntax Int ::= "#UniswapV2.price1CumulativeLast" [function]
-rule #UniswapV2.price1CumulativeLast => 13
+syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [function]
+rule #UniswapV2Exchange.price1CumulativeLast => 10
 ```
