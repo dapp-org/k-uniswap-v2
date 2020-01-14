@@ -111,6 +111,39 @@ returns Price1
 ## ERC20 Accessors
 
 ```act
+behaviour name of UniswapV2Exchange
+interface name()
+
+iff
+
+    VCallValue == 0
+
+returnsRaw #asByteStackInWidthaux(32, 31, 32, #enc(#string("Uniswap V2")))
+```
+
+```act
+behaviour symbol of UniswapV2Exchange
+interface symbol()
+
+iff
+
+    VCallValue == 0
+
+returnsRaw #asByteStackInWidthaux(32, 31, 32, #enc(#string("UNI-V2")))
+```
+
+```act
+behaviour decimals of UniswapV2Exchange
+interface decimals()
+
+iff
+
+    VCallValue == 0
+
+returns 18
+```
+
+```act
 behaviour totalSupply of UniswapV2Exchange
 interface totalSupply()
 
