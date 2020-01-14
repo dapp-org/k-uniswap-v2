@@ -118,7 +118,7 @@ iff
 
     VCallValue == 0
 
-returnsRaw #asByteStackInWidthaux(32, 31, 32, #enc(#string("Uniswap V2")))
+returnsRaw #enc(#string("Uniswap V2"))
 ```
 
 ```act
@@ -129,7 +129,7 @@ iff
 
     VCallValue == 0
 
-returnsRaw #asByteStackInWidthaux(32, 31, 32, #enc(#string("UNI-V2")))
+returnsRaw #enc(#string("UNI-V2"))
 ```
 
 ```act
