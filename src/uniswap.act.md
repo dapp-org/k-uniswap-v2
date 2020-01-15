@@ -5,7 +5,8 @@ UniswapV2Factory
 
 ### feeTo
 
-```act
+Returns the address to which fees are minted.
+
 behaviour feeTo of UniswapV2Factory
 interface feeTo()
 
@@ -24,47 +25,9 @@ iff
 returns To
 ```
 
-### allPairs
-
-`allPairs` is an array holding the address of every pair created using the `Factory`.
-
-`pair0` is the index in storage of the first array element. Subsequent array elements are read
-from `pair0 + index`. The maximum number of addresses that can be stored by the `allPairs`
-array before overflow is therefore `maxUInt256 - pair0 + 1 ==
-27889059366240281169193357100633332908378892778709981755071813198463099602853`.
-
-We do not currently specify the behaviour of the array after overflow has occured.
-
-TODO: ensure that `createPair` checks for overflow on the `allPairs` array.
-
-```act
-behaviour allPairs of UniswapV2Factory
-interface allPairs(uint256 index)
-
-for all
-
-    Pair : address
-    Length   : uint256
-
-storage
-
-    allPairs.length |-> Length
-    allPairs[index] |-> Pair
-
-iff
-
-    Length > index
-    VCallValue == 0
-
-if
-
-    // ignore array overflow
-    Length <= maxUInt256 - pair0 + 1
-
-returns Pair
-```
-
 ### feeToSetter
+
+Returns the address that is allowed to update `feeTo`.
 
 ```act
 behaviour feeToSetter of UniswapV2Factory
@@ -87,6 +50,10 @@ returns Setter
 
 ### getPair
 
+Returns the exchange address for a given pair of tokens. In practice, token
+arguments can be provided in any order `(A, B)` or `(B, A)` because
+`createPair` stores two records - one for each pairing.
+
 ```act
 behaviour getPair of UniswapV2Factory
 interface getPair(address tokenA, address tokenB)
@@ -106,7 +73,51 @@ iff
 returns Pair
 ```
 
+### allPairs
+
+`allPairs` is an array which stores the address of every exchange created
+using the `Factory`.
+
+`pair0` is a concrete value, representing the storage key of the first
+array element (the keccak hash of slot 3). Subsequent array elements are stored
+at an offset from this value: `pair0 + index`.
+
+The maximum number of addresses that can be stored by the `allPairs` array
+before overflow is `(maxUInt256 - pair0) + 1`.
+
+We do not currently specify the behaviour of the array after overflow has occured.
+
+```act
+behaviour allPairs of UniswapV2Factory
+interface allPairs(uint256 index)
+
+for all
+
+    Pair   : address
+    Length : uint256
+
+storage
+
+    allPairs.length |-> Length
+    allPairs[index] |-> Pair
+
+iff
+
+    Length > index
+    VCallValue == 0
+
+if
+
+    // Ignore array overflow
+    Length <= maxPairs
+
+returns Pair
+```
+
 ### allPairsLength
+
+Returns the total number of exchange pairs created by this factory by querying the
+length of the `allPairs` array.
 
 ```act
 behaviour allPairsLength of UniswapV2Factory
@@ -131,7 +142,7 @@ returns Length
 
 ### updating the fee setter
 
-The current fee setter can appoint a new fee setter
+The current fee setter can appoint a new fee setter.
 
 ```act
 behaviour setFeeToSetter of UniswapV2Factory
@@ -152,7 +163,7 @@ iff
 
 ### updating the fee recipient
 
-The current fee setter can appoint a new fee recipient
+The current fee setter can appoint a new fee recipient.
 
  ```act
 behaviour setFeeTo of UniswapV2Factory
@@ -169,12 +180,199 @@ storage
     feeTo       |-> FeeTo => usr
 
 iff
+
     VCallValue == 0
     CALLER_ID == Setter
 ```
 
+### createPair
+
+`createPair` allows anyone to create a new instance of the `UniswsapV2Pair`
+exchange contract by providing a pair of token addresses.
+
+Token address arguments are not valid if equal to zero, or if they are equal to
+each other.
+
+The address of the new exchange will be constant for any given token pair,
+regardless of the order in which they are provided.
+
+The address of every new exchange pair is added to the `allPairs` array, which is
+primarily used by the contract to provide a count of all created pairs. The
+maximum number of exchange pairs which can be created before overflowing the array
+is:
+```
+87,903,029,871,075,914,254,377,627,908,054,574,944,891,091,886,930,582,284,385,770,809,450,030,037,083
+```
+We don't specify the behaviour of `createPair` after array overflow.
+
+```act
+behaviour createPair-lt of UniswapV2Factory
+interface createPair(address tokenA, address tokenB)
+
+for all
+
+    Pair             : address UniswapV2Pair
+    Length           : uint256
+    Domain_separator : uint256
+    Empty            : address
+    Any              : address
+
+creates storage Pair
+
+    // Set during contract creation
+    #UniswapV2Pair.lockState        |-> 1
+    #UniswapV2Pair.DOMAIN_SEPARATOR |-> Domain_separator
+
+    // Set via initialize
+    #UniswapV2Pair.factory          |-> ACCT_ID
+    #UniswapV2Pair.token0           |-> tokenA
+    #UniswapV2Pair.token1           |-> tokenB
+
+storage
+
+    #UniswapV2Factory.getPair[tokenA][tokenB] |-> Empty  => Pair
+    #UniswapV2Factory.getPair[tokenB][tokenA] |-> 0      => Pair
+    #UniswapV2Factory.allPairs[Length]        |-> Any    => Pair
+    #UniswapV2Factory.allPairs.length         |-> Length => Length + 1
+
+gas
+
+    ( (#if (notBool ( Junk_5 ==K 0 ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_5 ==K 0 ) andBool ( Junk_5 ==K 0 ) ) #then 15000 #else 0 #fi) +Int \
+    ( (#if (notBool ( Junk_6 ==K 0 ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_6 ==K 0 ) andBool ( Junk_6 ==K 0 ) ) #then 15000 #else 0 #fi) +Int \
+    ( (#if ( ( Length ==K ( Length +Int 1 ) ) orBool (notBool ( Junk_8 ==K Length ) ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_8 ==K 0 ) andBool (notBool ( ( Length ==K ( Length +Int 1 ) ) orBool (notBool ( Junk_8 ==K Length ) ) ) ) ) #then 15000 #else 0 #fi) +Int \
+    ( (#if ( ( Any ==K Pair ) orBool (notBool ( Junk_7 ==K Any ) ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_7 ==K 0 ) andBool (notBool ( ( Any ==K Pair ) orBool (notBool ( Junk_7 ==K Any ) ) ) ) ) #then 15000 #else 0 #fi) +Int 2414776 ) ) ) ) ) ) ) )
+
+iff
+
+    tokenA =/= 0
+    tokenA =/= tokenB
+    Empty == 0
+    VCallValue == 0
+
+if
+
+    // The new exchange address
+    Pair == #newAddr(                                 \
+      ACCT_ID,                                        \
+      keccak(                                         \
+        #take(20, #asByteStack(tokenA <<Int 96)) ++   \
+        #take(20, #asByteStack(tokenB <<Int 96))      \
+      ),                                              \
+      UniswapV2Pair_bin                               \
+    )
+
+    // The domain separator is set when the new
+    // exchange is created
+    Domain_separator == keccakIntList(                \
+        Constants.EIP712Domain                        \
+        keccak(#parseByteStackRaw("Uniswap V2"))      \
+        keccak(#parseByteStackRaw("1"))               \
+        VChainId                                      \
+        Pair                                          \
+    )
+
+    // Ignore array overflow
+    Length <= maxPairs
+
+    tokenA < tokenB
+    VCallDepth < 1024
+
+calls
+
+    UniswapV2Pair.initialize
+
+returns Pair
+```
+
+```act
+behaviour createPair-gt of UniswapV2Factory
+interface createPair(address tokenA, address tokenB)
+
+for all
+
+    Pair             : address UniswapV2Pair
+    Length           : uint256
+    Domain_separator : uint256
+    Empty            : address
+    Any              : address
+
+creates storage Pair
+
+    // Set during contract creation
+    #UniswapV2Pair.lockState        |-> 1
+    #UniswapV2Pair.DOMAIN_SEPARATOR |-> Domain_separator
+
+    // Set via initialize
+    #UniswapV2Pair.factory          |-> ACCT_ID
+    #UniswapV2Pair.token0           |-> tokenB
+    #UniswapV2Pair.token1           |-> tokenA
+
+storage
+
+    #UniswapV2Factory.getPair[tokenB][tokenA] |-> Empty  => Pair
+    #UniswapV2Factory.getPair[tokenA][tokenB] |-> 0      => Pair
+    #UniswapV2Factory.allPairs[Length]        |-> Any    => Pair
+    #UniswapV2Factory.allPairs.length         |-> Length => Length + 1
+
+gas
+
+    ( (#if (notBool ( Junk_5 ==K 0 ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_5 ==K 0 ) andBool ( Junk_5 ==K 0 ) ) #then 15000 #else 0 #fi) +Int \
+    ( (#if (notBool ( Junk_6 ==K 0 ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_6 ==K 0 ) andBool ( Junk_6 ==K 0 ) ) #then 15000 #else 0 #fi) +Int \
+    ( (#if ( ( Length ==K ( Length +Int 1 ) ) orBool (notBool ( Junk_8 ==K Length ) ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_8 ==K 0 ) andBool (notBool ( ( Length ==K ( Length +Int 1 ) ) orBool (notBool ( Junk_8 ==K Length ) ) ) ) ) #then 15000 #else 0 #fi) +Int \
+    ( (#if ( ( Any ==K Pair ) orBool (notBool ( Junk_7 ==K Any ) ) ) #then 0 #else 4200 #fi) +Int \
+    ( (#if ( ( Junk_7 ==K 0 ) andBool (notBool ( ( Any ==K Pair ) orBool (notBool ( Junk_7 ==K Any ) ) ) ) ) #then 15000 #else 0 #fi) +Int 2414786 ) ) ) ) ) ) ) )
+
+iff
+
+    tokenB =/= 0
+    tokenA =/= tokenB
+    Empty == 0
+    VCallValue == 0
+
+if
+
+    // The new exchange address
+    Pair == #newAddr(                                 \
+      ACCT_ID,                                        \
+      keccak(                                         \
+        #take(20, #asByteStack(tokenB <<Int 96)) ++   \
+        #take(20, #asByteStack(tokenA <<Int 96))      \
+      ),                                              \
+      UniswapV2Pair_bin                               \
+    )
+
+    // The domain separator is set when the new
+    // exchange is created
+    Domain_separator == keccakIntList(                \
+        Constants.EIP712Domain                        \
+        keccak(#parseByteStackRaw("Uniswap V2"))      \
+        keccak(#parseByteStackRaw("1"))               \
+        VChainId                                      \
+        Pair                                          \
+    )
+
+    // Ignore array overflow
+    Length <= maxPairs
+
+    tokenB < tokenA
+    VCallDepth < 1024
+
+calls
+
+    UniswapV2Pair.initialize
+
+returns Pair
+```
+
 UniswapV2Pair
-=================
+=============
 
 ## Accessors
 

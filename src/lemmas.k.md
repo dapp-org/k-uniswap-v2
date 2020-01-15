@@ -1,4 +1,4 @@
-### Constants & Ranges
+## Constants & Ranges
 
 The `evm-semantics` only defines ranges and constants for a few solidity types. A couple of extra
 ones are required for these specs.
@@ -119,6 +119,97 @@ rule (X &Int maxUInt160) => (maxUInt160 &Int X)
 rule (X &Int notMaxUInt160) => (notMaxUInt160 &Int X)
 rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
 ```
+
+### Factory pairs array
+
+`allPairs` is an array which stores the address of every exchange pair created
+using the `Factory`.
+
+`pair0` represents the storage key of the first array element, the keccak
+hash of slot 3: `keccak(uint256(3))`.
+
+```k
+syntax Int ::= "pair0"
+rule pair0 => 87903029871075914254377627908054574944891091886930582284385770809450030037083 [macro]
+```
+
+Subsequent array elements are stored at a `uint256` offset from this key:
+`pair0 + index`.  The maximum allowable index before integer overflow is
+therefore `maxUInt256 - pair0` and the valid index range is zero to max.
+index:
+
+Valid index range: `allPairs[0]...allPairs[maxUInt256 - pair0]`
+
+The maximum number of addresses that can be stored by the `allPairs` array
+is max. index plus one.
+
+```k
+syntax Int ::= "maxPairs"
+rule maxPairs => (maxUInt256 -Int pair0) +Int 1 [macro]
+```
+
+Important to note is that that there is no guarentee that the storage keys of
+`allPairs` will not collide with storage keys of `getPair`. We make the
+low probablity assumption that there will be no such collision in the factory.
+
+```k
+rule N +Int pair0 => pair0 +Int N
+
+rule keccakIntList(X) ==K pair0 +Int N => false
+rule pair0 +Int N ==K keccakIntList(X) => false
+
+rule keccak(X) ==K pair0 +Int N => false
+rule pair0 +Int N ==K keccak(X) => false
+```
+
+We make the probabalistic assumption that the array will not overflow. This is
+not enforced by Solidity.
+
+```k
+rule chop(pair0 +Int N) => pair0 +Int N
+rule chop(N +Int pair0) => pair0 +Int N
+```
+
+### Encode packed
+
+The packing routine for `abi.encodePacked(address, address)` in the factory
+contract, formats both addresses with a left shift and then writes them as
+overlapping words to memory. The first 40 bytes is then read back from memory
+to provide the packed result. These rules handle the writing of the shifted
+addresses to memory and the reduction of the resulting byte array.
+
+```k
+rule chop(A <<Int 96) => A <<Int 96
+  requires #rangeAddress(A)
+
+rule #padToWidth(32, #asByteStack(A <<Int 96))
+  => #asByteStackInWidth(A <<Int 96, 32)
+
+rule takeWordStack(20, #asByteStack(X)) =>
+   ( nthbyteof(X, 0, 32)
+   : nthbyteof(X, 1, 32)
+   : nthbyteof(X, 2, 32)
+   : nthbyteof(X, 3, 32)
+   : nthbyteof(X, 4, 32)
+   : nthbyteof(X, 5, 32)
+   : nthbyteof(X, 6, 32)
+   : nthbyteof(X, 7, 32)
+   : nthbyteof(X, 8, 32)
+   : nthbyteof(X, 9, 32)
+   : nthbyteof(X, 10, 32)
+   : nthbyteof(X, 11, 32)
+   : nthbyteof(X, 12, 32)
+   : nthbyteof(X, 13, 32)
+   : nthbyteof(X, 14, 32)
+   : nthbyteof(X, 15, 32)
+   : nthbyteof(X, 16, 32)
+   : nthbyteof(X, 17, 32)
+   : nthbyteof(X, 18, 32)
+   : nthbyteof(X, 19, 32)
+   : .WordStack
+   )
+```
+
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
 #### Reads

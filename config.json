@@ -39,7 +39,13 @@
     "UniswapV2Pair_mint-feeMinted-diff_pass": "1d",
     "UniswapV2Pair_mint-feeMinted-same_pass_rough": "1d",
     "UniswapV2Pair_mint-feeMinted-same_fail_rough": "1d",
-    "UniswapV2Pair_mint-feeMinted-same_pass": "1d"
+    "UniswapV2Pair_mint-feeMinted-same_pass": "1d",
+    "UniswapV2Factory_createPair-lt_pass_rough": "72h",
+    "UniswapV2Factory_createPair-lt_fail_rough": "72h",
+    "UniswapV2Factory_createPair-lt_pass": "72h",
+    "UniswapV2Factory_createPair-gt_pass_rough": "72h",
+    "UniswapV2Factory_createPair-gt_fail_rough": "72h",
+    "UniswapV2Factory_createPair-gt_pass": "72h"
   },
   "memory" : {
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
@@ -59,7 +65,13 @@
     "UniswapV2Pair_mint-feeMinted-diff_pass": "30G",
     "UniswapV2Pair_mint-feeMinted-same_pass_rough": "30G",
     "UniswapV2Pair_mint-feeMinted-same_fail_rough": "30G",
-    "UniswapV2Pair_mint-feeMinted-same_pass": "30G"
+    "UniswapV2Pair_mint-feeMinted-same_pass": "30G",
+    "UniswapV2Factory_createPair-lt_pass_rough": "25G",
+    "UniswapV2Factory_createPair-lt_fail_rough": "25G",
+    "UniswapV2Factory_createPair-lt_pass": "25G",
+    "UniswapV2Factory_createPair-gt_pass_rough": "25G",
+    "UniswapV2Factory_createPair-gt_fail_rough": "25G",
+    "UniswapV2Factory_createPair-gt_pass": "25G"
   },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
