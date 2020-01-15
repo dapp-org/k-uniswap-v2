@@ -227,6 +227,25 @@ iff
 returns Price1
 ```
 
+```act
+behaviour invariantLast of UniswapV2Exchange
+interface invariantLast()
+
+for all
+
+    InvariantLast : uint256
+
+storage
+
+    invariantLast |-> InvariantLast
+
+iff
+
+    VCallValue == 0
+
+returns InvariantLast
+```
+
 ### getReserves
 
 ```act
