@@ -264,6 +264,93 @@ iff
 returns Reserve0 : Reserve1 : BlockNumberLast
 ```
 
+```act
+behaviour skim of UniswapV2Exchange
+interface skim(address to)
+
+for all
+
+    Unlocked : uint256
+    Token0   : address UniswapV2Exchange
+    Token1   : address UniswapV2Exchange
+    SrcBal0  : uint256
+    SrcBal1  : uint256
+    DstBal0  : uint256
+    DstBal1  : uint256
+    Reserve0 : uint256
+    Reserve1 : uint256
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+    reserve0 |-> Reserve0
+    reserve1 |-> Reserve1
+
+storage Token0
+
+    balanceof[ACCT_ID] |-> SrcBal0 => SrcBal0 - Reserve0
+    balanceOf[to]      |-> DstBal0 => DstBal0 + (SrcBal0 - Reserve0)
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> SrcBal1 => SrcBal1 - Reserve1
+    balanceOf[to]      |-> DstBal1 => DstBal1 + (SrcBal1 - Reserve1)
+
+iff in range uint256
+
+    SrcBal0 - Reserve0
+    SrcBal1 - Reserve1
+    DstBal0 + (SrcBal0 - Reserve0)
+    DstBal1 + (SrcBal1 - Reserve1)
+
+iff
+
+    VCallValue == 0
+    Unlocked   == 1
+
+if
+
+    to =/= ACCT_ID
+```
+
+```act
+behaviour skim-back of UniswapV2Exchange
+interface skim(address to)
+
+for all
+
+    Unlocked : uint256
+    Token0   : address UniswapV2Exchange
+    Token1   : address UniswapV2Exchange
+    SrcBal0  : uint256
+    SrcBal1  : uint256
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> SrcBal0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> SrcBal1
+
+iff
+
+    VCallValue == 0
+    Unlocked   == 1
+
+if
+
+    to == ACCT_ID
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviours.
