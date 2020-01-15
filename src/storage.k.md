@@ -84,6 +84,20 @@ rule #UniswapV2Factory.feeTo => 0
 syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
 rule #UniswapV2Factory.feeToSetter => 1
 
-syntax Int ::= "#UniswapV2Factory.getExchange" "[" Int "][" Int "]" [function]
-rule #UniswapV2Factory.getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
+syntax Int ::= "#UniswapV2Factory.getExchange_" "[" Int "][" Int "]" [function]
+rule #UniswapV2Factory.getExchange_[A][B] => #hashedLocation("Solidity", 2, A B)
+
+syntax Int ::= "#UniswapV2Factory.exchanges.length" [function]
+rule #UniswapV2Factory.exchanges.length => 3
+
+// exchanges: position 0 - keccak(uint256(3))
+syntax Int ::= "exchanges0" [function]
+rule exchanges0 => 87903029871075914254377627908054574944891091886930582284385770809450030037083 [macro]
+
+// exchanges: position with offset
+syntax Int ::= "#UniswapV2Factory.exchanges" "[" Int "]" [function]
+rule #UniswapV2Factory.exchanges[N] => exchanges0 +Int N
+
+// exchanges: position chop rule
+rule chop(exchanges0 +Int N) => exchanges0 +Int N
 ```

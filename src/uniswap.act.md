@@ -24,6 +24,30 @@ iff
 returns To
 ```
 
+### exchanges
+
+```act
+behaviour exchanges of UniswapV2Factory
+interface exchanges(uint256 index)
+
+for all
+
+    Exchange : address
+    Count    : uint256
+
+storage
+
+    exchanges.length |-> Count
+    exchanges[index] |-> Exchange
+
+iff
+
+    index < Count
+    VCallValue == 0
+
+returns Exchange
+```
+
 ### feeToSetter
 
 ```act
@@ -58,6 +82,27 @@ for all
 storage
 
     getExchange[tokenA][tokenB] |-> Exchange
+
+iff
+
+    VCallValue == 0
+
+returns Exchange
+```
+
+### exchangesCount
+
+```act
+behaviour exchangesCount of UniswapV2Factory
+interface exchangesCount()
+
+for all
+
+    Count    : uint256
+
+storage
+
+    exchanges.length |-> Count
 
 iff
 
