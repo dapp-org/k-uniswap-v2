@@ -410,6 +410,114 @@ calls
     UniswapV2Exchange.balanceOf
 ```
 
+### Skim
+
+```act
+behaviour skim of UniswapV2Exchange
+interface skim(address to)
+
+for all
+
+    Unlocked           : bool
+    Token0             : address UniswapV2Exchange
+    Token1             : address UniswapV2Exchange
+    SrcBal0            : uint256
+    SrcBal1            : uint256
+    DstBal0            : uint256
+    DstBal1            : uint256
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> SrcBal0 => Reserve0
+    balanceOf[to]      |-> DstBal0 => DstBal0 + (SrcBal0 - Reserve0)
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> SrcBal1 => Reserve1
+    balanceOf[to]      |-> DstBal1 => DstBal1 + (SrcBal1 - Reserve1)
+
+iff in range uint256
+
+    SrcBal0 - Reserve0
+    DstBal0 + (SrcBal0 - Reserve0)
+
+    SrcBal1 - Reserve1
+    DstBal1 + (SrcBal1 - Reserve1)
+
+iff
+
+    Unlocked   == 1
+    VCallValue == 0
+    VCallDepth  < 1024
+
+if
+
+    to =/= ACCT_ID
+
+calls
+
+    UniswapV2Exchange.balanceOf
+```
+
+```act
+behaviour skim-back of UniswapV2Exchange
+interface skim(address to)
+
+for all
+
+    Unlocked : bool
+    Token0   : address UniswapV2Exchange
+    Token1   : address UniswapV2Exchange
+    SrcBal0  : uint256
+    SrcBal1  : uint256
+    Reserve0 : uint112
+    Reserve1 : uint112
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> SrcBal0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> SrcBal1
+
+iff in range uint256
+
+    SrcBal0 - Reserve0
+    SrcBal1 - Reserve1
+
+iff
+
+    (Unlocked &Int 255) == 1
+    VCallValue == 0
+    VCallDepth  < 1024
+
+if
+
+    to == ACCT_ID
+
+calls
+
+    UniswapV2Exchange.balanceOf
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviours.
