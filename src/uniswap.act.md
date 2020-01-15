@@ -434,7 +434,6 @@ iff
     VCallValue == 0
 
 returns Constants.PermitTypehash
-
 ```
 
 ```act
@@ -595,4 +594,87 @@ if
     from == to
 
 returns 1
+```
+
+### Permit
+
+Authority over the transfer of Uniswap V2 liquidity tokens can be delegated in a zero-gas manner:
+anyone who holds a message signed by `owner` can use `permit` to set the vaule in the `approvals`
+mapping for `owner` -> `spender` to `value`. Each message has a `deadline`, after which it is no
+longer valid.
+
+The `v`, `r` and `s` parameters are the individual components of the signature, split as required by
+`ecrecover`.
+
+The message is constructed and verified according to
+[`EIP-712`](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md), where the typehash is
+given by `keccak("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256
+deadline)")` and the domain seperator is set in the constructor with:
+
+```solidity
+DOMAIN_SEPARATOR = keccak256(
+    abi.encode(
+        keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+        keccak256(bytes(name)),
+        keccak256(bytes('1')),
+        chainId,
+        address(this)
+    )
+);
+```
+
+Checks against [ECDSA
+Malleability](https://github.com/bitcoin-core/secp256k1/blob/1b4d256e2ea09895de331e4969430551ef0e54ac/include/secp256k1.h#L483)
+are omitted as the existence of multiple valid signatures for the same message does not cause an
+issue: the user's wishes are being carried out, and the nonce protects against replay.
+
+Nonces can overflow, allowing for replay attacks against `owner` once `uint256(-1)` `permit`
+operations have been processed on their behalf. This should not be a concern in practice, especially
+if messages have deadlines. The behaviour of the contract in the call where overflow occurs is not
+covered by this spec.
+
+Note that the `nonce` is omitted from the signature of the solidity function, but is still included
+and checked as part of the signed message.
+
+```act
+behaviour permit of UniswapV2Exchange
+interface permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s)
+
+for all
+
+    Nonce            : uint256
+    Allowed          : uint256
+    Domain_separator : bytes32
+
+storage
+
+    nonces[owner]             |-> Nonce => Nonce + 1
+    DOMAIN_SEPARATOR          |-> Domain_separator
+    allowance[owner][spender] |-> Allowed => value
+
+iff
+
+    0 =/= maxUInt160 & #symEcrec(                                                  \
+      keccakIntList(                                                               \
+        #asWord(#parseHexWord("0x19") : #parseHexWord("0x1") : .WordStack)         \
+        Domain_separator                                                           \
+        keccakIntList(Constants.PermitTypehash owner spender value Nonce deadline) \
+      ), v, r, s)
+
+    owner == maxUInt160 & #symEcrec(                                               \
+      keccakIntList(                                                               \
+        #asWord(#parseHexWord("0x19") : #parseHexWord("0x1") : .WordStack)         \
+        Domain_separator                                                           \
+        keccakIntList(Constants.PermitTypehash owner spender value Nonce deadline) \
+      ), v, r, s)
+
+    TIME <= deadline
+
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    // ignore overflow case
+    #rangeUInt(256, Nonce + 1)
 ```
