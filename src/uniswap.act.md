@@ -45,6 +45,28 @@ iff
 returns To
 ```
 
+```act
+behaviour exchanges of UniswapV2Factory
+interface exchanges(uint256 index)
+
+for all
+
+    Exchange : address
+    Count    : uint256
+
+storage
+
+    exchanges.length |-> Count
+    exchanges[index] |-> Exchange
+
+iff
+
+    index < Count
+    VCallValue == 0
+
+returns Exchange
+```
+
 ### sortTokens
 
 ```act

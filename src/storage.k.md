@@ -56,4 +56,10 @@ rule #UniswapV2Factory.feeTo => 1
 
 syntax Int ::= "#UniswapV2Factory.getExchange_" "[" Int "][" Int "]" [function]
 rule #UniswapV2Factory.getExchange_[A][B] => #hashedLocation("Solidity", 2, A B)
+
+syntax Int ::= "#UniswapV2Factory.exchanges.length" [function]
+rule #UniswapV2Factory.exchanges.length => 3
+
+syntax Int ::= "#UniswapV2Factory.exchanges" "[" Int "]" [function]
+rule #UniswapV2Factory.exchanges[N] => keccak(#padToWidth(32, #asByteStack(3))) +Int N
 ```
