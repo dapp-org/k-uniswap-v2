@@ -162,6 +162,40 @@ iff
 returns Exchange
 ```
 
+### createExchange
+
+```act
+behaviour createExchange of UniswapV2Factory
+interface createExchange(address tokenA, address tokenB)
+
+for all
+
+    EXCHANGE : address UniswapV2Exchange
+    Count    : uint256
+
+storage EXCHANGE
+
+    0 |-> 0 => ACCT_ID
+    1 |-> 0 => tokenA
+    2 |-> 0 => tokenB
+
+storage
+
+    getExchange_[tokenA][tokenB] |-> 0 => EXCHANGE
+    exchanges.length             |-> Count => Count + 1
+    exchanges[Count]             |-> EXCHANGE
+
+iff
+
+    tokenA =/= 0
+    tokenB =/= 0
+    tokenA =/= tokenB
+    VCallValue == 0
+
+if
+    tokenA < tokenB
+```
+
 UniswapV2Exchange
 =================
 
