@@ -37,6 +37,9 @@ rule notMaxUInt112 => 1157920892373161954235709850086879078532699794733437055046
 
 syntax Int ::= "notMaxUInt160"                                                                       [function]
 rule notMaxUInt160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
+
+syntax Int ::= "notMaxUInt224"                                                                       [function]
+rule notMaxUInt224 => 115792089210356248756420345214020892766250353992003419616917011526809519390720 [macro]
 ```
 
 #### Ranges
@@ -76,15 +79,16 @@ conditions in a few specs.
 rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
 ```
 
-### Commutivity For Bitwise AND
+### Commutivity For Bitwise `AND`
 
-`K` doesn't know that `&Int` is commutative. We teach it this for a few select cases:
+`K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand.
 
 ```k
-rule (X &Int maxUInt160) => (maxUInt160 &Int X)
 rule (X &Int maxUInt32) => (maxUInt32 &Int X)
+rule (X &Int maxUInt112) => (maxUInt112 &Int X)
+rule (X &Int maxUInt160) => (maxUInt160 &Int X)
+rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
 ```
-
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
 #### Reads
@@ -99,22 +103,16 @@ Example: read `Reserve1`
 
 ![write balance0 to reserve0](./diagrams/packed_storage_read.png)
 
-These lemmas define the read operations specific to each packed storage location. Multiple lemmas
-are required in some cases to handle both possible orderings for the arguments to `&Int`.
+These lemmas define the read operations specific to each packed storage location.
 
 ```k
 // Reserve0
-rule (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) &Int maxUInt112) => X
+rule (maxUInt112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => X
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
 
 // Reserve1
-rule ((((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) /Int pow112) &Int maxUInt112) => Y
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
 rule (maxUInt112 &Int (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) /Int pow112)) => Y
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
@@ -275,4 +273,31 @@ rule (B |Int (notMaxUInt160 &Int A)) => B
 rule (B |Int (A &Int notMaxUInt160)) => B
   requires #rangeAddress(B)
   andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
+```
+
+### Packed Words In Memory
+
+Sometimes solidity will try and read a Word from memory containing unaligned data. In that case `K`
+needs help simplifying the resulting expressions:
+
+masking:
+
+```k
+// mask first four bytes to zero
+rule maxUInt224 &Int #asWord(WS) => #asWord(#padToWidth(32, #drop(4, WS)))
+  requires #sizeWordStack(WS) ==Int 32
+
+// mask everything except first four bytes to zero
+rule notMaxUInt224 &Int #asWord(WS) => #asWord(#padRightToWidth(32, #take(4, WS)))
+  requires #sizeWordStack(WS) ==Int 32
+```
+
+writes:
+
+```k
+// write first four bytes
+rule X |Int #asWord(#padToWidth(32, WS)) => #asWord(#take(4, #asByteStack(X)) ++ WS)
+  requires X &Int notMaxUInt224 ==Int X
+  andBool #rangeUInt(256, X)
+  andBool #sizeWordStack(WS) ==Int 28
 ```
