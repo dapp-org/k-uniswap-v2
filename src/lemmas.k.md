@@ -69,13 +69,6 @@ simplifications. We therefore rewrite it back to `modInt pow32`.
 rule (maxUInt32 &Int X) => (X modInt pow32)
 ```
 
-`K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand. This lets
-the rule above apply no matter what the ordering of arguments.
-
-```k
-rule (X &Int maxUInt32) => (maxUInt32 &Int X)
-```
-
 Repeated application of `modInt pow32` can be simplified as follows. This lets us clean the storage
 conditions in a few specs.
 
@@ -83,7 +76,16 @@ conditions in a few specs.
 rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
 ```
 
-### Solidity masking
+### Commutivity For Bitwise AND
+
+`K` doesn't know that `&Int` is commutative. We teach it this for a few select cases:
+
+```k
+rule (X &Int maxUInt160) => (maxUInt160 &Int X)
+rule (X &Int maxUInt32) => (maxUInt32 &Int X)
+```
+
+### Solidity Masking
 
 Before writing to storage, solidity first masks the existing value to zero using `(~Int maxUIntX)
 &Int A` where `X` is the size in bits of the type of `A`. This is likely an artifact of the
