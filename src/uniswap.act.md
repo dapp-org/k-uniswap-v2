@@ -270,23 +270,23 @@ interface skim(address to)
 
 for all
 
-    Unlocked : uint256
-    Token0   : address UniswapV2Exchange
-    Token1   : address UniswapV2Exchange
-    SrcBal0  : uint256
-    SrcBal1  : uint256
-    DstBal0  : uint256
-    DstBal1  : uint256
-    Reserve0 : uint256
-    Reserve1 : uint256
+    Unlocked        : uint256
+    Token0          : address UniswapV2Exchange
+    Token1          : address UniswapV2Exchange
+    SrcBal0         : uint256
+    SrcBal1         : uint256
+    DstBal0         : uint256
+    DstBal1         : uint256
+    Reserve0        : uint112
+    Reserve1        : uint112
+    Blocknumberlast : uint32
 
 storage
 
     unlocked |-> Unlocked
     token0   |-> Token0
     token1   |-> Token1
-    reserve0 |-> Reserve0
-    reserve1 |-> Reserve1
+    reserve0_reserve1_blockNumberLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockNumberLast)
 
 storage Token0
 
