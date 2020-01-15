@@ -11,6 +11,7 @@ rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
   requires #rangeUInt(256, A) andBool #rangeUInt(256, B)
 ```
 
+
 ### Numerical Constants
 
 The `evm-semantics` only defines ranges and constants for a few solidity types. A couple of extra
@@ -42,6 +43,18 @@ rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 ```k
 syntax Int ::= "pow224"                                                             [function]
 rule pow224 => 26959946667150639794667015087019630673637144422540572481103610249216 [macro]
+```
+
+### Solidity masking
+
+When writing to storage, Solidity performs complement masking on existing values.
+
+```k
+syntax Int ::= "notMaxUInt160"   [function]
+rule notMaxUInt160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
+
+rule (notMaxUInt160 &Int A) => 0
+  requires #rangeAddress(A)
 ```
 
 ### Packed Storage { `uint112` `uint112` `uint32` }
