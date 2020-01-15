@@ -1,5 +1,124 @@
-UniswapV2Exchange
+UniswapV2Factory
 ================
+
+## Accessors
+
+### feeToSetter
+
+```act
+behaviour feeToSetter of UniswapV2Factory
+interface feeToSetter()
+
+for all
+
+    Setter : address
+
+storage
+
+    feeToSetter |-> Setter
+
+iff
+
+    VCallValue == 0
+
+returns Setter
+```
+
+### feeTo
+
+```act
+behaviour feeTo of UniswapV2Factory
+interface feeTo()
+
+for all
+
+    To : address
+
+storage
+
+    feeTo |-> To
+
+iff
+
+    VCallValue == 0
+
+returns To
+```
+
+### sortTokens
+
+```act
+behaviour sortTokens-lte of UniswapV2Factory
+interface sortTokens(address tokenA, address tokenB)
+
+iff
+    VCallValue == 0
+
+if
+    tokenA <= tokenB
+
+returns tokenA : tokenB
+```
+
+```act
+behaviour sortTokens-gte of UniswapV2Factory
+interface sortTokens(address tokenA, address tokenB)
+
+iff
+    VCallValue == 0
+
+if
+    tokenA >= tokenB
+
+returns tokenB : tokenA
+```
+
+### getExchange
+
+```act
+behaviour getExchange-lte of UniswapV2Factory
+interface getExchange(address tokenA, address tokenB)
+
+for all
+
+    Exchange : address
+
+storage
+
+    getExchange_[tokenA][tokenB] |-> Exchange
+
+iff
+    VCallValue == 0
+
+if
+    tokenA <= tokenB
+
+returns Exchange
+```
+
+```act
+behaviour getExchange-gte of UniswapV2Factory
+interface getExchange(address tokenA, address tokenB)
+
+for all
+
+    Exchange : address
+
+storage
+
+    getExchange_[tokenB][tokenA] |-> Exchange
+
+iff
+    VCallValue == 0
+
+if
+    tokenA >= tokenB
+
+returns Exchange
+```
+
+UniswapV2Exchange
+=================
 
 ## Accessors
 
