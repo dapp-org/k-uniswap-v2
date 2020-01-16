@@ -270,7 +270,7 @@ interface skim(address to)
 
 for all
 
-    Unlocked        : uint256
+    Unlocked        : bool
     Token0          : address UniswapV2Exchange
     Token1          : address UniswapV2Exchange
     SrcBal0         : uint256
@@ -321,7 +321,7 @@ interface skim(address to)
 
 for all
 
-    Unlocked : uint256
+    Unlocked : bool
     Token0   : address UniswapV2Exchange
     Token1   : address UniswapV2Exchange
     SrcBal0  : uint256
