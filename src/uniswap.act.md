@@ -290,7 +290,7 @@ storage
 
 storage Token0
 
-    balanceof[ACCT_ID] |-> SrcBal0 => SrcBal0 - Reserve0
+    balanceOf[ACCT_ID] |-> SrcBal0 => SrcBal0 - Reserve0
     balanceOf[to]      |-> DstBal0 => DstBal0 + (SrcBal0 - Reserve0)
 
 storage Token1
