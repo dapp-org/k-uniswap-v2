@@ -307,8 +307,8 @@ iff in range uint256
 
 iff
 
-    VCallValue == 0
     Unlocked   == 1
+    VCallValue == 0
 
 if
 
@@ -343,8 +343,8 @@ storage Token1
 
 iff
 
-    VCallValue == 0
     Unlocked   == 1
+    VCallValue == 0
 
 if
 
