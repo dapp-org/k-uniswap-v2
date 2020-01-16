@@ -36,10 +36,13 @@ rule maxUInt112 => 5192296858534827628530496329220095 [macro]
 
 rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 
-// MaxUInt160 two's complement
-syntax Int ::= "twos160"
-rule twos160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
-rule twos160 &Int X => 0
+// MaxUint160 complement
+syntax Int ::= "notMaxUInt160"
+rule notMaxUInt160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
+
+rule (X |Int (notMaxUInt160 &Int Y)) => X
+  requires #rangeUInt(256, X)
+  andBool #rangeUInt(256, Y)
 ```
 
 #### `uint224`
