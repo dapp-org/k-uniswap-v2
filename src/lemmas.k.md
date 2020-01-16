@@ -11,6 +11,32 @@ rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
   requires #rangeUInt(256, A) andBool #rangeUInt(256, B)
 ```
 
+#### Complement masking
+
+Solidity performs complement masking on existing slot values when writing addresses to storage.
+
+TODO:
+
+- find out if this also applies to storage routines for other types.
+- decide whether it is safe to assume that this always rewrites to 0
+
+```k
+syntax Int ::= "notMaxUInt160"   [function]
+rule notMaxUInt160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
+
+rule (notMaxUInt160 &Int A) => 0
+  requires #rangeAddress(A)
+
+// These are equivalent to the above, but don't work (reduce).
+//
+// rule ((~Word maxUInt160) &Int A) => 0
+//  requires #rangeAddress(A)
+//
+// rule (X |Int (~Word maxUInt160) &Int Y)) => X
+//  requires #rangeAddress(X)
+//  andBool #rangeAddress(Y)
+```
+
 ### Numerical Constants
 
 The `evm-semantics` only defines ranges and constants for a few solidity types. A couple of extra
@@ -35,14 +61,6 @@ syntax Int ::= "maxUInt112"                           [function]
 rule maxUInt112 => 5192296858534827628530496329220095 [macro]
 
 rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
-
-// MaxUint160 complement
-syntax Int ::= "notMaxUInt160"
-rule notMaxUInt160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
-
-rule (X |Int (notMaxUInt160 &Int Y)) => X
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
 ```
 
 #### `uint224`
