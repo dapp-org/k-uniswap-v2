@@ -309,6 +309,7 @@ iff
 
     Unlocked   == 1
     VCallValue == 0
+    VCallDepth < 1024
 
 if
 
@@ -345,6 +346,7 @@ iff
 
     Unlocked   == 1
     VCallValue == 0
+    VCallDepth < 1024
 
 if
 
