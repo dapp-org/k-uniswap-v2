@@ -117,6 +117,52 @@ if
 returns Exchange
 ```
 
+## Mutators
+
+### updating the fee setter
+
+The current fee setter can appoint a new fee setter
+
+```act
+behaviour setFeeToSetter of UniswapV2Factory
+interface setFeeToSetter(address usr)
+
+for all
+
+    Setter : address
+
+storage
+
+    feeToSetter |-> Setter => usr
+
+iff
+    VCallValue == 0
+    CALLER_ID == Setter
+```
+
+### updating the fee recipient
+
+The current fee setter can appoint a new fee recipient
+
+ ```act
+behaviour setFeeTo of UniswapV2Factory
+interface setFeeTo(address usr)
+
+for all
+
+    FeeTo  : address
+    Setter : address
+
+storage
+
+    feeToSetter |-> Setter
+    feeTo       |-> FeeTo => usr
+
+iff
+    VCallValue == 0
+    CALLER_ID == Setter
+```
+
 UniswapV2Exchange
 =================
 
