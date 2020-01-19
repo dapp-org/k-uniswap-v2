@@ -45,6 +45,8 @@ iff
 returns To
 ```
 
+### exchanges
+
 ```act
 behaviour exchanges of UniswapV2Factory
 interface exchanges(uint256 index)
@@ -135,6 +137,27 @@ iff
 
 if
     tokenA >= tokenB
+
+returns Exchange
+```
+
+### exchangesCount
+
+```act
+behaviour exchangesCount of UniswapV2Factory
+interface exchangesCount()
+
+for all
+
+    Count    : uint256
+
+storage
+
+    exchanges.length |-> Count
+
+iff
+
+    VCallValue == 0
 
 returns Exchange
 ```
