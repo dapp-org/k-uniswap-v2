@@ -64,7 +64,7 @@ These lemmas let `K` simplify the expressions produced when accessing packed sto
 
 ```k
 // Reserve0
-rule (maxUInt112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => X
+rule (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) &Int maxUInt112) => X
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
