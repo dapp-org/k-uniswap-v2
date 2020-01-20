@@ -279,7 +279,7 @@ for all
     DstBal1         : uint256
     Reserve0        : uint112
     Reserve1        : uint112
-    Blocknumberlast : uint32
+    BlockNumberLast : uint32
 
 storage
 
