@@ -307,9 +307,9 @@ iff in range uint256
 
 iff
 
-    Unlocked   == 1
+    (Unlocked &Int 255) == 1
     VCallValue == 0
-    VCallDepth < 1024
+    VCallDepth  < 1024
 
 if
 
@@ -346,7 +346,7 @@ iff
 
     Unlocked   == 1
     VCallValue == 0
-    VCallDepth < 1024
+    VCallDepth  < 1024
 
 if
 
