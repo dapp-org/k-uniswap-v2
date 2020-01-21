@@ -98,6 +98,7 @@ rule exchanges0 => 8790302987107591425437762790805457494489109188693058228438577
 syntax Int ::= "#UniswapV2Factory.exchanges" "[" Int "]" [function]
 rule #UniswapV2Factory.exchanges[N] => exchanges0 +Int N
 
-// exchanges: position chop rule
+// max. exchanges before int overflow
 rule chop(exchanges0 +Int N) => exchanges0 +Int N
+  requires N <=Int (maxUInt256 -Int exchanges0)
 ```

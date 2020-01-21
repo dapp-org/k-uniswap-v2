@@ -43,6 +43,7 @@ storage
 iff
 
     index < Count
+    Count < maxUInt256 - exchanges0
     VCallValue == 0
 
 returns Exchange
