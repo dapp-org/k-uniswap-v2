@@ -48,12 +48,12 @@ rule #UniswapV2Exchange.invariantLast => 11
 # UniswapV2Factory
 
 ```k
-syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
-rule #UniswapV2Factory.feeToSetter => 0
-
 syntax Int ::= "#UniswapV2Factory.feeTo" [function]
-rule #UniswapV2Factory.feeTo => 1
+rule #UniswapV2Factory.feeTo => 0
+
+syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
+rule #UniswapV2Factory.feeToSetter => 1
 
 syntax Int ::= "#UniswapV2Factory.getExchange_" "[" Int "][" Int "]" [function]
-rule #UniswapV2Factory.getExchange_[A][B] => #hashedLocation("Solidity", 2, A B)
+rule #UniswapV2Factory._getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
 ```

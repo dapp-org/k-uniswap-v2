@@ -85,7 +85,7 @@ for all
 
 storage
 
-    getExchange_[tokenA][tokenB] |-> Exchange
+    _getExchange[tokenA][tokenB] |-> Exchange
 
 iff
     VCallValue == 0
@@ -106,7 +106,7 @@ for all
 
 storage
 
-    getExchange_[tokenB][tokenA] |-> Exchange
+    _getExchange[tokenB][tokenA] |-> Exchange
 
 iff
     VCallValue == 0
