@@ -1,7 +1,7 @@
 DAPP_DIR=$(CURDIR)/uniswap-v2-core
 DAPP_SRC=contracts
 
-SOLC_VERSION=0.5.15
+SOLC_VERSION=0.5.16
 SOLC_FLAGS="--optimize --optimize-runs 200"
 
 dapp:
