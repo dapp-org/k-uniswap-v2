@@ -1,25 +1,29 @@
-with import <nixpkgs> {};
-stdenv.mkDerivation {
-  name = "k-uniswap";
-  buildInputs = [
-    flex
-    getopt
-    utillinux
-    git
-    gnumake
-    jq
-    nodejs
-    openjdk8
-    parallel
-    python2 # required to build some native modules in the uniswap-v2-core npm dependency tree
-    wget
-    (yarn.override { nodejs = nodejs-10_x; })
-    zip
-    z3
-  ];
-  shellHook = ''
-    if [ -z "$KLAB_PATH" ]; then echo "WARNING: The environment variable KLAB_PATH should be set to point to the klab repo. Please fix and reënter the nix shell."; fi
-    export PATH=$KLAB_PATH/node_modules/.bin/:$KLAB_PATH/bin:$PATH
-    export KLAB_EVMS_PATH=$KLAB_PATH/evm-semantics
-  '';
-}
+let
+  klab = import ./deps/klab/shell.nix;
+  pkgs = klab.pkgs;
+
+  dappSrc = builtins.fetchGit rec {
+    name = "dapptools-${rev}";
+    url = https://github.com/dapphub/dapptools;
+    # provides solc 0.5.16
+    rev = "96c4bfd228cf6e116c2d93f3e89d795bcd8b5511";
+    ref = "master";
+  };
+  dapptools = import dappSrc {};
+
+in
+  pkgs.stdenv.mkDerivation {
+    name = "k-uniswap";
+    buildInputs = klab.buildInputs ++ [
+      dapptools.dapp
+      pkgs.yarn
+    ];
+    shellHook = ''
+      export NIX_PATH="nixpkgs=${pkgs.path}"
+      export DAPPTOOLS=${dappSrc}
+
+      export KLAB_PATH=$(pwd)/deps/klab
+      export PATH=$KLAB_PATH/node_modules/.bin/:$KLAB_PATH/bin:$PATH
+      export KLAB_EVMS_PATH=$KLAB_PATH/evm-semantics
+    '';
+  }

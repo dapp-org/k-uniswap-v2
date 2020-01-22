@@ -4,15 +4,20 @@ DAPP_SRC=contracts
 SOLC_VERSION=0.5.16
 SOLC_FLAGS="--optimize --optimize-runs 999999"
 
-.PHONY: all dapp waffle
+.PHONY: all klab dapp waffle prove
 
-all: dapp waffle
+all: klab waffle
+
+klab:
+	cd deps/klab && make deps deps-haskell && cd -
 
 dapp:
 	dapp --version
-	git submodule update --init --recursive --force
 	cd $(DAPP_DIR) && DAPP_SRC=$(DAPP_SRC) DAPP_SOLC_VERSION=$(SOLC_VERSION) SOLC_FLAGS=$(SOLC_FLAGS) dapp build && cd -
 
 waffle:
-	git submodule update --init --recursive --force
 	cd $(DAPP_DIR) && yarn install && yarn compile && cd -
+
+prove: klab dapp
+	klab build
+	klab prove-all

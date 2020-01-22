@@ -2,3 +2,6 @@
 	path = uniswap-v2-core
 	url = git@github.com:dapp-org/uniswap-v2-core.git
   ignore=dirty
+[submodule "deps/klab"]
+	path = deps/klab
+	url = https://github.com/dapphub/klab.git
