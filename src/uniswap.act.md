@@ -40,10 +40,6 @@ storage
     exchanges.length |-> Length
     exchanges[index] |-> Exchange
 
-iff in range uint256
-
-    exchanges0 + index
-
 iff
 
     Length > index

@@ -99,6 +99,9 @@ syntax Int ::= "#UniswapV2Factory.exchanges" "[" Int "]" [function]
 rule #UniswapV2Factory.exchanges[N] => exchanges0 +Int N
 
 // exchanges: max indexes before int overflow
+// Solidity doesn't do any overflow checking on this addition because N is
+// already constrained by array.length when accessing exchanges(index).
+// TODO: ensure that equivalent overflow protection is being performed when
+// implementing specs for createExchange
 rule chop(exchanges0 +Int N) => exchanges0 +Int N
-  requires N <=Int (maxUInt256 -Int exchanges0)
 ```
