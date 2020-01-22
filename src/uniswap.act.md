@@ -33,17 +33,20 @@ interface exchanges(uint256 index)
 for all
 
     Exchange : address
-    Count    : uint256
+    Length   : uint256
 
 storage
 
-    exchanges.length |-> Count
+    exchanges.length |-> Length
     exchanges[index] |-> Exchange
+
+iff in range uint256
+
+    exchanges0 + index
 
 iff
 
-    index < Count
-    Count < maxUInt256 - exchanges0
+    Length > index
     VCallValue == 0
 
 returns Exchange
@@ -99,17 +102,17 @@ interface exchangesCount()
 
 for all
 
-    Count    : uint256
+    Length : uint256
 
 storage
 
-    exchanges.length |-> Count
+    exchanges.length |-> Length
 
 iff
 
     VCallValue == 0
 
-returns Exchange
+returns Length
 ```
 
 ## Mutators
