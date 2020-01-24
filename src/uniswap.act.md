@@ -264,6 +264,22 @@ iff
 returns Reserve0 : Reserve1 : BlockNumberLast
 ```
 
+### _safeTransfer
+
+```act
+behaviour _safeTransfer of UniswapV2Exchange
+interface _safeTransfer(address token, address to, uint value) internal
+
+
+iff
+    VCallValue == 0
+    VCallDepth < 1024
+
+calls
+
+    UniswapV2Exchange.transfer
+```
+
 ```act
 behaviour skim of UniswapV2Exchange
 interface skim(address to)
