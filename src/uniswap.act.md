@@ -48,7 +48,7 @@ returns Setter
 ### getExchange
 
 ```act
-behaviour getExchange-lte of UniswapV2Factory
+behaviour getExchange of UniswapV2Factory
 interface getExchange(address tokenA, address tokenB)
 
 for all
@@ -57,34 +57,11 @@ for all
 
 storage
 
-    _getExchange[tokenA][tokenB] |-> Exchange
+    getExchange[tokenA][tokenB] |-> Exchange
 
 iff
+
     VCallValue == 0
-
-if
-    tokenA <= tokenB
-
-returns Exchange
-```
-
-```act
-behaviour getExchange-gte of UniswapV2Factory
-interface getExchange(address tokenA, address tokenB)
-
-for all
-
-    Exchange : address
-
-storage
-
-    _getExchange[tokenB][tokenA] |-> Exchange
-
-iff
-    VCallValue == 0
-
-if
-    tokenA >= tokenB
 
 returns Exchange
 ```
