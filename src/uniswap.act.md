@@ -3,27 +3,6 @@ UniswapV2Factory
 
 ## Accessors
 
-### feeToSetter
-
-```act
-behaviour feeToSetter of UniswapV2Factory
-interface feeToSetter()
-
-for all
-
-    Setter : address
-
-storage
-
-    feeToSetter |-> Setter
-
-iff
-
-    VCallValue == 0
-
-returns Setter
-```
-
 ### feeTo
 
 ```act
@@ -45,32 +24,25 @@ iff
 returns To
 ```
 
-### sortTokens
+### feeToSetter
 
 ```act
-behaviour sortTokens-lte of UniswapV2Factory
-interface sortTokens(address tokenA, address tokenB)
+behaviour feeToSetter of UniswapV2Factory
+interface feeToSetter()
+
+for all
+
+    Setter : address
+
+storage
+
+    feeToSetter |-> Setter
 
 iff
+
     VCallValue == 0
 
-if
-    tokenA <= tokenB
-
-returns tokenA : tokenB
-```
-
-```act
-behaviour sortTokens-gte of UniswapV2Factory
-interface sortTokens(address tokenA, address tokenB)
-
-iff
-    VCallValue == 0
-
-if
-    tokenA >= tokenB
-
-returns tokenB : tokenA
+returns Setter
 ```
 
 ### getExchange
