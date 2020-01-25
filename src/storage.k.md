@@ -54,6 +54,6 @@ rule #UniswapV2Factory.feeTo => 0
 syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
 rule #UniswapV2Factory.feeToSetter => 1
 
-syntax Int ::= "#UniswapV2Factory.getExchange_" "[" Int "][" Int "]" [function]
-rule #UniswapV2Factory._getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
+syntax Int ::= "#UniswapV2Factory.getExchange" "[" Int "][" Int "]" [function]
+rule #UniswapV2Factory.getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
 ```
