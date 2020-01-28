@@ -11,7 +11,9 @@ stdenv.mkDerivation {
     nodejs
     openjdk8
     parallel
+    python2
     wget
+    (yarn.override { nodejs = nodejs-10_x; })
     zip
     z3
   ];
