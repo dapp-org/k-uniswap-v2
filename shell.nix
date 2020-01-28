@@ -11,7 +11,7 @@ stdenv.mkDerivation {
     nodejs
     openjdk8
     parallel
-    python2
+    python2 # required to build some native modules in the uniswap-v2-core npm dependency tree
     wget
     (yarn.override { nodejs = nodejs-10_x; })
     zip
