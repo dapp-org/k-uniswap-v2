@@ -6,5 +6,5 @@ SOLC_FLAGS="--optimize --optimize-runs 999999"
 
 dapp:
 	dapp --version
-	git submodule update --init --recursive
+	git submodule update --init --recursive --force
 	cd $(DAPP_DIR) && DAPP_SRC=$(DAPP_SRC) DAPP_SOLC_VERSION=$(SOLC_VERSION) SOLC_FLAGS=$(SOLC_FLAGS) dapp build && cd -
