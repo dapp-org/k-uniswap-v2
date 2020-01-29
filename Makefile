@@ -9,7 +9,7 @@ SOLC_FLAGS="--optimize --optimize-runs 999999"
 all: klab waffle
 
 klab:
-	cd deps/klab && make deps deps-haskell && cd -
+	cd deps/klab && make deps && cd -
 
 dapp:
 	dapp --version
