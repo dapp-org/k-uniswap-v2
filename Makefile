@@ -18,6 +18,6 @@ dapp:
 waffle:
 	cd $(DAPP_DIR) && yarn install && yarn compile && cd -
 
-prove: klab dapp
+prove: klab waffle
 	klab build
 	klab prove-all
