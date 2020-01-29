@@ -4,6 +4,8 @@ DAPP_SRC=contracts
 SOLC_VERSION=0.5.16
 SOLC_FLAGS="--optimize --optimize-runs 999999"
 
+.PHONY: all dapp waffle
+
 all: dapp waffle
 
 dapp:
