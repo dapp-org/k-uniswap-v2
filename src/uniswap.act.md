@@ -267,17 +267,34 @@ returns Reserve0 : Reserve1 : BlockNumberLast
 ### _safeTransfer
 
 ```act
-behaviour _safeTransfer of UniswapV2Exchange
+behaviour _safeTransfer-diff of UniswapV2Exchange
 interface _safeTransfer(address token, address to, uint value) internal
 
 
+for all
+
+    SrcBal : uint256
+    DstBal : uint256
+
+storage
+
+    balanceOf[CALLER_ID] |-> SrcBal => SrcBal - value
+    balanceOf[to]        |-> DstBal => DstBal + value
+
+iff in range uint256
+
+    SrcBal - value
+    DstBal + value
+
 iff
+
     VCallValue == 0
     VCallDepth < 1024
 
-calls
+if
+    to =/= CALLER_ID
 
-    UniswapV2Exchange.transfer
+returns 1
 ```
 
 ```act
