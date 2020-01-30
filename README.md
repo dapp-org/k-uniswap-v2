@@ -16,3 +16,6 @@ make        # build klab and contracts
 make dapp   # build contracts using dapp
 make waffle # build contracts using waffle
 ```
+
+If you have [`direnv`](https://direnv.net/) installed, you can automaticaly enter and leave the
+`nix-shell` as you enter and leave the project directory tree.
