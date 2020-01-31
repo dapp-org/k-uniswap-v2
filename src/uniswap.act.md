@@ -241,6 +241,19 @@ iff
 returns InvariantLast
 ```
 
+### selector
+
+```act
+behaviour selector of UniswapV2Exchange
+interface selector()
+
+iff
+
+    VCallValue == 0
+
+returns Constants.TransferSelector
+```
+
 ### getReserves
 
 ```act
@@ -354,7 +367,7 @@ iff
 
     VCallValue == 0
 
-returns keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"))
+returns Constants.PermitTypehash
 
 ```
 
