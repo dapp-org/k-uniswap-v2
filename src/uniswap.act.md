@@ -223,8 +223,8 @@ returns Price1
 ```
 
 ```act
-behaviour invariantLast of UniswapV2Exchange
-interface invariantLast()
+behaviour kLast of UniswapV2Exchange
+interface kLast()
 
 for all
 
@@ -232,7 +232,7 @@ for all
 
 storage
 
-    invariantLast |-> InvariantLast
+    kLast |-> InvariantLast
 
 iff
 
