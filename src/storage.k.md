@@ -1,13 +1,40 @@
-# UniswapV2Exchange
+# Storage Layout
+
+## Helpers
+
+`#WordPackUInt112UInt112UInt32(X, Y, Z)` packs `X`, `Y`, and `Z` into a word.
 
 ```k
-// pack { uint112 uint112 uint32 }
 syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
 rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 +Int X
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
+```
 
+`#bytes4(X)` returns a bytestack containing the first four bytes of `X`.
+
+```k
+syntax WordStack ::= "#bytes4" "(" Int ")" [function]
+rule #bytes4(X) => #asByteStack(X >>Int 224)
+  requires #rangeUInt(256, X)
+```
+
+## UniswapV2Exchange
+
+### Constants
+
+```k
+syntax Int ::= "Constants.TransferSelector" [function]
+rule Constants.TransferSelector => #asWord(#padRightToWidth(32, #bytes4(keccak(#parseByteStackRaw("transfer(address,uint256)"))))) [macro]
+
+syntax Int ::= "Constants.PermitTypehash" [function]
+rule Constants.PermitTypehash => keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)")) [macro]
+```
+
+### Storage
+
+```k
 syntax Int ::= "#UniswapV2Exchange.totalSupply" [function]
 rule #UniswapV2Exchange.totalSupply => 0
 
@@ -48,7 +75,7 @@ syntax Int ::= "#UniswapV2Exchange.unlocked" [function]
 rule #UniswapV2Exchange.unlocked => 12
 ```
 
-# UniswapV2Factory
+## UniswapV2Factory
 
 ```k
 syntax Int ::= "#UniswapV2Factory.feeTo" [function]
