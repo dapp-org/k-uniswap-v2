@@ -41,8 +41,8 @@ rule #UniswapV2Exchange.price0CumulativeLast => 9
 syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [function]
 rule #UniswapV2Exchange.price1CumulativeLast => 10
 
-syntax Int ::= "#UniswapV2Exchange.invariantLast" [function]
-rule #UniswapV2Exchange.invariantLast => 11
+syntax Int ::= "#UniswapV2Exchange.kLast" [function]
+rule #UniswapV2Exchange.kLast => 11
 ```
 
 # UniswapV2Factory

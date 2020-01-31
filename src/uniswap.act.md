@@ -228,17 +228,17 @@ interface kLast()
 
 for all
 
-    InvariantLast : uint256
+    KLast : uint256
 
 storage
 
-    kLast |-> InvariantLast
+    kLast |-> KLast
 
 iff
 
     VCallValue == 0
 
-returns InvariantLast
+returns KLast
 ```
 
 ### getReserves
