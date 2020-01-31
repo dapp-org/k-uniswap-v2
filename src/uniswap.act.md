@@ -223,22 +223,22 @@ returns Price1
 ```
 
 ```act
-behaviour invariantLast of UniswapV2Exchange
-interface invariantLast()
+behaviour kLast of UniswapV2Exchange
+interface kLast()
 
 for all
 
-    InvariantLast : uint256
+    KLast : uint256
 
 storage
 
-    invariantLast |-> InvariantLast
+    kLast |-> KLast
 
 iff
 
     VCallValue == 0
 
-returns InvariantLast
+returns KLast
 ```
 
 ### getReserves
