@@ -249,19 +249,85 @@ interface getReserves()
 
 for all
 
-    Reserve0        : uint112
-    Reserve1        : uint112
-    BlockNumberLast : uint32
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
 
 storage
 
-    reserve0_reserve1_blockNumberLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockNumberLast)
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
 
 iff
 
     VCallValue == 0
 
-returns Reserve0 : Reserve1 : BlockNumberLast
+returns Reserve0 : Reserve1 : BlockTimestampLast
+```
+
+## Mutators
+
+### Sync
+
+```act
+behaviour sync of UniswapV2Exchange
+interface sync()
+
+for all
+
+    Unlocked           : bool
+    Token0             : address UniswapV2Exchange
+    Token1             : address UniswapV2Exchange
+    Price0             : uint256
+    Price1             : uint256
+    Balance0           : uint256
+    Balance1           : uint256
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+      #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
+
+    price0CumulativeLast |-> Price0 =>                                                                                      \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and (((TIME mod pow32) -Word BlockTimestampLast) mod pow32) > 0                 \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * (((TIME mod pow32) -Word BlockTimestampLast) mod pow32)) + Price0)) \
+        #else Price0                                                                                                        \
+      #fi
+
+    price1CumulativeLast |-> Price1 =>                                                                                      \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and (((TIME mod pow32) -Word BlockTimestampLast) mod pow32) > 0                 \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * (((TIME mod pow32) -Word BlockTimestampLast) mod pow32)) + Price1)) \
+        #else Price1                                                                                                        \
+      #fi
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff
+
+    Unlocked == 1
+    VCallValue == 0
+    VCallDepth < 1024
+
+calls
+
+    UniswapV2Exchange.balanceOf
 ```
 
 # ERC20
