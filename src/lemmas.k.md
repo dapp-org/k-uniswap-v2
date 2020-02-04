@@ -85,17 +85,6 @@ rule (X &Int maxUInt160) => (maxUInt160 &Int X)
 rule (X &Int maxUInt32) => (maxUInt32 &Int X)
 ```
 
-### Solidity Masking
-
-Before writing to storage, solidity first masks the existing value to zero using `(~Int maxUIntX)
-&Int A` where `X` is the size in bits of the type of `A`. This is likely an artifact of the
-machinery used to write to packed storage locations (see below).
-
-```k
-rule (notMaxUInt160 &Int A) => 0
-  requires #rangeAddress(A)
-```
-
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
 #### Reads
@@ -256,4 +245,34 @@ rule ((Z *Int pow224) |Int ((Y *Int pow112) +Int X)) => ((Z *Int pow224) +Int (Y
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
+```
+
+##### Write `uint160`
+
+Address type storage routine.
+
+When writing addresses to storage, solidity masks the existing value to zero using the address type
+one's compliment and inserts the new value with a bitwise OR.
+
+The inclusion of a `rangeUInt` constraint on existing address `A` allows for the `_` (Junk bytes)
+expectation in storage specs.
+
+```k
+// Overwrite A with B
+rule ((notMaxUInt160 &Int A)) |Int B => B
+  requires #rangeAddress(B)
+  andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
+
+// Commutativity
+rule ((A &Int notMaxUInt160)) |Int B => B
+  requires #rangeAddress(B)
+  andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
+
+rule (B |Int (notMaxUInt160 &Int A)) => B
+  requires #rangeAddress(B)
+  andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
+
+rule (B |Int (A &Int notMaxUInt160)) => B
+  requires #rangeAddress(B)
+  andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
 ```

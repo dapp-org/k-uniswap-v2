@@ -279,6 +279,28 @@ returns Reserve0 : Reserve1 : BlockTimestampLast
 
 ## Mutators
 
+### initialize
+
+```act
+behaviour initialize of UniswapV2Exchange
+interface initialize(address _token0, address _token1)
+
+for all
+
+    Factory : address
+
+storage
+
+    factory |-> Factory
+    token0  |-> _ => _token0
+    token1  |-> _ => _token1
+
+iff
+
+    CALLER_ID  == Factory
+    VCallValue == 0
+```
+
 ### Sync
 
 ```act
