@@ -24,6 +24,30 @@ iff
 returns To
 ```
 
+### allExchanges
+
+```act
+behaviour allExchanges of UniswapV2Factory
+interface allExchanges(uint256 index)
+
+for all
+
+    Exchange : address
+    Length   : uint256
+
+storage
+
+    allExchanges.length |-> Length
+    allExchanges[index] |-> Exchange
+
+iff
+
+    Length > index
+    VCallValue == 0
+
+returns Exchange
+```
+
 ### feeToSetter
 
 ```act
@@ -64,6 +88,27 @@ iff
     VCallValue == 0
 
 returns Exchange
+```
+
+### allExchangesLength
+
+```act
+behaviour allExchangesLength of UniswapV2Factory
+interface allExchangesLength()
+
+for all
+
+    Length : uint256
+
+storage
+
+    allExchanges.length |-> Length
+
+iff
+
+    VCallValue == 0
+
+returns Length
 ```
 
 ## Mutators
