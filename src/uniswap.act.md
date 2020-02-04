@@ -24,11 +24,11 @@ iff
 returns To
 ```
 
-### exchanges
+### allExchanges
 
 ```act
-behaviour exchanges of UniswapV2Factory
-interface exchanges(uint256 index)
+behaviour allExchanges of UniswapV2Factory
+interface allExchanges(uint256 index)
 
 for all
 
@@ -37,8 +37,8 @@ for all
 
 storage
 
-    exchanges.length |-> Length
-    exchanges[index] |-> Exchange
+    allExchanges.length |-> Length
+    allExchanges[index] |-> Exchange
 
 iff
 
@@ -90,11 +90,11 @@ iff
 returns Exchange
 ```
 
-### exchangesCount
+### allExchangesLength
 
 ```act
-behaviour exchangesCount of UniswapV2Factory
-interface exchangesCount()
+behaviour allExchangesLength of UniswapV2Factory
+interface allExchangesLength()
 
 for all
 
@@ -102,7 +102,7 @@ for all
 
 storage
 
-    exchanges.length |-> Length
+    allExchanges.length |-> Length
 
 iff
 

@@ -77,6 +77,8 @@ rule #UniswapV2Exchange.unlocked => 12
 
 ## UniswapV2Factory
 
+### Storage
+
 ```k
 syntax Int ::= "#UniswapV2Factory.feeTo" [function]
 rule #UniswapV2Factory.feeTo => 0
@@ -84,24 +86,42 @@ rule #UniswapV2Factory.feeTo => 0
 syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
 rule #UniswapV2Factory.feeToSetter => 1
 
-syntax Int ::= "#UniswapV2Factory.getExchange_" "[" Int "][" Int "]" [function]
-rule #UniswapV2Factory.getExchange_[A][B] => #hashedLocation("Solidity", 2, A B)
+syntax Int ::= "#UniswapV2Factory.getExchange" "[" Int "][" Int "]" [function]
+rule #UniswapV2Factory.getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
+```
 
-syntax Int ::= "#UniswapV2Factory.exchanges.length" [function]
-rule #UniswapV2Factory.exchanges.length => 3
+The length of the `allExchanges` array is stored at slot 3.
 
-// exchanges: position 0 - keccak(uint256(3))
+```k
+syntax Int ::= "#UniswapV2Factory.allExchanges.length" [function]
+rule #UniswapV2Factory.allExchanges.length => 3
+```
+
+The first address in the `allExchanges` array is stored at the keccak hash of
+slot 3, the number represented to here by `exchanges0`. Subsequent addresses are
+stored at a `uint256` offset from this key.
+
+```k
 syntax Int ::= "exchanges0" [function]
 rule exchanges0 => 87903029871075914254377627908054574944891091886930582284385770809450030037083 [macro]
 
-// exchanges: position with offset
-syntax Int ::= "#UniswapV2Factory.exchanges" "[" Int "]" [function]
-rule #UniswapV2Factory.exchanges[N] => exchanges0 +Int N
+syntax Int ::= "#UniswapV2Factory.allExchanges" "[" Int "]" [function]
+rule #UniswapV2Factory.allExchanges[N] => exchanges0 +Int N
+```
 
-// exchanges: max indexes before int overflow
-// Solidity doesn't do any overflow checking on this addition because N is
-// already constrained by array.length when accessing exchanges(index).
-// TODO: ensure that equivalent overflow protection is being performed when
-// implementing specs for createExchange
+The largest index that can be represented at slot 3 before integer overflow is
+`maxUInt256 - exchanges0`.  The maximum number of addresses that can be stored
+by the `allExchanges` array is therefore `maxUInt256 - exchanges0 + 1`.
+
+Max. exchanges: 27889059366240281169193357100633332908378892778709981755071813198463099602853
+
+`K` applies a chop rule when getting the position offset but Solidity doesn't
+do any overflow checking on the index because it is already constrained by the
+length of the array. Hence we skip this constraint here.
+
+TODO: ensure overflow protection when pushing items to the array in
+`createExchange`.
+
+```
 rule chop(exchanges0 +Int N) => exchanges0 +Int N
 ```
