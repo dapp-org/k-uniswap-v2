@@ -165,6 +165,7 @@ rule exchanges0 => 8790302987107591425437762790805457494489109188693058228438577
 
 syntax Int ::= "#UniswapV2Factory.allExchanges" "[" Int "]" [function]
 rule #UniswapV2Factory.allExchanges[N] => exchanges0 +Int N
+  requires #rangeUInt(256, N)
 ```
 
 The largest index that can be represented at slot 3 before integer overflow is
