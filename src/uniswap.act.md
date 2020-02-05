@@ -603,6 +603,7 @@ iff
 
     (Balance0 - Reserve0) * (Reserve1 - amountOut) * 997 >= amountOut * Reserve0 * 1000
 
+    0 < Balance0 - Reserve0
     0 < amountOut and amountOut < Reserve1
 
     Unlocked == 1
