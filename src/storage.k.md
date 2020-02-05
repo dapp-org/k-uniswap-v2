@@ -166,20 +166,3 @@ rule exchanges0 => 8790302987107591425437762790805457494489109188693058228438577
 syntax Int ::= "#UniswapV2Factory.allExchanges" "[" Int "]" [function]
 rule #UniswapV2Factory.allExchanges[N] => exchanges0 +Int N
 ```
-
-The largest index that can be represented at slot 3 before integer overflow is
-`maxUInt256 - exchanges0`.  The maximum number of addresses that can be stored
-by the `allExchanges` array is therefore `maxUInt256 - exchanges0 + 1`.
-
-Max. exchanges: 27889059366240281169193357100633332908378892778709981755071813198463099602853
-
-`K` applies a chop rule when getting the position offset but Solidity doesn't
-do any overflow checking on the index because it is already constrained by the
-length of the array. Hence we skip this constraint here.
-
-TODO: ensure overflow protection when pushing items to the array in
-`createExchange`.
-
-```k
-rule chop(exchanges0 +Int N) => exchanges0 +Int N
-```

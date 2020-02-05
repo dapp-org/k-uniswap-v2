@@ -26,6 +26,17 @@ returns To
 
 ### allExchanges
 
+`allExchanges` is an array holding the address of every exchange created using the `Factory`.
+
+`exchanges0` is the index in storage of the first array element. Subsequent array elements are read
+from `exchanges0 + index`. The maximum number of addresses that can be stored by the `allExchanges`
+array before overflow is therefore `maxUInt256 - exchanges0 + 1 ==
+27889059366240281169193357100633332908378892778709981755071813198463099602853`.
+
+We do not currently specify the behaviour of the array after overflow has occured.
+
+TODO: ensure that `createExchange` checks for overflow on the `allExchanges` array.
+
 ```act
 behaviour allExchanges of UniswapV2Factory
 interface allExchanges(uint256 index)
@@ -44,6 +55,11 @@ iff
 
     Length > index
     VCallValue == 0
+
+if
+
+    // ignore array overflow
+    Length <= maxUInt256 - exchanges0 + 1
 
 returns Exchange
 ```
