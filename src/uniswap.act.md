@@ -535,6 +535,90 @@ calls
     UniswapV2Exchange.balanceOf
 ```
 
+### Swap
+
+```act
+behaviour swap-token0-diff of UniswapV2Exchange
+interface swap(address tokenIn, uint amountOut, address to)
+
+for all
+
+    Unlocked           : bool
+    Token0             : address UniswapV2Exchange
+    Token1             : address UniswapV2Exchange
+    Price0             : uint256
+    Price1             : uint256
+    Balance0           : uint256
+    Balance1           : uint256
+    DstBal             : uint256
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+
+storage
+
+    unlocked |-> Unlocked
+    token0   |-> Token0
+    token1   |-> Token1
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+      #WordPackUInt112UInt112UInt32(Balance0, Balance1 - amountOut, (TIME mod pow32))
+
+    price0CumulativeLast |-> Price0 =>                                                                                      \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and (((TIME mod pow32) -Word BlockTimestampLast) mod pow32) > 0                 \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * (((TIME mod pow32) -Word BlockTimestampLast) mod pow32)) + Price0)) \
+        #else Price0                                                                                                        \
+      #fi
+
+    price1CumulativeLast |-> Price1 =>                                                                                      \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and (((TIME mod pow32) -Word BlockTimestampLast) mod pow32) > 0                 \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * (((TIME mod pow32) -Word BlockTimestampLast) mod pow32)) + Price1)) \
+        #else Price1                                                                                                        \
+      #fi
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - amountOut
+    balanceOf[to]      |-> DstBal => DstBal + amountOut
+
+iff in range uint256
+
+    Balance0 - Reserve0
+    Reserve1 - amountOut
+
+    (Balance0 - Reserve0) * (Reserve1 - amountOut)
+    (Balance0 - Reserve0) * (Reserve1 - amountOut) * 997
+
+    Balance1 - amountOut
+    DstBal + amountOut
+
+    amountOut * Reserve0
+    amountOut * Reserve0 * 1000
+
+iff
+
+    (Balance0 - Reserve0) * (Reserve1 - amountOut) * 997 >= amountOut * Reserve0 * 1000
+
+    0 < amountOut and amountOut < Reserve1
+
+    Unlocked == 1
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    tokenIn == Token0
+    to =/= ACCT_ID
+
+calls
+
+    UniswapV2Exchange.balanceOf
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviours.
