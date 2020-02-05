@@ -599,6 +599,11 @@ iff in range uint256
     amountOut * Reserve0
     amountOut * Reserve0 * 1000
 
+iff in range uint112
+
+    Balance0
+    Balance1 - amountOut
+
 iff
 
     (Balance0 - Reserve0) * (Reserve1 - amountOut) * 997 >= amountOut * Reserve0 * 1000
