@@ -491,13 +491,14 @@ interface skim(address to)
 
 for all
 
-    Unlocked : bool
-    Token0   : address UniswapV2Exchange
-    Token1   : address UniswapV2Exchange
-    SrcBal0  : uint256
-    SrcBal1  : uint256
-    Reserve0 : uint112
-    Reserve1 : uint112
+    Unlocked           : bool
+    Token0             : address UniswapV2Exchange
+    Token1             : address UniswapV2Exchange
+    SrcBal0            : uint256
+    SrcBal1            : uint256
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
 
 storage
 
