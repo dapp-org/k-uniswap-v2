@@ -502,18 +502,18 @@ for all
 
 storage
 
-    unlocked |-> Unlocked
+    unlocked |-> Unlocked => Unlocked
     token0   |-> Token0
     token1   |-> Token1
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
 
 storage Token0
 
-    balanceOf[ACCT_ID] |-> SrcBal0
+    balanceOf[ACCT_ID] |-> SrcBal0 => SrcBal0
 
 storage Token1
 
-    balanceOf[ACCT_ID] |-> SrcBal1
+    balanceOf[ACCT_ID] |-> SrcBal1 => SrcBal1
 
 iff in range uint256
 
@@ -522,7 +522,6 @@ iff in range uint256
 
 iff
 
-    notBool(STATIC)
     Unlocked == 1
     VCallValue == 0
     VCallDepth  < 1024
