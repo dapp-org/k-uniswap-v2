@@ -522,6 +522,7 @@ iff in range uint256
 
 iff
 
+    notBool(STATIC)
     Unlocked == 1
     VCallValue == 0
     VCallDepth  < 1024
