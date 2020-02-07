@@ -124,11 +124,6 @@ rule (maxUInt32 &Int (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) /Int pow22
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
-
-// BlockTimestampLast (reserve0 == 0)
-rule (maxUInt32 &Int (((Z *Int pow224) +Int (Y *Int pow112)) /Int pow224)) => Z
-  requires #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
 ```
 
 #### Writes
