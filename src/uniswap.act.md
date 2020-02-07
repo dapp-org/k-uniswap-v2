@@ -673,16 +673,16 @@ storage Token1
 
 iff in range uint256
 
-    Balance0 - Reserve0
-    Reserve1 - amountOut
+    Balance1 - Reserve1
+    Reserve0 - amountOut
 
-    (Balance0 - Reserve0) * (Reserve1 - amountOut)
-    (Balance0 - Reserve0) * (Reserve1 - amountOut) * 997
+    (Balance1 - Reserve1) * (Reserve0 - amountOut)
+    (Balance1 - Reserve1) * (Reserve0 - amountOut) * 997
 
-    Balance1 - amountOut
+    Balance0 - amountOut
 
-    amountOut * Reserve0
-    amountOut * Reserve0 * 1000
+    amountOut * Reserve1
+    amountOut * Reserve1 * 1000
 
 iff in range uint112
 
@@ -691,10 +691,10 @@ iff in range uint112
 
 iff
 
-    (Balance0 - Reserve0) * (Reserve1 - amountOut) * 997 >= amountOut * Reserve0 * 1000
+    (Balance1 - Reserve1) * (Reserve0 - amountOut) * 997 >= amountOut * Reserve1 * 1000
 
-    0 < Balance0 - Reserve0
-    0 < amountOut and amountOut < Reserve1
+    0 < Balance1 - Reserve1
+    0 < amountOut and amountOut < Reserve0
 
     Unlocked == 1
     VCallValue == 0
