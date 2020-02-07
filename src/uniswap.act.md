@@ -694,7 +694,7 @@ iff
     (Balance1 - Reserve1) * (Reserve0 - amountOut) * 997 >= amountOut * Reserve1 * 1000
 
     0 < Balance1 - Reserve1
-    0 < amountOut and amountOut < Reserve0
+    0 < amountOut and amountOut < Reserve1
 
     Unlocked == 1
     VCallValue == 0
