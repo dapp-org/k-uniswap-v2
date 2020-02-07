@@ -89,6 +89,7 @@ rule (X &Int maxUInt112) => (maxUInt112 &Int X)
 rule (X &Int maxUInt160) => (maxUInt160 &Int X)
 rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
 ```
+
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
 #### Reads
@@ -196,6 +197,15 @@ Constants:
 ```k
 syntax Int ::= "notMaxUInt112xPow112"                                                                       [function]
 rule notMaxUInt112xPow112 => 115792089210356248756420345214020892766250359184300278151744640057305848610815 [macro]
+```
+
+Here we reorder some expressions in a way that allows the rules below to apply:
+
+```k
+rule (I +Int ((Z *Int pow224) +Int ((Y *Int pow112) -Int J))) => ((Z *Int pow224) +Int ((Y *Int pow112) +Int (I -Int J)))
+  requires #rangeUInt(112, I -Int J)
+  andBool #rangeUInt(112, Y)
+  andBool #rangeUInt(32, Z)
 ```
 
 Mask target range to zero:
