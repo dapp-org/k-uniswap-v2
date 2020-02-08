@@ -32,7 +32,7 @@ To prove all specs:
 ```
 git clone --recursive https://github.com/dapp-org/k-uniswap-v2
 cd k-uniswap-v2
-nix-shell --command 'make prove'
+nix-shell --pure --command 'make prove'
 ```
 
 The following commands may be useful for those intending to hack on the specs:
