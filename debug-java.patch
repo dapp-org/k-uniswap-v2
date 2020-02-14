@@ -1,0 +1,69 @@
+diff --git a/java-backend/src/main/java/org/kframework/backend/java/kil/KItem.java b/java-backend/src/main/java/org/kframework/backend/java/kil/KItem.java
+index 37528303f..fd2b7ea6f 100644
+--- a/java-backend/src/main/java/org/kframework/backend/java/kil/KItem.java
++++ b/java-backend/src/main/java/org/kframework/backend/java/kil/KItem.java
+@@ -392,7 +392,7 @@ public class KItem extends Term implements KItemRepresentation {
+                 }
+                 return result;
+             } catch (StackOverflowError e) {
+-                throw KEMException.criticalError(TRACE_MSG, e);
++                throw KEMException.criticalError("5", e);
+             } catch (KEMException e) {
+                 e.exception.addTraceFrame("while evaluating function " + kItem.kLabel().toString());
+                 throw e;
+@@ -558,7 +558,7 @@ public class KItem extends Term implements KItemRepresentation {
+                                         sb.append("Candidate results:\n");
+                                         sb.append(result).append("\n");
+                                         sb.append(rightHandSide).append("\n");
+-                                        throw KEMException.criticalError(sb.toString());
++                                        throw KEMException.criticalError("6");
+                                     }
+                                 }
+                                 RuleAuditing.succeed(rule);
+diff --git a/kernel/src/main/java/org/kframework/main/FrontEnd.java b/kernel/src/main/java/org/kframework/main/FrontEnd.java
+index 986527d1d..be2669885 100644
+--- a/kernel/src/main/java/org/kframework/main/FrontEnd.java
++++ b/kernel/src/main/java/org/kframework/main/FrontEnd.java
+@@ -58,7 +58,7 @@ public abstract class FrontEnd {
+                 try {
+                     retval = run();
+                 } catch (ParameterException e) {
+-                    throw KEMException.criticalError(e.getMessage(), e);
++                    throw KEMException.criticalError("3", e);
+                 } finally {
+                     files.get().deleteTempDir(kem);
+                 }
+@@ -78,6 +78,7 @@ public abstract class FrontEnd {
+     }
+ 
+     public static void printBootError(String message) {
++        System.err.println("4");
+         System.err.println(StringUtil.splitLines(KException.criticalError(message).toString()));
+     }
+ }
+diff --git a/kernel/src/main/java/org/kframework/parser/concrete2kore/ParserUtils.java b/kernel/src/main/java/org/kframework/parser/concrete2kore/ParserUtils.java
+index ef5cacb04..0571bd47b 100644
+--- a/kernel/src/main/java/org/kframework/parser/concrete2kore/ParserUtils.java
++++ b/kernel/src/main/java/org/kframework/parser/concrete2kore/ParserUtils.java
+@@ -168,7 +168,7 @@ public class ParserUtils {
+         try {
+             return FileUtils.readFileToString(makeAbsolute.apply(definitionFile));
+         } catch (IOException e) {
+-            throw KEMException.criticalError(e.getMessage(), e);
++            throw KEMException.criticalError("2", e);
+         }
+     }
+ 
+diff --git a/kernel/src/main/java/org/kframework/utils/inject/JCommanderModule.java b/kernel/src/main/java/org/kframework/utils/inject/JCommanderModule.java
+index 05ceb5735..b2a431672 100644
+--- a/kernel/src/main/java/org/kframework/utils/inject/JCommanderModule.java
++++ b/kernel/src/main/java/org/kframework/utils/inject/JCommanderModule.java
+@@ -45,7 +45,7 @@ public class JCommanderModule extends AbstractModule  {
+             sw.printIntermediate("Parse command line options");
+             return jc;
+         } catch (ParameterException e) {
+-            throw KEMException.criticalError(e.getMessage(), e);
++            throw KEMException.criticalError("1", e);
+         }
+     }
+ 
