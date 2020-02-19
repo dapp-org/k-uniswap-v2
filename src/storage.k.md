@@ -116,11 +116,11 @@ syntax Int ::= "#UniswapV2Exchange.kLast" [function]
 rule #UniswapV2Exchange.kLast => 11
 ```
 
-#### 12 - unlocked
+#### 12 - lockState
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.unlocked" [function]
-rule #UniswapV2Exchange.unlocked => 12
+syntax Int ::= "#UniswapV2Exchange.lockState" [function]
+rule #UniswapV2Exchange.lockState => 12
 ```
 
 ## UniswapV2Factory
