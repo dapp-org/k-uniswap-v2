@@ -370,7 +370,7 @@ interface sync()
 
 for all
 
-    Unlocked           : bool
+    Unlocked           : uint256
     Token0             : address UniswapV2Exchange
     Token1             : address UniswapV2Exchange
     Price0             : uint256
@@ -434,7 +434,7 @@ interface skim(address to)
 
 for all
 
-    Unlocked           : bool
+    Unlocked           : uint256
     Token0             : address UniswapV2Exchange
     Token1             : address UniswapV2Exchange
     SrcBal0            : uint256
@@ -491,7 +491,7 @@ interface skim(address to)
 
 for all
 
-    Unlocked           : bool
+    Unlocked           : uint256
     Token0             : address UniswapV2Exchange
     Token1             : address UniswapV2Exchange
     SrcBal0            : uint256
