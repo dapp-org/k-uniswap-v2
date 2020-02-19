@@ -383,7 +383,7 @@ for all
 
 storage
 
-    lockState |-> LockState
+    lockState |-> LockState => LockState
     token0    |-> Token0
     token1    |-> Token1
 
@@ -447,7 +447,7 @@ for all
 
 storage
 
-    lockState |-> LockState
+    lockState |-> LockState => LockState
     token0    |-> Token0
     token1    |-> Token1
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
