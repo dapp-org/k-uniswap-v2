@@ -370,7 +370,7 @@ interface sync()
 
 for all
 
-    Unlocked           : uint256
+    LockState          : uint256
     Token0             : address UniswapV2Exchange
     Token1             : address UniswapV2Exchange
     Price0             : uint256
@@ -383,9 +383,9 @@ for all
 
 storage
 
-    unlocked |-> Unlocked
-    token0   |-> Token0
-    token1   |-> Token1
+    lockState |-> LockState
+    token0    |-> Token0
+    token1    |-> Token1
 
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
       #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
@@ -417,9 +417,9 @@ iff in range uint112
 
 iff
 
-    Unlocked == 1
+    LockState  == 1
     VCallValue == 0
-    VCallDepth < 1024
+    VCallDepth  < 1024
 
 calls
 
@@ -434,7 +434,7 @@ interface skim(address to)
 
 for all
 
-    Unlocked           : uint256
+    LockState          : uint256
     Token0             : address UniswapV2Exchange
     Token1             : address UniswapV2Exchange
     SrcBal0            : uint256
@@ -447,9 +447,9 @@ for all
 
 storage
 
-    unlocked |-> Unlocked
-    token0   |-> Token0
-    token1   |-> Token1
+    lockState |-> LockState
+    token0    |-> Token0
+    token1    |-> Token1
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
 
 storage Token0
@@ -472,9 +472,9 @@ iff in range uint256
 
 iff
 
-    Unlocked   == 1
-    VCallValue == 0
-    VCallDepth  < 1024
+    LockState   == 1
+    VCallValue  == 0
+    VCallDepth   < 1024
 
 if
 
@@ -491,7 +491,7 @@ interface skim(address to)
 
 for all
 
-    Unlocked           : uint256
+    LockState          : uint256
     Token0             : address UniswapV2Exchange
     Token1             : address UniswapV2Exchange
     SrcBal0            : uint256
@@ -502,9 +502,9 @@ for all
 
 storage
 
-    unlocked |-> Unlocked => Unlocked
-    token0   |-> Token0
-    token1   |-> Token1
+    lockState |-> LockState => LockState
+    token0    |-> Token0
+    token1    |-> Token1
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
 
 storage Token0
@@ -522,7 +522,7 @@ iff in range uint256
 
 iff
 
-    Unlocked == 1
+    LockState  == 1
     VCallValue == 0
     VCallDepth  < 1024
 
