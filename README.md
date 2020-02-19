@@ -22,7 +22,7 @@ contract. These reachability claims are then tested against the formal
 semantics of the EVM using the klab tool for interactive proof inspection and
 debugging.
 
-An html version of this specification, together with links to in-browser
+An HTML version of this specification, together with links to in-browser
 symbolic execution previews, is available at [dapp.ci/k-uniswap](https://dapp.ci/k-uniswap/)
 
 ## Running the specs
