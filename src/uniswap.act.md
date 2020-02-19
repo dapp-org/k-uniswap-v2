@@ -178,6 +178,19 @@ UniswapV2Exchange
 
 ## Accessors
 
+### MINIMUM_LIQUIDITY
+
+```act
+behaviour MINIMUM_LIQUIDITY of UniswapV2Exchange
+interface MINIMUM_LIQUIDITY()
+
+iff
+
+    VCallValue == 0
+
+returns 1000
+```
+
 ### factory
 
 ```act
