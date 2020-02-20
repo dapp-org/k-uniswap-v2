@@ -315,19 +315,6 @@ iff
 returns KLast
 ```
 
-### selector
-
-```act
-behaviour selector of UniswapV2Exchange
-interface selector()
-
-iff
-
-    VCallValue == 0
-
-returns Constants.TransferSelector
-```
-
 ### getReserves
 
 ```act
