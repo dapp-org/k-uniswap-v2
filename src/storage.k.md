@@ -6,14 +6,6 @@ Defining shortnames for constants here allows us to keep act specification a
 little less verbose.
 
 ```k
-// helper: returns a bytestack containing the first four bytes of `X`
-syntax WordStack ::= "#bytes4" "(" Int ")" [function]
-rule #bytes4(X) => #asByteStack(X >>Int 224)
-  requires #rangeUInt(256, X)
-
-syntax Int ::= "Constants.TransferSelector" [function]
-rule Constants.TransferSelector => #asWord(#padRightToWidth(32, #bytes4(keccak(#parseByteStackRaw("transfer(address,uint256)"))))) [macro]
-
 syntax Int ::= "Constants.PermitTypehash" [function]
 rule Constants.PermitTypehash => keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)")) [macro]
 ```
