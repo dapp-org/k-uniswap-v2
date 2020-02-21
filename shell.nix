@@ -12,7 +12,7 @@ let
   dapptools = import dappSrc {};
 
 in
-  pkgs.stdenv.mkDerivation {
+  pkgs.mkShell {
     name = "k-uniswap";
     buildInputs = klab.buildInputs ++ [
       dapptools.dapp
@@ -22,7 +22,7 @@ in
       export NIX_PATH="nixpkgs=${pkgs.path}"
       export DAPPTOOLS=${dappSrc}
 
-      export KLAB_PATH=$(pwd)/deps/klab
+      export KLAB_PATH=${toString ./deps/klab}
       export PATH=$KLAB_PATH/node_modules/.bin/:$KLAB_PATH/bin:$PATH
       export KLAB_EVMS_PATH=$KLAB_PATH/evm-semantics
     '';
