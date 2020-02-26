@@ -373,6 +373,9 @@ otherwise they can be withdrawn by a third-party with a call to `skim`.
 `burn` also optionally generates protocol fees, depending on whether the value
 of `feeTo` is equal to `address(0)`.
 
+This function requires that the balances of the ERC20 tokens associated with the
+exchange are below `MAX_UINT_112 - 1`
+
 ```act
 behaviour burn of UniswapV2Exchange
 interface burn(address to)
@@ -395,10 +398,12 @@ for all
     FeeTo : address
     KLast : uint256
     Supply : uint256
+    Price0 : uint256
+    Price1 : uint256
 
 storage
 
-    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(BalanceToken0, BalanceToken1, TIME mod pow32)
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
@@ -407,6 +412,8 @@ storage
     totalSupply |-> Supply |-> #if Minting #then Supply + Liquidity - Balance #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
+    price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + Reserve0 * pow112 / Reserve1 #else Price1 #fi
     
 storage Token0
 
@@ -428,6 +435,8 @@ where
     Minting := (KLast =/=Int 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
     Amount0 := Liquidity * BalanceToToken0 / Supply
     Amount1 := Liquidity * BalanceToToken1 / Supply
+    BlockTimestamp := Time mod pow32
+    TimeElapsed := Blocktimestamp - BlockTimestampLast
     
 returns Amount0 : Amount1
     
@@ -443,10 +452,16 @@ iff in range uint256
     Amount0
     Amount1
 
+iff in range uint112
+
+    BalanceToken0
+    BalanceToken1
+
 iff
 
    (Liquidity * BalanceToken0 / Supply) > 0 
    (Liquidity * BalanceToken1 / Supply) > 0 
+
    
 if
 
