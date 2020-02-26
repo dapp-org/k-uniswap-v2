@@ -463,16 +463,18 @@ iff in range uint112
 
 iff
 
-   (Liquidity * BalanceToken0 / Supply) > 0
-   (Liquidity * BalanceToken1 / Supply) > 0
-   LockState == 1
-   VCallValue == 0
-   VCallDepth < 1024
+    Amount0 > 0
+    Amount1 > 0
+    (Liquidity * BalanceToken0 / Supply) > 0
+    (Liquidity * BalanceToken1 / Supply) > 0
+    LockState == 1
+    VCallValue == 0
+    VCallDepth < 1024
 
 if
 
-   to =/= ACCT_ID
-   FeeTo =/= ACCT_ID
+    to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
 ```
 
 ### Sync
