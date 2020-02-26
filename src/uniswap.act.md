@@ -408,7 +408,7 @@ storage
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     
-storage 
+storage Token0
 
     balanceOf[ACCT_ID] |-> BalanceToken0 => BalanceToken0 - Amount0
     balanceOf[to] |-> BalanceToToken0 => BalanceToToken0 + Amount0
