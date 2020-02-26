@@ -49,6 +49,23 @@ rule #rangeUInt(32, X) => #range(0 <= X <= maxUInt32)   [macro]
 rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 ```
 
+### Arithmatic
+
+Placeholder rewrite rule for `sqrt`. This leaves the result of the call to `sqrt` as symbolic for
+now, meaning that the specs are all assuming that `sqrt` is correctly implemented and does what it
+is supposed to.
+
+```k
+syntax Int ::= "#sqrt" "(" Int ")"
+
+// TODO: add correct `<pc>` values
+rule <k> #execute ... </k>
+     <wordStack> X : WS  =>  #sqrt(X) : WS </wordStack>
+     <pc> 2618  => 2686 </pc>
+  requires #rangeUInt(256, X)
+  [trusted]
+```
+
 ### Underflow Checking
 
 Underflow checking as encoded in EVM bytecode by solidity (which knows only 256 bit words), entails
