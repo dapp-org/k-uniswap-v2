@@ -447,6 +447,10 @@ iff
 
    (Liquidity * BalanceToken0 / Supply) > 0 
    (Liquidity * BalanceToken1 / Supply) > 0 
+   
+if
+
+    to =/= ACCT_ID
 ```
 
 ### Sync
