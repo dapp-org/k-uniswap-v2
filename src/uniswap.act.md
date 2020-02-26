@@ -395,7 +395,6 @@ for all
     BalanceToken1 : uint256
     FeeTo : address
     Factory : address UniswapV2Factory
-    FeeTo : address
     KLast : uint256
     Supply : uint256
     Price0 : uint256
