@@ -466,15 +466,14 @@ iff
 
    (Liquidity * BalanceToken0 / Supply) > 0
    (Liquidity * BalanceToken1 / Supply) > 0
-
    LockState == 1
+   VCallValue == 0
+   VCallDepth < 1024
 
 if
 
-    to =/= ACCT_ID
-    FeeTo =/= ACCT_ID
-    VCallValue == 0
-    VCallDepth < 1024
+   to =/= ACCT_ID
+   FeeTo =/= ACCT_ID
 ```
 
 ### Sync
