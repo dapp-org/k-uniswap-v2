@@ -470,6 +470,8 @@ if
 
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
+    VCallValue == 0
+    VCallDepth < 1024
 ```
 
 ### Sync
