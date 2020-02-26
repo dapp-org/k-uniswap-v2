@@ -394,7 +394,7 @@ for all
     BalanceToken0 : uint256
     BalanceToken1 : uint256
     FeeTo : address
-    Factory : address
+    Factory : address UniswapV2Factory
     FeeTo : address
     KLast : uint256
     Supply : uint256
@@ -407,39 +407,42 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    feeTo |-> FeeTo
     kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
     totalSupply |-> Supply |-> #if Minting #then Supply + Liquidity - Balance #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + Reserve0 * pow112 / Reserve1 #else Price1 #fi
-    
+
 storage Token0
 
     balanceOf[ACCT_ID] |-> BalanceToken0 => BalanceToken0 - Amount0
     balanceOf[to] |-> BalanceToToken0 => BalanceToToken0 + Amount0
 
-    
+
 storage Token1
 
     balanceOf[ACCT_ID] |-> BalanceToken1 => BalanceToken1 - Amount1
     balanceOf[to] |-> BalanceToToken1 => BalanceToToken1 + Amount1
 
+storage Factory
+
+    feeTo |-> FeeTo
+
 where
 
-    FeeOn := FeeTo =/=Int 0
+    FeeOn := FeeTo =/= 0
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
     Liquidity := Supply * (RootK - RootKLast) / RootK * 5 + RootKLast
-    Minting := (KLast =/=Int 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
+    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
     Amount0 := Liquidity * BalanceToToken0 / Supply
     Amount1 := Liquidity * BalanceToToken1 / Supply
     BlockTimestamp := TIME mod pow32
     TimeElapsed := Blocktimestamp - BlockTimestampLast
-    
+
 returns Amount0 : Amount1
-    
+
 iff in range uint256
 
     Supply + Liquidity - Balance
@@ -459,10 +462,10 @@ iff in range uint112
 
 iff
 
-   (Liquidity * BalanceToken0 / Supply) > 0 
-   (Liquidity * BalanceToken1 / Supply) > 0 
+   (Liquidity * BalanceToken0 / Supply) > 0
+   (Liquidity * BalanceToken1 / Supply) > 0
 
-   
+
 if
 
     to =/= ACCT_ID
