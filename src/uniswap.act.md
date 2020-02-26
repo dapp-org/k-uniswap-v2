@@ -400,6 +400,7 @@ for all
     Supply : uint256
     Price0 : uint256
     Price1 : uint256
+    LockState : uint256
 
 storage
 
@@ -413,6 +414,7 @@ storage
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + Reserve0 * pow112 / Reserve1 #else Price1 #fi
+    lockState |-> LockState => LockState
 
 storage Token0
 
@@ -465,6 +467,7 @@ iff
    (Liquidity * BalanceToken0 / Supply) > 0
    (Liquidity * BalanceToken1 / Supply) > 0
 
+   LockState == 1
 
 if
 
