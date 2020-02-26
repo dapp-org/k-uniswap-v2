@@ -406,17 +406,17 @@ storage
     kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
     totalSupply |-> Supply |-> #if Minting #then Supply + Liquidity - Balance #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
-    balanceOf[CALLER_ID] |-> Balance => 0
+    balanceOf[ACCT_ID] |-> Balance => 0
     
 storage Token0
 
-    balanceOf[CALLER_ID] |-> BalanceToken0 => BalanceToken0 - Amount0
+    balanceOf[ACCT_ID] |-> BalanceToken0 => BalanceToken0 - Amount0
     balanceOf[to] |-> BalanceToToken0 => BalanceToToken0 + Amount0
 
     
 storage Token1
 
-    balanceOf[CALLER_ID] |-> BalanceToken1 => BalanceToken1 - Amount1
+    balanceOf[ACCT_ID] |-> BalanceToken1 => BalanceToken1 - Amount1
     balanceOf[to] |-> BalanceToToken1 => BalanceToToken1 + Amount1
 
 where
