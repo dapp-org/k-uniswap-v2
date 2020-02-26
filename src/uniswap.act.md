@@ -451,6 +451,7 @@ iff
 if
 
     to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
 ```
 
 ### Sync
