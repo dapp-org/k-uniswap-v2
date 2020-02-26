@@ -561,6 +561,152 @@ iff
     VCallValue == 0
 ```
 
+### Burn
+
+The `burn` function burns all the liquidity tokens owned by the pair
+contract and sends a proportionate amount of each token in the pair to the
+address specified by `to`.
+Sending liquidity tokens to the contract and calling `burn` should happen
+atomically, otherwise the tokens can be withdrawn by a third-party with a call
+to `skim`.
+
+`burn` also optionally generates protocol fees, if the value of `feeTo` is not `0`.
+
+This function requires that the `UniswapV2Pair` contract's balance of the
+two pair tokens does not exceed `MAX_UINT_112 - 1`.
+
+```act
+behaviour burn of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    BalanceFeeTo       : uint256
+    BalanceToken0      : uint112
+    BalanceToken1      : uint112
+    BalanceToToken0    : uint256
+    BalanceToToken1    : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(BalanceToken0, BalanceToken1, BlockTimestamp)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast => #if FeeOn #then BalanceToken0 * BalanceToken1 #else 0 #fi
+    totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
+    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
+    balanceOf[ACCT_ID] |-> Balance => 0
+    price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(Price0 + PriceIncrease0) #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(Price1 + PriceIncrease1) #else Price1 #fi
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> BalanceToken0 => (BalanceToken0 - Amount0)
+    balanceOf[to] |-> BalanceToToken0 => (BalanceToToken0 + Amount0)
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> BalanceToken1 => (BalanceToken1 - Amount1)
+    balanceOf[to] |-> BalanceToToken1 => (BalanceToToken1 + Amount1)
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    FeeOn := FeeTo =/= 0
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
+    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
+    Amount0 := (Balance * BalanceToken0) / Supply
+    Amount1 := (Balance * BalanceToken1) / Supply
+    Amount0WithFee := (Balance * BalanceToken0) / (Supply + Fee)
+    Amount1WithFee := (Balance * BalanceToken1) / (Supply + Fee)
+    BlockTimestamp := TIME mod pow32
+    TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
+    PriceIncrease0 := ((Reserve1 * pow112) / Reserve0) * TimeElapsed
+    PriceIncrease1 := ((Reserve0 * pow112) / Reserve1) * TimeElapsed
+
+iff in range uint256
+
+    // _mintFee
+    Reserve0 * Reserve1
+    RootK
+    RootKLast
+    RootK - RootKLast
+    Supply * (RootK - RootKLast)
+    RootK * 5
+    (RootK * 5) + RootKLast
+    Fee
+    Supply + Fee
+    BalanceFeeTo + Fee
+
+    // burn
+    Balance * BalanceToken0
+    Balance * BalanceToken1
+    Amount0
+    Amount1
+    Amount0WithFee
+    Amount1WithFee
+    Supply - Balance
+    // TODO move to fee-on spec
+    Reserve0 * Reserve1
+
+    // _safeTransfer
+    BalanceToken0 - Amount0
+    BalanceToken1 - Amount1
+    BalanceToken0 - Amount0WithFee
+    BalanceToken1 - Amount1WithFee
+    BalanceToToken0 + Amount0
+    BalanceToToken1 + Amount1
+    BalanceToToken0 + Amount0WithFee
+    BalanceToToken1 + Amount1WithFee
+
+iff
+
+    Amount0 > 0
+    Amount1 > 0
+    Amount0WithFee > 0
+    Amount1WithFee > 0
+    LockState == 1
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
+    Fee == 0
+    KLast == 0
+    Supply =/= 0
+    Reserve0 =/= 0
+    Reserve1 =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+```
 ### Sync
 
 ```act
