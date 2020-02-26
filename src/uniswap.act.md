@@ -403,7 +403,7 @@ for all
 
 storage
 
-    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(BalanceToken0, BalanceToken1, TIME mod pow32)
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(BalanceToken0, BalanceToken1, BlockTimestamp)
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
@@ -435,7 +435,7 @@ where
     Minting := (KLast =/=Int 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
     Amount0 := Liquidity * BalanceToToken0 / Supply
     Amount1 := Liquidity * BalanceToToken1 / Supply
-    BlockTimestamp := Time mod pow32
+    BlockTimestamp := TIME mod pow32
     TimeElapsed := Blocktimestamp - BlockTimestampLast
     
 returns Amount0 : Amount1
