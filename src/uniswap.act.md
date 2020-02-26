@@ -362,6 +362,93 @@ iff
     VCallValue == 0
 ```
 
+### Burn
+
+The `burn` function burns all the liquidity tokens owned by the exchange
+contract and sends the equivalent exchange tokens to the address specified by
+`to`.
+The liquidity tokens should be sent to the contract atomically before calling `burn`,
+otherwise they can be withdrawn by a third-party with a call to `skim`.
+
+`burn` also optionally generates protocol fees, depending on whether the value
+of `feeTo` is equal to `address(0)`.
+
+```act
+behaviour burn of UniswapV2Exchange
+interface burn(address to)
+
+for all
+
+    Reserve0 : uint112
+    Reserve1 : uint112
+    BlockTimestampLast : uint32
+    Token0 : address
+    Token1 : address
+    Balance : uint256
+    BalanceFeeTo : uint256
+    BalanceToToken0 : uint256
+    BalanceToToken1 : uint256
+    BalanceToken0 : uint256
+    BalanceToken1 : uint256
+    FeeTo : address
+    Factory : address
+    FeeTo : address
+    KLast : uint256
+    Supply : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    feeTo |-> FeeTo
+    kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
+    totalSupply |-> Supply |-> #if Minting #then Supply + Liquidity - Balance #else Supply - Balance #fi
+    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
+    balanceOf[CALLER_ID] |-> Balance => 0
+    
+storage Token0
+
+    balanceOf[CALLER_ID] |-> BalanceToken0 => BalanceToken0 - Amount0
+    balanceOf[to] |-> BalanceToToken0 => BalanceToToken0 + Amount0
+
+    
+storage Token1
+
+    balanceOf[CALLER_ID] |-> BalanceToken1 => BalanceToken1 - Amount1
+    balanceOf[to] |-> BalanceToToken1 => BalanceToToken1 + Amount1
+
+where
+
+    FeeOn := FeeTo =/=Int 0
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    Liquidity := Supply * (RootK - RootKLast) / RootK * 5 + RootKLast
+    Minting := (KLast =/=Int 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
+    Amount0 := Liquidity * BalanceToToken0 / Supply
+    Amount1 := Liquidity * BalanceToToken1 / Supply
+    
+returns Amount0 : Amount1
+    
+iff in range uint256
+
+    Supply + Liquidity - Balance
+    Supply - Balance
+    BalanceFeeTo + Liquidity
+    BalanceToken0 - Amount0
+    BalanceToken1 - Amount1
+    BalanceToToken0 + Amount0
+    BalanceToToken1 + Amount1
+    Amount0
+    Amount1
+
+iff
+
+   (Liquidity * BalanceToken0 / Supply) > 0 
+   (Liquidity * BalanceToken1 / Supply) > 0 
+```
+
 ### Sync
 
 ```act
