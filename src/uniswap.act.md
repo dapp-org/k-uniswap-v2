@@ -382,8 +382,8 @@ for all
     Reserve0 : uint112
     Reserve1 : uint112
     BlockTimestampLast : uint32
-    Token0 : address
-    Token1 : address
+    Token0 : address UniswapV2Exchange
+    Token1 : address UniswapV2Exchange
     Balance : uint256
     BalanceFeeTo : uint256
     BalanceToToken0 : uint256
@@ -408,7 +408,7 @@ storage
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     
-storage Token0
+storage 
 
     balanceOf[ACCT_ID] |-> BalanceToken0 => BalanceToken0 - Amount0
     balanceOf[to] |-> BalanceToToken0 => BalanceToToken0 + Amount0
