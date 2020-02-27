@@ -446,6 +446,10 @@ returns Amount0 : Amount1
 
 iff in range uint256
 
+    Liquidity
+    Liquidity * BalanceToken0 / Supply
+    Liquidity * BalanceToken1 / Supply
+    Reserve0 * Reserve1
     Supply + Liquidity - Balance
     Supply - Balance
     BalanceFeeTo + Liquidity
