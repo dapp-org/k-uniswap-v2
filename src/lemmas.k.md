@@ -311,3 +311,10 @@ rule X |Int #asWord(#padToWidth(32, WS)) => #asWord(#take(4, #asByteStack(X)) ++
   andBool #rangeUInt(256, X)
   andBool #sizeWordStack(WS) ==Int 28
 ```
+
+
+### Dirty lemmas which might need further generalization
+
+```k
+rule #padToWidth(32, #asByteStack(#asWord(#padRightToWidth(32, (nthbyteof(XX, 28, 32) : nthbyteof(XX, 29, 32) : nthbyteof(XX, 30, 32) : nthbyteof(XX, 31, 32) : .WordStack) )))) => (nthbyteof(XX, 28, 32) : nthbyteof(XX, 29, 32) : nthbyteof(XX, 30, 32) : nthbyteof(XX, 31, 32) : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : .WordStack)
+```

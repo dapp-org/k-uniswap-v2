@@ -618,11 +618,8 @@ iff
 if
 
     tokenIn == Token0
+    Token0 =/= Token1
     to =/= ACCT_ID
-
-calls
-
-    UniswapV2Exchange.balanceOf
 ```
 
 ```act
@@ -703,11 +700,8 @@ iff
 if
 
     tokenIn == Token0
+    Token0 =/= Token1
     to == ACCT_ID
-
-calls
-
-    UniswapV2Exchange.balanceOf
 ```
 
 ```act
@@ -791,11 +785,8 @@ iff
 if
 
     tokenIn == Token1
+    Token0 =/= Token1
     to =/= ACCT_ID
-
-calls
-
-    UniswapV2Exchange.balanceOf
 ```
 
 ```act
@@ -876,11 +867,8 @@ iff
 if
 
     tokenIn == Token1
+    Token0 =/= Token1
     to == ACCT_ID
-
-calls
-
-    UniswapV2Exchange.balanceOf
 ```
 
 # ERC20
