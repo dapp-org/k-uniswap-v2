@@ -389,10 +389,10 @@ for all
     Token1             : address UniswapV2Exchange
     Balance            : uint256
     BalanceFeeTo       : uint256
-    BalanceToToken0    : uint256
-    BalanceToToken1    : uint256
     BalanceToken0      : uint256
     BalanceToken1      : uint256
+    BalanceToToken0    : uint256
+    BalanceToToken1    : uint256
     FeeTo              : address
     Factory            : address UniswapV2Factory
     KLast              : uint256
@@ -437,8 +437,8 @@ where
     RootKLast := #sqrt(KLast)
     Liquidity := Supply * (RootK - RootKLast) / RootK * 5 + RootKLast
     Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
-    Amount0 := Liquidity * BalanceToToken0 / Supply
-    Amount1 := Liquidity * BalanceToToken1 / Supply
+    Amount0 := Balance * BalanceToken0 / Supply
+    Amount1 := Balance * BalanceToken1 / Supply
     BlockTimestamp := TIME mod pow32
     TimeElapsed := Blocktimestamp - BlockTimestampLast
 
