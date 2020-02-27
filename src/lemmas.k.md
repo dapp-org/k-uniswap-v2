@@ -49,17 +49,66 @@ rule #rangeUInt(32, X) => #range(0 <= X <= maxUInt32)   [macro]
 rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 ```
 
-### Underflow Checking
+### Arithmetic
 
-Underflow checking as encoded in EVM bytecode by solidity (which knows only 256 bit words), entails
-the logical (`Int` based) no-underflow condition on the RHS.
-
-This is required because `K` needs help reasoning its way through the `-Word` operation to simplify
-it to match the logical no-underflow constraint expressed within the specs (`iff in range uint256`).
+`0` divided by anything is `0`.
 
 ```k
+rule 0 /Int X => 0
+requires notBool (X ==Int 0)
+```
+
+Helper for cleaner storage conditions.
+
+```k
+syntax Int ::= "#min" "(" Int "," Int ")" [function]
+rule #min(X, Y) => #if (X <Int Y) #then X #else Y #fi
+```
+
+Placeholder rewrite rule for `sqrt`. This leaves the result of the call to `sqrt` as symbolic for
+now, meaning that the specs are all assuming that `sqrt` is correctly implemented and does what it
+is supposed to.
+
+```k
+syntax Int ::= "#sqrt" "(" Int ")" [smtlib(smt_sqrt), smt-prelude, function]
+
+rule <k> #execute ~> CONTINUATION => #execute ~> CONTINUATION </k>
+     <wordStack> X : JumpTo : WS  =>  JumpTo : #sqrt(X) : WS </wordStack>
+     <pc> 10360 => 10441 </pc>
+  requires #rangeUInt(256, X)
+  [trusted]
+```
+
+A concrete evaluation of `sqrt(0)` is provided to help simplification of a few terms.
+
+```k
+rule #sqrt(0) => 0
+```
+
+### Over/underflow Checks
+
+These lemmas allow `K` to translate the under/overflow checking as implemented in the `SafeMath.sol`
+library to the logical `#rangeUInt` conditions expressed within the specs.
+
+```k
+// sub
 rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
-  requires #rangeUInt(256, A) andBool #rangeUInt(256, B)
+  requires #rangeUInt(256, A)
+  andBool #rangeUInt(256, B)
+
+// add
+rule (chop(X +Int Y) >=Int X) => #rangeUInt(256, X +Int Y)
+  requires #rangeUInt(256, X)
+  andBool #rangeUInt(256, Y)
+
+rule (X <=Int chop(X +Int Y)) => #rangeUInt(256, X +Int Y)
+  requires #rangeUInt(256, X)
+  andBool #rangeUInt(256, Y)
+
+// mul
+rule (chop(X *Int Y) /Int Y ==K X) => #rangeUInt(256, X *Int Y)
+  requires #rangeUInt(256, X)
+  andBool #rangeUInt(256, Y)
 ```
 
 ### Bitwise Modulo
@@ -167,6 +216,10 @@ rule (notMaxUInt112 &Int ((Z *Int pow224) +Int (Y *Int pow112))) => ((Z *Int pow
 rule (notMaxUInt112 &Int ((Z *Int pow224) +Int X)) => (Z *Int pow224)
   requires #rangeUInt(112, X)
   andBool #rangeUInt(32, Z)
+
+// reserve0 and reserve1 are zero
+rule (notMaxUInt112 &Int (Z *Int pow224)) => (Z *Int pow224)
+  requires #rangeUInt(32, Z)
 ```
 
 Write new value:
@@ -245,7 +298,7 @@ rule ((Z *Int pow224) |Int ((Y *Int pow112) +Int X)) => ((Z *Int pow224) +Int (Y
   andBool #rangeUInt(32, Z)
 ```
 
-##### Write `uint160`
+### Masking For Address Types (`uint160`)
 
 Address type storage routine.
 
@@ -261,16 +314,7 @@ rule ((notMaxUInt160 &Int A)) |Int B => B
   requires #rangeAddress(B)
   andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
 
-// Commutativity
-rule ((A &Int notMaxUInt160)) |Int B => B
-  requires #rangeAddress(B)
-  andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
-
 rule (B |Int (notMaxUInt160 &Int A)) => B
-  requires #rangeAddress(B)
-  andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
-
-rule (B |Int (A &Int notMaxUInt160)) => B
   requires #rangeAddress(B)
   andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
 ```

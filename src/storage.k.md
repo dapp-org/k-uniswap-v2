@@ -31,6 +31,25 @@ syntax Int ::= "#UniswapV2Pair.balanceOf" "[" Int "]" [function]
 rule #UniswapV2Pair.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 ```
 
+`75506153327051474587906755573858019282972751592871715030499431892688993766217` is the value of
+`#hashedLocation("Solidity", 1, 0)`. It's presence in the storage map (as a result of writes to
+`balanceOf[0]`) means that `K` cannot be sure that writes to any other storage mappings do not
+colide with this one. We assume here that this is not the case.
+
+```k
+rule keccakIntList(A B) ==K 75506153327051474587906755573858019282972751592871715030499431892688993766217 => false
+requires A =/=Int 0
+
+rule keccakIntList(A B) ==K 75506153327051474587906755573858019282972751592871715030499431892688993766217 => false
+requires 0 =/=Int A
+
+rule 75506153327051474587906755573858019282972751592871715030499431892688993766217 ==K keccakIntList(A B) => false
+requires A =/=Int 0
+
+rule 78338746147236970124700731725183845421594913511827187288591969170390706184117 ==K keccakIntList(A B) => false
+requires 0 =/=Int A
+```
+
 #### 2 - allowance
 
 ```k
