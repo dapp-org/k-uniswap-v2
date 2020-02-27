@@ -447,6 +447,8 @@ returns Amount0 : Amount1
 iff in range uint256
 
     MintLiquidity
+    Balance * BalanceToken0
+    Balance * BalanceToken1
     Balance * BalanceToken0 / Supply
     Balance * BalanceToken1 / Supply
     Reserve0 * Reserve1
