@@ -479,6 +479,11 @@ if
 
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
+
+calls
+    
+    UniswapV2Exchange.balanceOf
+    UniswapV2Exchange.getReserves
 ```
 
 ### Sync
