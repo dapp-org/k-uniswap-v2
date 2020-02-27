@@ -408,8 +408,8 @@ storage
     token1 |-> Token1
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
-    totalSupply |-> Supply |-> #if Minting #then Supply + Liquidity - Balance #else Supply - Balance #fi
-    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Liquidity #else BalanceFeeTo #fi
+    totalSupply |-> Supply |-> #if Minting #then Supply + MintLiquidity - Balance #else Supply - Balance #fi
+    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + MintLiquidity #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + Reserve0 * pow112 / Reserve1 #else Price1 #fi
@@ -435,8 +435,8 @@ where
     FeeOn := FeeTo =/= 0
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
-    Liquidity := Supply * (RootK - RootKLast) / RootK * 5 + RootKLast
-    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Liquidity > 0)
+    MintLiquidity := Supply * (RootK - RootKLast) / RootK * 5 + RootKLast
+    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (MintLiquidity > 0)
     Amount0 := Balance * BalanceToken0 / Supply
     Amount1 := Balance * BalanceToken1 / Supply
     BlockTimestamp := TIME mod pow32
@@ -446,9 +446,9 @@ returns Amount0 : Amount1
 
 iff in range uint256
 
-    Liquidity
-    Liquidity * BalanceToken0 / Supply
-    Liquidity * BalanceToken1 / Supply
+    MintLiquidity
+    Balance * BalanceToken0 / Supply
+    Balance * BalanceToken1 / Supply
     Reserve0 * Reserve1
     Supply + Liquidity - Balance
     Supply - Balance
