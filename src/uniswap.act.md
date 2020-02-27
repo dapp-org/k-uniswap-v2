@@ -382,24 +382,24 @@ interface burn(address to)
 
 for all
 
-    Reserve0 : uint112
-    Reserve1 : uint112
+    Reserve0           : uint112
+    Reserve1           : uint112
     BlockTimestampLast : uint32
-    Token0 : address UniswapV2Exchange
-    Token1 : address UniswapV2Exchange
-    Balance : uint256
-    BalanceFeeTo : uint256
-    BalanceToToken0 : uint256
-    BalanceToToken1 : uint256
-    BalanceToken0 : uint256
-    BalanceToken1 : uint256
-    FeeTo : address
-    Factory : address UniswapV2Factory
-    KLast : uint256
-    Supply : uint256
-    Price0 : uint256
-    Price1 : uint256
-    LockState : uint256
+    Token0             : address UniswapV2Exchange
+    Token1             : address UniswapV2Exchange
+    Balance            : uint256
+    BalanceFeeTo       : uint256
+    BalanceToToken0    : uint256
+    BalanceToToken1    : uint256
+    BalanceToken0      : uint256
+    BalanceToken1      : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
 
 storage
 
