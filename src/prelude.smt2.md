@@ -12,7 +12,7 @@
 
 ; if x is >= 0 then sqrt(x) is always <= x
 (assert (forall ((x Int))
-                (! (=> (>= x 0) (>= (smt_sqrt x) x))
+                (! (=> (>= x 0) (<= (smt_sqrt x) x))
                    :pattern ((smt_sqrt x)))))
 
 ; if x and y are both > 0 then sqrt(x * y) > 0
