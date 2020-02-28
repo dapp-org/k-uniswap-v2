@@ -18,5 +18,15 @@
     }
   },
   "dapp_root": "./uniswap-v2-core",
-  "solc_output_path": "build/Combined-Json.json"
+  "solc_output_path": "build/Combined-Json.json",
+  "timeouts": {
+    "UniswapV2Exchange_swap-token0-diff_fail_rough": "5h",
+    "UniswapV2Exchange_swap-token0-diff_pass_rough": "5h",
+    "UniswapV2Exchange_swap-token0-same_fail_rough": "5h",
+    "UniswapV2Exchange_swap-token0-same_pass_rough": "5h",
+    "UniswapV2Exchange_swap-token1-diff_fail_rough": "5h",
+    "UniswapV2Exchange_swap-token1-diff_pass_rough": "5h",
+    "UniswapV2Exchange_swap-token1-same_fail_rough": "5h",
+    "UniswapV2Exchange_swap-token1-same_pass_rough": "5h"
+  }
 }
