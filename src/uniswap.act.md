@@ -446,7 +446,10 @@ returns Amount0 : Amount1
 
 iff in range uint256
 
+    RootK
+    RootKLast
     Supply * (RootK - RootKLast)
+    RootK * 5
     RootK * 5 + RootKLast
     MintLiquidity
     Balance * BalanceToken0
