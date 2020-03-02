@@ -435,7 +435,7 @@ where
     FeeOn := FeeTo =/= 0
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
-    Fee := Supply * (RootK - RootKLast) / (RootK * 5 + RootKLast)
+    Fee := (Supply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
     Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := Balance * BalanceToken0 / Supply
     Amount1 := Balance * BalanceToken1 / Supply
