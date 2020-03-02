@@ -496,6 +496,7 @@ calls
 
     UniswapV2Exchange.balanceOf
     UniswapV2Exchange.getReserves
+    UniswapV2Factory.feeTo
 ```
 
 ### Sync
