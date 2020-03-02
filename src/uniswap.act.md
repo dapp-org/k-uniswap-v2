@@ -408,8 +408,8 @@ storage
     token1 |-> Token1
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
-    totalSupply |-> Supply |-> Supply - Balance #if Minting #then + Fee #fi
-    balanceOf[FeeTo] |-> BalanceFeeTo => BalanceFeeTo #if Minting #then + Fee #fi
+    totalSupply |-> Supply |-> #if Minting #then Supply - Balance + Fee #else Supply - Balance #fi
+    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + Reserve0 * pow112 / Reserve1 #else Price1 #fi
@@ -435,7 +435,7 @@ where
     FeeOn := FeeTo =/= 0
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
-    Fee := (Supply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+    Fee := Supply * (RootK - RootKLast) / (RootK * 5 + RootKLast)
     Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := Balance * BalanceToken0 / Supply
     Amount1 := Balance * BalanceToken1 / Supply
