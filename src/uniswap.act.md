@@ -501,6 +501,62 @@ calls
     UniswapV2Factory.feeTo
 ```
 
+```act
+behaviour _mintFee of UniswapV2Exchange
+interface _mintFee(uint112 reserve0, uint112 reserve1) internal
+
+for all
+
+    FeeTo        : address
+    KLast              : uint256
+    BalanceFeeTo : uint256
+    Supply       : uint256
+
+storage
+
+    feeTo |-> FeeTo
+    totalSupply |-> Supply |-> #if Minting #then Supply + Fee #else Supply #fi
+    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
+    kLast |-> KLast => #if FeeOn #then reserve0 * reserve1 #else KLast #fi
+
+iff in range uint256
+
+    // _mintFee
+    reserve0 * reserve1
+    RootK
+    RootKLast
+    RootK - RootKLast
+    Supply * (RootK - RootKLast)
+    RootK * 5
+    RootK * 5 + RootKLast
+    Fee
+    Supply + Fee
+    BalanceFeeTo + Fee
+
+returns FeeOn
+
+where
+
+    FeeOn := FeeTo =/= 0
+    RootK := #sqrt(reserve0 * reserve1)
+    RootKLast := #sqrt(KLast)
+    Fee := Supply * (RootK - RootKLast) / (RootK * 5 + RootKLast)
+    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
+
+iff
+
+    VCallValue == 0
+    VCallDepth < 1024
+    Supply > 0
+
+if
+
+    FeeT =/= ACCT_ID
+
+calls
+
+    UniswapV2Factory.feeTo
+```
 ### Sync
 
 ```act
