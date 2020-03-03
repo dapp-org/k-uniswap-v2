@@ -20,7 +20,7 @@ slots from act specification `storage` blocks.
 #### 0 - totalSupply
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.totalSupply" [function]
+syntax Int ::= "#UniswapV2Exchange.totalSupply" [macro]
 rule #UniswapV2Exchange.totalSupply => 0
 ```
 
@@ -41,7 +41,7 @@ rule #UniswapV2Exchange.allowance[A][B] => #hashedLocation("Solidity", 2, A B)
 #### 3 - DOMAIN_SEPARATOR
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.DOMAIN_SEPARATOR" [function]
+syntax Int ::= "#UniswapV2Exchange.DOMAIN_SEPARATOR" [macro]
 rule #UniswapV2Exchange.DOMAIN_SEPARATOR => 3
 ```
 
@@ -55,21 +55,21 @@ rule #UniswapV2Exchange.nonces[A] => #hashedLocation("Solidity", 4, A)
 #### 5 - factory
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.factory" [function]
+syntax Int ::= "#UniswapV2Exchange.factory" [macro]
 rule #UniswapV2Exchange.factory => 5
 ```
 
 #### 6 - token0
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.token0" [function]
+syntax Int ::= "#UniswapV2Exchange.token0" [macro]
 rule #UniswapV2Exchange.token0 => 6
 ```
 
 #### 7 - token1
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.token1" [function]
+syntax Int ::= "#UniswapV2Exchange.token1" [macro]
 rule #UniswapV2Exchange.token1 => 7
 ```
 
@@ -83,35 +83,35 @@ rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
 
-syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockTimestampLast" [function]
+syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockTimestampLast" [macro]
 rule #UniswapV2Exchange.reserve0_reserve1_blockTimestampLast => 8
 ```
 
 #### 9 - price0CumulativeLast
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.price0CumulativeLast" [function]
+syntax Int ::= "#UniswapV2Exchange.price0CumulativeLast" [macro]
 rule #UniswapV2Exchange.price0CumulativeLast => 9
 ```
 
 #### 10 - price1CumulativeLast
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [function]
+syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [macro]
 rule #UniswapV2Exchange.price1CumulativeLast => 10
 ```
 
 #### 11 - kLast
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.kLast" [function]
+syntax Int ::= "#UniswapV2Exchange.kLast" [macro]
 rule #UniswapV2Exchange.kLast => 11
 ```
 
 #### 12 - lockState
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.lockState" [function]
+syntax Int ::= "#UniswapV2Exchange.lockState" [macro]
 rule #UniswapV2Exchange.lockState => 12
 ```
 
@@ -120,14 +120,14 @@ rule #UniswapV2Exchange.lockState => 12
 #### 0 - feeTo
 
 ```k
-syntax Int ::= "#UniswapV2Factory.feeTo" [function]
+syntax Int ::= "#UniswapV2Factory.feeTo" [macro]
 rule #UniswapV2Factory.feeTo => 0
 ```
 
 #### 1 - feeToSetter
 
 ```k
-syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
+syntax Int ::= "#UniswapV2Factory.feeToSetter" [macro]
 rule #UniswapV2Factory.feeToSetter => 1
 ```
 
@@ -143,7 +143,7 @@ rule #UniswapV2Factory.getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
 The length of the `allExchanges` array is stored at slot 3.
 
 ```k
-syntax Int ::= "#UniswapV2Factory.allExchanges.length" [function]
+syntax Int ::= "#UniswapV2Factory.allExchanges.length" [macro]
 rule #UniswapV2Factory.allExchanges.length => 3
 ```
 
