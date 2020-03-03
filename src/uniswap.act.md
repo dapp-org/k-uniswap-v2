@@ -502,7 +502,7 @@ calls
 ```
 
 ```act
-behaviour mintFee of UniswapV2Exchange
+behaviour _mintFee of UniswapV2Exchange
 interface _mintFee(uint112 reserve0, uint112 reserve1) internal
 
 for all
