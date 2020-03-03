@@ -430,6 +430,8 @@ storage Factory
 
     feeTo |-> FeeTo
 
+returns Amount0 : Amount1
+
 where
 
     FeeOn := FeeTo =/= 0
@@ -441,8 +443,6 @@ where
     Amount1 := Balance * BalanceToken1 / Supply
     BlockTimestamp := TIME mod pow32
     TimeElapsed := Blocktimestamp - BlockTimestampLast
-
-returns Amount0 : Amount1
 
 iff in range uint256
 
