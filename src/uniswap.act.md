@@ -460,8 +460,10 @@ iff in range uint256
 
     // burn
     Balance * BalanceToken0
+    Balance * BalanceToken0 / (Supply + Fee)
     Amount0
     Balance * BalanceToken1
+    Balance * BalanceToken1 / (Supply + Fee)
     Amount1
     Supply - Balance
 
