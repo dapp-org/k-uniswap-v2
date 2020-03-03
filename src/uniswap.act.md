@@ -482,8 +482,8 @@ iff
 
     Amount0 > 0
     Amount1 > 0
-    (Liquidity * BalanceToken0 / Supply) > 0
-    (Liquidity * BalanceToken1 / Supply) > 0
+    Balance * BalanceToken0 / (Supply + Fee) > 0
+    Balance * BalanceToken1 / (Supply + Fee) > 0
     LockState == 1
     VCallValue == 0
     VCallDepth < 1024
