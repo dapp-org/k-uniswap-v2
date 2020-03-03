@@ -470,6 +470,8 @@ iff in range uint256
     // _safeTransfer
     BalanceToken0 - Amount0
     BalanceToken1 - Amount1
+    BalanceToken0 - (Balance * BalanceToken0) / (Supply + Fee)
+    BalanceToken1 - (Balance * BalanceToken1) / (Supply + Fee)
     BalanceToToken0 + Amount0
     BalanceToToken1 + Amount1
 
