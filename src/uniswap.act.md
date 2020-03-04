@@ -562,10 +562,6 @@ iff
 if
 
     FeeT =/= ACCT_ID
-
-calls
-
-    UniswapV2Factory.feeTo
 ```
 ### Sync
 
