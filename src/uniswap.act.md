@@ -441,6 +441,8 @@ where
     Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := Balance * BalanceToken0 / Supply
     Amount1 := Balance * BalanceToken1 / Supply
+    Amount0WithFee := Balance * BalanceToken0 / (Supply + Fee)
+    Amount1WithFee := Balance * BalanceToken1 / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
     TimeElapsed := Blocktimestamp - BlockTimestampLast
 
@@ -460,22 +462,22 @@ iff in range uint256
 
     // burn
     Balance * BalanceToken0
-    Balance * BalanceToken0 / (Supply + Fee)
-    Amount0
     Balance * BalanceToken1
-    Balance * BalanceToken1 / (Supply + Fee)
+    Amount0
     Amount1
+    Amount0WithFee
+    Amount1WithFee
     Supply - Balance
 
     // _safeTransfer
     BalanceToken0 - Amount0
     BalanceToken1 - Amount1
-    BalanceToken0 - (Balance * BalanceToken0) / (Supply + Fee)
-    BalanceToken1 - (Balance * BalanceToken1) / (Supply + Fee)
+    BalanceToken0 - Amount0WithFee
+    BalanceToken1 - Amount1WithFee
     BalanceToToken0 + Amount0
     BalanceToToken1 + Amount1
-    BalanceToken0 + (Balance * BalanceToken0) / (Supply + Fee)
-    BalanceToken1 + (Balance * BalanceToken1) / (Supply + Fee)
+    BalanceToken0 + Amount0WithFee
+    BalanceToken1 + Amount1WithFee
 
 iff in range uint112
 
@@ -486,8 +488,8 @@ iff
 
     Amount0 > 0
     Amount1 > 0
-    Balance * BalanceToken0 / (Supply + Fee) > 0
-    Balance * BalanceToken1 / (Supply + Fee) > 0
+    Amount0WithFee > 0
+    Amount1WithFee > 0
     LockState == 1
     VCallValue == 0
     VCallDepth < 1024
