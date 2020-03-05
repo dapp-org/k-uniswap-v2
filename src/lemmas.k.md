@@ -6,39 +6,39 @@ ones are required for these specs.
 #### Powers
 
 ```k
-syntax Int ::= "pow32"   [function]
+syntax Int ::= "pow32"
 rule pow32 => 4294967296 [macro]
 
-syntax Int ::= "pow112"                           [function]
+syntax Int ::= "pow112"
 rule pow112 => 5192296858534827628530496329220096 [macro]
 
-syntax Int ::= "pow224"                                                             [function]
+syntax Int ::= "pow224"
 rule pow224 => 26959946667150639794667015087019630673637144422540572481103610249216 [macro]
 ```
 
 #### Limits
 
 ```k
-syntax Int ::= "maxUInt32"   [function]
+syntax Int ::= "maxUInt32"
 rule maxUInt32 => 4294967295 [macro]
 
-syntax Int ::= "maxUInt112"                           [function]
+syntax Int ::= "maxUInt112"
 rule maxUInt112 => 5192296858534827628530496329220095 [macro]
 
-syntax Int ::= "maxUInt224"                                                             [function]
+syntax Int ::= "maxUInt224"
 rule maxUInt224 => 26959946667150639794667015087019630673637144422540572481103610249215 [macro]
 ```
 
 #### Inverses
 
 ```k
-syntax Int ::= "notMaxUInt112"                                                                       [function]
+syntax Int ::= "notMaxUInt112"
 rule notMaxUInt112 => 115792089237316195423570985008687907853269979473343705504629955477416800419840 [macro]
 
-syntax Int ::= "notMaxUInt160"                                                                       [function]
+syntax Int ::= "notMaxUInt160"
 rule notMaxUInt160 => 115792089237316195423570985007226406215939081747436879206741300988257197096960 [macro]
 
-syntax Int ::= "notMaxUInt224"                                                                       [function]
+syntax Int ::= "notMaxUInt224"
 rule notMaxUInt224 => 115792089210356248756420345214020892766250353992003419616917011526809519390720 [macro]
 ```
 
@@ -189,7 +189,7 @@ rule (X |Int (Z *Int pow224)) => ((Z *Int pow224) +Int X)
 Constants:
 
 ```k
-syntax Int ::= "notMaxUInt112xPow112"                                                                       [function]
+syntax Int ::= "notMaxUInt112xPow112"
 rule notMaxUInt112xPow112 => 115792089210356248756420345214020892766250359184300278151744640057305848610815 [macro]
 ```
 
