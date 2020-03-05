@@ -476,8 +476,8 @@ iff in range uint256
     BalanceToken1 - Amount1WithFee
     BalanceToToken0 + Amount0
     BalanceToToken1 + Amount1
-    BalanceToken0 + Amount0WithFee
-    BalanceToken1 + Amount1WithFee
+    BalanceToToken0 + Amount0WithFee
+    BalanceToToken1 + Amount1WithFee
 
 iff in range uint112
 
