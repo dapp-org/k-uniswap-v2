@@ -857,6 +857,15 @@ rule #take(#sizeWordStack(X), X ++ XS) => X
 rule #range(XS [ K1 <- V1 ], K2, Length, .WordStack) => #range(XS, K2, Length, .WordStack)
 requires K1 >=Int K2 +Int Length
 
+rule XS:Map [ K1 <- V1 ] [ K2 <- V2 ] => XS [ K2 <- V2] [ K1 <- V1 ]
+  requires K1 >Int K2
+
+rule XS:Map [ K1 <- V1 ] [ K2 <- V2 ] => XS [ K2 <- V2 ]
+  requires K1 ==Int K2
+
+rule XS:Map [ K1:Int := V1:WordStack ] [ K2 <- V2 ] => XS [ K2 <- V2 ] [ K1 := V1 ]
+  requires K1 >Int K2
+
 // map propagate assign
 rule #range(X [ K1 := V1:WordStack ], K2, Length, WS) => #range(X, K2, Length, WS)
   requires K2 +Int Length <=Int K1
@@ -883,5 +892,7 @@ rule (X +Int Y) -Word Z => Y +Int (X -Int Z)
 
 syntax Bool ::= "#unknown_address" "(" Int  ")" [function, smtlib(unknown_address)]
 syntax Int ::= "#usedGas" "(" Int  ")" [function, smtlib(usedGas)]
+
+rule Cmem(_, _) => 0
 
 endmodule

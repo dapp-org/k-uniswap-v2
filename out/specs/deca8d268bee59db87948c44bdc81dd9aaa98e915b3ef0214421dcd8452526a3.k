@@ -250,7 +250,7 @@ andBool #rangeUInt(256, VChainId)
   andBool (#rangeUInt(256, Price0)
   andBool (#rangeUInt(256, Price1)
   andBool (#rangeUInt(256, Balance0)
-  andBool (#rangeUInt(256, Balance1)
+  andBool (#rangeUInt(112, Balance1)
   andBool (#rangeUInt(256, DstBal0)
   andBool (#rangeUInt(256, DstBal1)
   andBool (#rangeUInt(256, Token0_balance)
@@ -262,7 +262,7 @@ andBool #rangeUInt(256, VChainId)
   andBool ((ACCT_ID =/=Int Token1)
   andBool ((Token0 =/=Int Token1)
   andBool ((ABI_to =/=Int ACCT_ID)
-  // TODO - adapt vgas
+  // TODO - stupid memory bullshit :(
   andBool (VGas >=Int 3000000
     +Int Cmem(ISTANBUL, ( ( #sizeWordStack(ABI_calldata) +Int 551 ) /Int 32   ))
     +Int (3 *Int ((#sizeWordStack(ABI_calldata) +Int 31) /Int 32))
@@ -270,8 +270,12 @@ andBool #rangeUInt(256, VChainId)
     +Int (Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 583) /Int 32)) -Int Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 551) /Int 32)))
     +Int (Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164))))
     +Int (Cmem(ISTANBUL_EVM, maxInt(maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3), 13)) -Int Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)))
-    +Int (Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) +Int (14127 -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)))))
-    +Int (Cmem(ISTANBUL_EVM, maxInt(maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3), 13)) +Int (14136 -Int Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3))))
+    +Int (Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164))))
+  andBool (Cmem(ISTANBUL, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164))) -Int Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 583) /Int 32)) >=Int 0
+  andBool ((Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 583) /Int 32)) -Int Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 551) /Int 32))) >=Int 0
+  andBool ((Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)))) >=Int 0
+  andBool ((Cmem(ISTANBUL_EVM, maxInt(maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3), 13)) -Int Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3))) >=Int 0
+  andBool ((Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)))) >=Int 0
   andBool (#rangeUInt(256, Junk_0)
   andBool (#rangeUInt(256, Junk_1)
   andBool (#rangeUInt(256, Junk_2)
@@ -291,30 +295,33 @@ andBool #rangeUInt(256, VChainId)
   andBool (Token0 =/=K ABI_to
   andBool (Token1 =/=K ABI_to
   andBool (#unknown_address(ABI_to) ==K true
-  andBool (#rangeUInt(256, Balance0 -Int ABI_amount0Out)
+  andBool (#rangeUInt(112, Balance0 -Int ABI_amount0Out)
   andBool (#rangeUInt(256, DstBal0 +Int ABI_amount0Out)
   andBool (#rangeUInt(256, Balance1 -Int ABI_amount1Out)
   andBool (#rangeUInt(256, DstBal1 +Int ABI_amount1Out)
+  andBool (#rangeUInt(256, (Balance0 -Int (ABI_amount0Out +Int (Reserve0 -Int ABI_amount0Out))) *Int 3)
+  andBool (#rangeUInt(256, Balance1 *Int 1000)
+  andBool (#rangeUInt(256, (Balance1 -Int Reserve1) *Int 3)
+  andBool (#rangeUInt(256, (Balance0 -Int ABI_amount0Out) *Int 1000)
+  andBool (#rangeUInt(256, (((Balance0 -Int ABI_amount0Out) *Int 1000) -Int ((Balance0 -Int (ABI_amount0Out +Int (Reserve0 -Int ABI_amount0Out))) *Int 3)) *Int ((Balance1 *Int 1000) -Int ((Balance1 -Int Reserve1) *Int 3)))
   // dynamic data is reasonably sized
   andBool (#rangeUInt(32, #sizeWordStack(ABI_calldata))
   // restrict to iterate faster on proofs - remove from final proof
+  andBool ((Reserve0 -Int ABI_amount0Out) <Int (Balance0 -Int ABI_amount0Out)
+  andBool ((Reserve1 <Int Balance1)
   andBool (ABI_amount0Out =/=Int 0
   andBool (ABI_amount1Out <Int Reserve1
   andBool (ABI_amount0Out <Int Reserve0
   andBool (ABI_amount1Out ==K 0
   andBool (#sizeWordStack(ABI_calldata) =/=K 0
+  // maybe those constrains are needed in the spec:
+  andBool ((((Reserve0 *Int Reserve1) *Int 1000000) <=Int ((((Balance0 -Int ABI_amount0Out) *Int 1000) -Int ((Balance0 -Int (ABI_amount0Out +Int (Reserve0 -Int ABI_amount0Out))) *Int 3)) *Int ((Balance1 *Int 1000) -Int ((Balance1 -Int Reserve1) *Int 3))))
   // TODO - static must be false
   andBool (VStatic ==K false
   // STOP ADDED RULES
-  andBool ((VCallDepth <Int 1024))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+  andBool ((VCallDepth <Int 1024)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
   andBool #rangeUInt(32, Cmem(ISTANBUL, ( ( #sizeWordStack(ABI_calldata) +Int 551 ) /Int 32   )))
-  // TODO - simplify MemGasVal
-  andBool Cmem(ISTANBUL, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164))) -Int Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 583) /Int 32)) >=Int 0
-  andBool (Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 583) /Int 32)) -Int Cmem(ISTANBUL, ((#sizeWordStack(ABI_calldata) +Int 551) /Int 32))) >=Int 0
-  andBool (Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)))) >=Int 0
-  andBool (Cmem(ISTANBUL_EVM, maxInt(maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3), 13)) -Int Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3))) >=Int 0
-	andBool (Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)) +Int (14127 -Int Cmem(ISTANBUL_EVM, #memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164))))) >=Int 0
-  andBool (Cmem(ISTANBUL_EVM, maxInt(maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3), 13)) +Int (14136 -Int Cmem(ISTANBUL_EVM, maxInt(#memoryUsageUpdate(((#sizeWordStack(ABI_calldata) +Int 583) /Int 32), 356, (((#sizeWordStack(ABI_calldata) +Int 31) &Int not31) +Int 164)), 3)))) >=Int 0
+  // reasonably restrict target bytecode
   andBool (#sizeByteArray(ABI_TO_CODE) <=Int 1250000000)
   // unknown contract has some code
   andBool #sizeWordStack(ABI_TO_CODE) =/=K 0
@@ -385,6 +392,3 @@ requires #unknown_address(ABI_to) ==K true
 
 
 endmodule
-
-
-
