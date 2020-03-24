@@ -24,32 +24,32 @@ iff
 returns To
 ```
 
-### allExchanges
+### allPairs
 
-`allExchanges` is an array holding the address of every exchange created using the `Factory`.
+`allPairs` is an array holding the address of every pair created using the `Factory`.
 
-`exchanges0` is the index in storage of the first array element. Subsequent array elements are read
-from `exchanges0 + index`. The maximum number of addresses that can be stored by the `allExchanges`
-array before overflow is therefore `maxUInt256 - exchanges0 + 1 ==
+`pair0` is the index in storage of the first array element. Subsequent array elements are read
+from `pair0 + index`. The maximum number of addresses that can be stored by the `allPairs`
+array before overflow is therefore `maxUInt256 - pair0 + 1 ==
 27889059366240281169193357100633332908378892778709981755071813198463099602853`.
 
 We do not currently specify the behaviour of the array after overflow has occured.
 
-TODO: ensure that `createExchange` checks for overflow on the `allExchanges` array.
+TODO: ensure that `createPair` checks for overflow on the `allPairs` array.
 
 ```act
-behaviour allExchanges of UniswapV2Factory
-interface allExchanges(uint256 index)
+behaviour allPairs of UniswapV2Factory
+interface allPairs(uint256 index)
 
 for all
 
-    Exchange : address
+    Pair : address
     Length   : uint256
 
 storage
 
-    allExchanges.length |-> Length
-    allExchanges[index] |-> Exchange
+    allPairs.length |-> Length
+    allPairs[index] |-> Pair
 
 iff
 
@@ -59,9 +59,9 @@ iff
 if
 
     // ignore array overflow
-    Length <= maxUInt256 - exchanges0 + 1
+    Length <= maxUInt256 - pair0 + 1
 
-returns Exchange
+returns Pair
 ```
 
 ### feeToSetter
@@ -85,32 +85,32 @@ iff
 returns Setter
 ```
 
-### getExchange
+### getPair
 
 ```act
-behaviour getExchange of UniswapV2Factory
-interface getExchange(address tokenA, address tokenB)
+behaviour getPair of UniswapV2Factory
+interface getPair(address tokenA, address tokenB)
 
 for all
 
-    Exchange : address
+    Pair : address
 
 storage
 
-    getExchange[tokenA][tokenB] |-> Exchange
+    getPair[tokenA][tokenB] |-> Pair
 
 iff
 
     VCallValue == 0
 
-returns Exchange
+returns Pair
 ```
 
-### allExchangesLength
+### allPairsLength
 
 ```act
-behaviour allExchangesLength of UniswapV2Factory
-interface allExchangesLength()
+behaviour allPairsLength of UniswapV2Factory
+interface allPairsLength()
 
 for all
 
@@ -118,7 +118,7 @@ for all
 
 storage
 
-    allExchanges.length |-> Length
+    allPairs.length |-> Length
 
 iff
 
@@ -173,7 +173,7 @@ iff
     CALLER_ID == Setter
 ```
 
-UniswapV2Exchange
+UniswapV2Pair
 =================
 
 ## Accessors
@@ -181,7 +181,7 @@ UniswapV2Exchange
 ### MINIMUM_LIQUIDITY
 
 ```act
-behaviour MINIMUM_LIQUIDITY of UniswapV2Exchange
+behaviour MINIMUM_LIQUIDITY of UniswapV2Pair
 interface MINIMUM_LIQUIDITY()
 
 iff
@@ -194,7 +194,7 @@ returns 1000
 ### factory
 
 ```act
-behaviour factory of UniswapV2Exchange
+behaviour factory of UniswapV2Pair
 interface factory()
 
 for all
@@ -215,7 +215,7 @@ returns Factory
 ### token0
 
 ```act
-behaviour token0 of UniswapV2Exchange
+behaviour token0 of UniswapV2Pair
 interface token0()
 
 for all
@@ -236,7 +236,7 @@ returns Token0
 ### token1
 
 ```act
-behaviour token1 of UniswapV2Exchange
+behaviour token1 of UniswapV2Pair
 interface token1()
 
 for all
@@ -257,7 +257,7 @@ returns Token1
 ### price0CumulativeLast
 
 ```act
-behaviour price0CumulativeLast of UniswapV2Exchange
+behaviour price0CumulativeLast of UniswapV2Pair
 interface price0CumulativeLast()
 
 for all
@@ -278,7 +278,7 @@ returns Price0
 ### price1CumulativeLast
 
 ```act
-behaviour price1CumulativeLast of UniswapV2Exchange
+behaviour price1CumulativeLast of UniswapV2Pair
 interface price1CumulativeLast()
 
 for all
@@ -297,7 +297,7 @@ returns Price1
 ```
 
 ```act
-behaviour kLast of UniswapV2Exchange
+behaviour kLast of UniswapV2Pair
 interface kLast()
 
 for all
@@ -318,7 +318,7 @@ returns KLast
 ### getReserves
 
 ```act
-behaviour getReserves of UniswapV2Exchange
+behaviour getReserves of UniswapV2Pair
 interface getReserves()
 
 for all
@@ -343,7 +343,7 @@ returns Reserve0 : Reserve1 : BlockTimestampLast
 ### initialize
 
 ```act
-behaviour initialize of UniswapV2Exchange
+behaviour initialize of UniswapV2Pair
 interface initialize(address _token0, address _token1)
 
 for all
@@ -365,14 +365,14 @@ iff
 ### Sync
 
 ```act
-behaviour sync of UniswapV2Exchange
+behaviour sync of UniswapV2Pair
 interface sync()
 
 for all
 
     LockState          : uint256
-    Token0             : address UniswapV2Exchange
-    Token1             : address UniswapV2Exchange
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
     Price0             : uint256
     Price1             : uint256
     Balance0           : uint256
@@ -423,20 +423,20 @@ iff
 
 calls
 
-    UniswapV2Exchange.balanceOf
+    UniswapV2Pair.balanceOf
 ```
 
 ### Skim
 
 ```act
-behaviour skim of UniswapV2Exchange
+behaviour skim of UniswapV2Pair
 interface skim(address to)
 
 for all
 
     LockState          : uint256
-    Token0             : address UniswapV2Exchange
-    Token1             : address UniswapV2Exchange
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
     SrcBal0            : uint256
     SrcBal1            : uint256
     DstBal0            : uint256
@@ -482,18 +482,18 @@ if
 
 calls
 
-    UniswapV2Exchange.balanceOf
+    UniswapV2Pair.balanceOf
 ```
 
 ```act
-behaviour skim-back of UniswapV2Exchange
+behaviour skim-back of UniswapV2Pair
 interface skim(address to)
 
 for all
 
     LockState          : uint256
-    Token0             : address UniswapV2Exchange
-    Token1             : address UniswapV2Exchange
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
     SrcBal0            : uint256
     SrcBal1            : uint256
     Reserve0           : uint112
@@ -532,7 +532,7 @@ if
 
 calls
 
-    UniswapV2Exchange.balanceOf
+    UniswapV2Pair.balanceOf
 ```
 
 # ERC20
@@ -542,7 +542,7 @@ UniswapV2 liquidity token behaviours.
 ## Accessors
 
 ```act
-behaviour name of UniswapV2Exchange
+behaviour name of UniswapV2Pair
 interface name()
 
 iff
@@ -553,7 +553,7 @@ returnsRaw #asByteStackInWidthaux(32, 31, 32, #enc(#string("Uniswap V2")))
 ```
 
 ```act
-behaviour symbol of UniswapV2Exchange
+behaviour symbol of UniswapV2Pair
 interface symbol()
 
 iff
@@ -564,7 +564,7 @@ returnsRaw #asByteStackInWidthaux(32, 31, 32, #enc(#string("UNI-V2")))
 ```
 
 ```act
-behaviour decimals of UniswapV2Exchange
+behaviour decimals of UniswapV2Pair
 interface decimals()
 
 iff
@@ -575,7 +575,7 @@ returns 18
 ```
 
 ```act
-behaviour totalSupply of UniswapV2Exchange
+behaviour totalSupply of UniswapV2Pair
 interface totalSupply()
 
 for all
@@ -594,7 +594,7 @@ returns Supply
 ```
 
 ```act
-behaviour balanceOf of UniswapV2Exchange
+behaviour balanceOf of UniswapV2Pair
 interface balanceOf(address who)
 
 for all
@@ -613,7 +613,7 @@ returns BalanceOf
 ```
 
 ```act
-behaviour allowance of UniswapV2Exchange
+behaviour allowance of UniswapV2Pair
 interface allowance(address holder, address spender)
 
 for all
@@ -632,7 +632,7 @@ returns Allowed
 ```
 
 ```act
-behaviour DOMAIN_SEPARATOR of UniswapV2Exchange
+behaviour DOMAIN_SEPARATOR of UniswapV2Pair
 interface DOMAIN_SEPARATOR()
 
 for all
@@ -651,7 +651,7 @@ returns Dom
 ```
 
 ```act
-behaviour PERMIT_TYPEHASH of UniswapV2Exchange
+behaviour PERMIT_TYPEHASH of UniswapV2Pair
 interface PERMIT_TYPEHASH()
 
 iff
@@ -662,7 +662,7 @@ returns Constants.PermitTypehash
 ```
 
 ```act
-behaviour nonces of UniswapV2Exchange
+behaviour nonces of UniswapV2Pair
 interface nonces(address who)
 
 for all
@@ -685,7 +685,7 @@ returns Nonce
 ### Transfer
 
 ```act
-behaviour transfer-diff of UniswapV2Exchange
+behaviour transfer-diff of UniswapV2Pair
 interface transfer(address to, uint value)
 
 for all
@@ -714,7 +714,7 @@ returns 1
 ```
 
 ```act
-behaviour transfer-same of UniswapV2Exchange
+behaviour transfer-same of UniswapV2Pair
 interface transfer(address to, uint value)
 
 for all
@@ -742,7 +742,7 @@ returns 1
 ### Approve
 
 ```act
-behaviour approve of UniswapV2Exchange
+behaviour approve of UniswapV2Pair
 interface approve(address spender, uint value)
 
 for all
@@ -763,7 +763,7 @@ returns 1
 ### TransferFrom
 
 ```act
-behaviour transferFrom-diff of UniswapV2Exchange
+behaviour transferFrom-diff of UniswapV2Pair
 interface transferFrom(address from, address to, uint value)
 
 for all
@@ -794,7 +794,7 @@ returns 1
 ```
 
 ```act
-behaviour transferFrom-same of UniswapV2Exchange
+behaviour transferFrom-same of UniswapV2Pair
 interface transferFrom(address from, address to, uint value)
 
 for all
@@ -862,7 +862,7 @@ Note that the `nonce` is omitted from the signature of the solidity function, bu
 and checked as part of the signed message.
 
 ```act
-behaviour permit of UniswapV2Exchange
+behaviour permit of UniswapV2Pair
 interface permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s)
 
 for all

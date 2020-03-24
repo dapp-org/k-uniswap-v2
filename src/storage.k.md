@@ -10,7 +10,7 @@ syntax Int ::= "Constants.PermitTypehash" [function]
 rule Constants.PermitTypehash => keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)")) [macro]
 ```
 
-## UniswapV2Exchange
+## UniswapV2Pair
 
 ### Storage
 
@@ -20,57 +20,57 @@ slots from act specification `storage` blocks.
 #### 0 - totalSupply
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.totalSupply" [function]
-rule #UniswapV2Exchange.totalSupply => 0
+syntax Int ::= "#UniswapV2Pair.totalSupply" [function]
+rule #UniswapV2Pair.totalSupply => 0
 ```
 
 #### 1 - balanceOf
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.balanceOf" "[" Int "]" [function]
-rule #UniswapV2Exchange.balanceOf[A] => #hashedLocation("Solidity", 1, A)
+syntax Int ::= "#UniswapV2Pair.balanceOf" "[" Int "]" [function]
+rule #UniswapV2Pair.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 ```
 
 #### 2 - allowance
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.allowance" "[" Int "][" Int "]" [function]
-rule #UniswapV2Exchange.allowance[A][B] => #hashedLocation("Solidity", 2, A B)
+syntax Int ::= "#UniswapV2Pair.allowance" "[" Int "][" Int "]" [function]
+rule #UniswapV2Pair.allowance[A][B] => #hashedLocation("Solidity", 2, A B)
 ```
 
 #### 3 - DOMAIN_SEPARATOR
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.DOMAIN_SEPARATOR" [function]
-rule #UniswapV2Exchange.DOMAIN_SEPARATOR => 3
+syntax Int ::= "#UniswapV2Pair.DOMAIN_SEPARATOR" [function]
+rule #UniswapV2Pair.DOMAIN_SEPARATOR => 3
 ```
 
 #### 4 - nonces
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.nonces" "[" Int "]" [function]
-rule #UniswapV2Exchange.nonces[A] => #hashedLocation("Solidity", 4, A)
+syntax Int ::= "#UniswapV2Pair.nonces" "[" Int "]" [function]
+rule #UniswapV2Pair.nonces[A] => #hashedLocation("Solidity", 4, A)
 ```
 
 #### 5 - factory
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.factory" [function]
-rule #UniswapV2Exchange.factory => 5
+syntax Int ::= "#UniswapV2Pair.factory" [function]
+rule #UniswapV2Pair.factory => 5
 ```
 
 #### 6 - token0
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.token0" [function]
-rule #UniswapV2Exchange.token0 => 6
+syntax Int ::= "#UniswapV2Pair.token0" [function]
+rule #UniswapV2Pair.token0 => 6
 ```
 
 #### 7 - token1
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.token1" [function]
-rule #UniswapV2Exchange.token1 => 7
+syntax Int ::= "#UniswapV2Pair.token1" [function]
+rule #UniswapV2Pair.token1 => 7
 ```
 
 #### 8 - { reserve0 reserve1 blockTimestampLast }
@@ -83,36 +83,36 @@ rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
 
-syntax Int ::= "#UniswapV2Exchange.reserve0_reserve1_blockTimestampLast" [function]
-rule #UniswapV2Exchange.reserve0_reserve1_blockTimestampLast => 8
+syntax Int ::= "#UniswapV2Pair.reserve0_reserve1_blockTimestampLast" [function]
+rule #UniswapV2Pair.reserve0_reserve1_blockTimestampLast => 8
 ```
 
 #### 9 - price0CumulativeLast
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.price0CumulativeLast" [function]
-rule #UniswapV2Exchange.price0CumulativeLast => 9
+syntax Int ::= "#UniswapV2Pair.price0CumulativeLast" [function]
+rule #UniswapV2Pair.price0CumulativeLast => 9
 ```
 
 #### 10 - price1CumulativeLast
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.price1CumulativeLast" [function]
-rule #UniswapV2Exchange.price1CumulativeLast => 10
+syntax Int ::= "#UniswapV2Pair.price1CumulativeLast" [function]
+rule #UniswapV2Pair.price1CumulativeLast => 10
 ```
 
 #### 11 - kLast
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.kLast" [function]
-rule #UniswapV2Exchange.kLast => 11
+syntax Int ::= "#UniswapV2Pair.kLast" [function]
+rule #UniswapV2Pair.kLast => 11
 ```
 
 #### 12 - lockState
 
 ```k
-syntax Int ::= "#UniswapV2Exchange.lockState" [function]
-rule #UniswapV2Exchange.lockState => 12
+syntax Int ::= "#UniswapV2Pair.lockState" [function]
+rule #UniswapV2Pair.lockState => 12
 ```
 
 ## UniswapV2Factory
@@ -131,30 +131,30 @@ syntax Int ::= "#UniswapV2Factory.feeToSetter" [function]
 rule #UniswapV2Factory.feeToSetter => 1
 ```
 
-#### 2 - getExchange
+#### 2 - getPair
 
 ```k
-syntax Int ::= "#UniswapV2Factory.getExchange" "[" Int "][" Int "]" [function]
-rule #UniswapV2Factory.getExchange[A][B] => #hashedLocation("Solidity", 2, A B)
+syntax Int ::= "#UniswapV2Factory.getPair" "[" Int "][" Int "]" [function]
+rule #UniswapV2Factory.getPair[A][B] => #hashedLocation("Solidity", 2, A B)
 ```
 
-#### 3 - allExchanges
+#### 3 - allPairs
 
-The length of the `allExchanges` array is stored at slot 3.
+The length of the `allPairs` array is stored at slot 3.
 
 ```k
-syntax Int ::= "#UniswapV2Factory.allExchanges.length" [function]
-rule #UniswapV2Factory.allExchanges.length => 3
+syntax Int ::= "#UniswapV2Factory.allPairs.length" [function]
+rule #UniswapV2Factory.allPairs.length => 3
 ```
 
-The first address in the `allExchanges` array is stored at the keccak hash of
-slot 3, the number represented to here by `exchanges0`. Subsequent addresses are
+The first address in the `allPairs` array is stored at the keccak hash of
+slot 3, the number represented to here by `pair0`. Subsequent addresses are
 stored at a `uint256` offset from this key.
 
 ```k
-syntax Int ::= "exchanges0" [function]
-rule exchanges0 => 87903029871075914254377627908054574944891091886930582284385770809450030037083 [macro]
+syntax Int ::= "pair0" [function]
+rule pair0 => 87903029871075914254377627908054574944891091886930582284385770809450030037083 [macro]
 
-syntax Int ::= "#UniswapV2Factory.allExchanges" "[" Int "]" [function]
-rule #UniswapV2Factory.allExchanges[N] => exchanges0 +Int N
+syntax Int ::= "#UniswapV2Factory.allPairs" "[" Int "]" [function]
+rule #UniswapV2Factory.allPairs[N] => pair0 +Int N
 ```
