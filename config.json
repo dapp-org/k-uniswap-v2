@@ -17,6 +17,12 @@
       "src": "contracts/UniswapV2Factory.sol"
     }
   },
+  "timeouts": {
+    "UniswapV2Exchange_burn_pass_rough": "72h",
+    "UniswapV2Exchange_burn_fail_rough": "72h",
+    "UniswapV2Exchange_burn_pass": "72h",
+    "UniswapV2Exchange_burn_fail": "72h"
+  },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
 }
