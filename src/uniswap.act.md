@@ -364,17 +364,17 @@ iff
 
 ### Burn
 
-The `burn` function burns all the liquidity tokens owned by the exchange
-contract and sends the equivalent exchange tokens to the address specified by
-`to`.
-The liquidity tokens should be sent to the contract atomically before calling `burn`,
-otherwise they can be withdrawn by a third-party with a call to `skim`.
+The `burn` function burns all the liquidity tokens owned by the pair
+contract and sends a proportionate amount of each token in the pair to the
+address specified by `to`.
+Sending liquidity tokens to the contract and calling `burn` should happen
+atomically, otherwise the tokens can be withdrawn by a third-party with a call
+to `skim`.
 
-`burn` also optionally generates protocol fees, depending on whether the value
-of `feeTo` is equal to `address(0)`.
+`burn` also optionally generates protocol fees, if the value of `feeTo` is not `0`.
 
-This function requires that the balances of the ERC20 tokens associated with the
-exchange are below `MAX_UINT_112 - 1`
+This function requires that the `UniswapV2Exchange` contract's balance of the
+two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
 ```act
 behaviour burn of UniswapV2Exchange
