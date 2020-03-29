@@ -468,6 +468,8 @@ iff in range uint256
     Amount0WithFee
     Amount1WithFee
     Supply - Balance
+    Price0 + Reserve1 * pow112 / Reserve0 * TimeElapsed
+    Price1 + Reserve0 * pow112 / Reserve1 * TimeElapsed
 
     // _safeTransfer
     BalanceToken0 - Amount0
