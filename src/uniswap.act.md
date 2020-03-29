@@ -408,7 +408,7 @@ storage
     token1 |-> Token1
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
-    totalSupply |-> Supply |-> #if Minting #then Supply - Balance + Fee #else Supply - Balance #fi
+    totalSupply |-> Supply => #if Minting #then Supply - Balance + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 #else Price0 #fi
