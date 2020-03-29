@@ -443,7 +443,7 @@ where
     Amount1 := Balance * BalanceToken1 / Supply
     Amount0WithFee := Balance * BalanceToken0 / (Supply + Fee)
     Amount1WithFee := Balance * BalanceToken1 / (Supply + Fee)
-    BlockTimestamp := TIMESTAMP mod pow32
+    BlockTimestamp := TIME mod pow32
     TimeElapsed := BlockTimestamp - BlockTimestampLast
 
 iff in range uint256
