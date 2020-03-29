@@ -411,8 +411,8 @@ storage
     totalSupply |-> Supply => #if Minting #then Supply - Balance + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
-    price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + Reserve1 * pow112 / Reserve0 * TimeElapsed #else Price0 #fi
-    price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + Reserve0 * pow112 / Reserve1 * TimeElapsed #else Price1 #fi
+    price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price0 + PrinceIncrease0 #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then Price1 + PrinceIncrease1 #else Price1 #fi
     lockState |-> LockState => LockState
 
 storage Token0
@@ -445,6 +445,8 @@ where
     Amount1WithFee := Balance * BalanceToken1 / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
     TimeElapsed := BlockTimestamp - BlockTimestampLast
+    PriceIncrease0 := Reserve1 * pow112 / Reserve0 * TimeElapsed
+    PriceIncrease1 := Reserve0 * pow112 / Reserve1 * TimeElapsed
 
 iff in range uint256
 
@@ -468,8 +470,8 @@ iff in range uint256
     Amount0WithFee
     Amount1WithFee
     Supply - Balance
-    Price0 + Reserve1 * pow112 / Reserve0 * TimeElapsed
-    Price1 + Reserve0 * pow112 / Reserve1 * TimeElapsed
+    Price0 + PrinceIncrease0
+    Price1 + PrinceIncrease1
 
     // _safeTransfer
     BalanceToken0 - Amount0
