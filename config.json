@@ -10,8 +10,8 @@
     ]
   },
   "implementations": {
-    "UniswapV2Exchange": {
-      "src": "contracts/UniswapV2Exchange.sol"
+    "UniswapV2Pair": {
+      "src": "contracts/UniswapV2Pair.sol"
     },
     "UniswapV2Factory": {
       "src": "contracts/UniswapV2Factory.sol"
