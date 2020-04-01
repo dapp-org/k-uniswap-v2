@@ -60,7 +60,7 @@ syntax Int ::= "#sqrt" "(" Int ")" [smtlib(smt_sqrt), smt-prelude]
 
 rule <k> #execute ~> CONTINUATION => #execute ~> CONTINUATION </k>
      <wordStack> X : JumpTo : WS  =>  JumpTo : #sqrt(X) : WS </wordStack>
-     <pc> 9386 => 9467 </pc>
+     <pc> 10360 => 10441 </pc>
   requires #rangeUInt(256, X)
   [trusted]
 ```
