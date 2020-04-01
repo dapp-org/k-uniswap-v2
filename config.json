@@ -24,10 +24,10 @@
     "UniswapV2Exchange_burn_fail": "60d"
   },
   "memory" : {
-    "UniswapV2Exchange_burn_pass_rough": "25G",
-    "UniswapV2Exchange_burn_fail_rough": "25G",
-    "UniswapV2Exchange_burn_pass": "25G",
-    "UniswapV2Exchange_burn_fail": "25G"
+    "UniswapV2Exchange_burn_pass_rough": "50G",
+    "UniswapV2Exchange_burn_fail_rough": "50G",
+    "UniswapV2Exchange_burn_pass": "50G",
+    "UniswapV2Exchange_burn_fail": "50G"
   },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
