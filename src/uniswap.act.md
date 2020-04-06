@@ -373,11 +373,11 @@ to `skim`.
 
 `burn` also optionally generates protocol fees, if the value of `feeTo` is not `0`.
 
-This function requires that the `UniswapV2Exchange` contract's balance of the
+This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
 ```act
-behaviour burn of UniswapV2Exchange
+behaviour burn of UniswapV2Pair
 interface burn(address to)
 
 for all
@@ -385,8 +385,8 @@ for all
     Reserve0           : uint112
     Reserve1           : uint112
     BlockTimestampLast : uint32
-    Token0             : address UniswapV2Exchange
-    Token1             : address UniswapV2Exchange
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
     Balance            : uint256
     BalanceFeeTo       : uint256
     BalanceToken0      : uint256
@@ -504,8 +504,8 @@ if
 
 calls
 
-    UniswapV2Exchange.balanceOf
-    UniswapV2Exchange.getReserves
+    UniswapV2Pair.balanceOf
+    UniswapV2Pair.getReserves
     UniswapV2Factory.feeTo
 ```
 
