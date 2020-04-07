@@ -136,6 +136,7 @@ rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
 rule (X &Int maxUInt32) => (maxUInt32 &Int X)
 rule (X &Int maxUInt112) => (maxUInt112 &Int X)
 rule (X &Int maxUInt160) => (maxUInt160 &Int X)
+rule (X &Int notMaxUInt160) => (notMaxUInt160 &Int X)
 rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
 ```
 ### Packed Storage { `uint32` `uint112` `uint112` }
