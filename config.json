@@ -17,6 +17,16 @@
       "src": "contracts/UniswapV2Factory.sol"
     }
   },
+  "timeouts": {
+    "UniswapV2Pair_mint-feeOn_pass_rough": "3d",
+    "UniswapV2Pair_mint-feeOn_fail_rough": "3d",
+    "UniswapV2Pair_mint-feeOn_pass": "3d"
+  },
+  "memory" : {
+    "UniswapV2Pair_mint-feeOn_pass_rough": "35G",
+    "UniswapV2Pair_mint-feeOn_fail_rough": "35G",
+    "UniswapV2Pair_mint-feeOn_pass": "35G"
+  },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
 }
