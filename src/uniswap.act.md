@@ -1008,8 +1008,6 @@ iff
     // --- LP shares must be created ---
 
     ((TotalSupply == 0)         \
-      and (Amount0 > 0)         \
-      and (Amount1 > 0)         \
       and (EmptyLiquidity > 0)  \
     )                           \
     or ((TotalSupply > 0)       \
