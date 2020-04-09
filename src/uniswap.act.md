@@ -1134,10 +1134,11 @@ iff in range uint256
     Amount0
     Amount1
 
-    Burned + 1000
+    Burned + MINIMUM_LIQUIDITY
 
     Amount0 * Amount1
     #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+    DstBal + #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
 
 iff
 
