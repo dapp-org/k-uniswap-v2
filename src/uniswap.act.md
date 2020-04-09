@@ -1134,6 +1134,8 @@ iff in range uint256
     Amount0
     Amount1
 
+    Burned + 1000
+
     Amount0 * Amount1
     #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
 
