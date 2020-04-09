@@ -998,7 +998,6 @@ iff in range uint256
     // --- total supply updates ---
 
     TotalSupply + EmptyLiquidity
-    TotalSupply + EmptyLiquidity
 
     TotalSupply + (Amount0 * TotalSupply) / Reserve0
     TotalSupply + (Amount1 * TotalSupply) / Reserve1
