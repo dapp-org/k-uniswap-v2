@@ -1386,8 +1386,8 @@ storage
 
     // --- mint liquidity tokens ---
 
-    balanceOf[to] |-> DstBal => DstBal + (Amount1 * TotalSupply) / Reserve0
-    totalSupply   |-> TotalSupply => TotalSupply + (Amount1 * TotalSupply) / Reserve0
+    balanceOf[to] |-> DstBal => DstBal + (Amount1 * TotalSupply) / Reserve1
+    totalSupply   |-> TotalSupply => TotalSupply + (Amount1 * TotalSupply) / Reserve1
 
     // --- sync reserves to balances, update cached timestamp ---
 
