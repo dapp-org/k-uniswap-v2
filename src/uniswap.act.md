@@ -389,8 +389,8 @@ for all
     Token1             : address UniswapV2Pair
     Balance            : uint256
     BalanceFeeTo       : uint256
-    BalanceToken0      : uint256
-    BalanceToken1      : uint256
+    BalanceToken0      : uint112
+    BalanceToken1      : uint112
     BalanceToToken0    : uint256
     BalanceToToken1    : uint256
     FeeTo              : address
@@ -480,11 +480,6 @@ iff in range uint256
     BalanceToToken1 + Amount1
     BalanceToToken0 + Amount0WithFee
     BalanceToToken1 + Amount1WithFee
-
-iff in range uint112
-
-    BalanceToken0
-    BalanceToken1
 
 iff
 
