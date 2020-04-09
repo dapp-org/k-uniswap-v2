@@ -1038,7 +1038,6 @@ calls
 returns SharesMinted
 ```
 
-
 #### `mint` fee off first call
 
 ```act
@@ -1168,6 +1167,298 @@ calls
     UniswapV2Factory.feeTo
 
 returns #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+```
+
+#### `mint` fee off subsequent calls
+
+
+```act
+behaviour mint-feeOff-subsequent-lt of UniswapV2Pair
+interface mint(address to)
+
+for all
+
+    Token0 : address UniswapV2Pair
+    Token1 : address UniswapV2Pair
+
+    Balance0 : uint256
+    Balance1 : uint256
+    Reserve0 : uint112
+    Reserve1 : uint112
+
+    PriceLast0 : uint256
+    PriceLast1 : uint256
+    BlockTimestampLast : uint32
+
+    Factory : address UniswapV2Factory
+    FeeTo   : address
+    KLast   : uint256
+
+    DstBal : uint256
+    Burned : uint256
+    TotalSupply : uint256
+
+    LockState : uint256
+
+where
+
+    // --- amounts paid into pool ---
+
+    Amount0 := Balance0 - Reserve0
+    Amount1 := Balance1 - Reserve1
+
+
+    // --- time since last call ---
+
+    TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+storage
+
+    token0  |-> Token0
+    token1  |-> Token1
+    factory |-> Factory
+
+    // --- reentrancy guard ---
+
+    lockState |-> LockState => LockState
+
+    // --- cached invariant update ---
+
+    kLast |-> KLast => 0
+
+    // --- mint liquidity tokens ---
+
+    balanceOf[to] |-> DstBal => DstBal + (Amount0 * TotalSupply) / Reserve0
+    totalSupply   |-> TotalSupply => TotalSupply + (Amount0 * TotalSupply) / Reserve0
+
+    // --- sync reserves to balances, update cached timestamp ---
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+      => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
+
+    // --- price accumulator updates ---
+
+    price0CumulativeLast |-> PriceLast0 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * TimeElapsed) + PriceLast0)) \
+        #else PriceLast0                                                            \
+      #fi
+
+    price1CumulativeLast |-> PriceLast1 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * TimeElapsed) + PriceLast1)) \
+        #else PriceLast1                                                            \
+      #fi
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff in range uint256
+
+    Amount0
+    Amount1
+
+    Amount0 * TotalSupply
+    Amount1 * TotalSupply
+
+    DstBal + (Amount0 * TotalSupply) / Reserve0
+    TotalSupply + (Amount0 * TotalSupply) / Reserve0
+
+iff
+
+    Reserve0 > 0
+    Reserve1 > 0
+
+    (Amount0 * TotalSupply) / Reserve0 > 0
+
+    // --- not payable ---
+
+    VCallValue == 0
+
+    // --- max call stack depth ---
+
+    VCallDepth < 1024
+
+    // --- reentrancy guard ---
+
+    LockState == 1
+
+if
+    // --- fee off ---
+
+    0 == FeeTo
+
+    // --- no storage collisions ---
+
+    0 =/= to
+
+    TotalSupply > 0
+    (Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+
+returns (Amount0 * TotalSupply) / Reserve0
+```
+
+```act
+behaviour mint-feeOff-subsequent-gt of UniswapV2Pair
+interface mint(address to)
+
+for all
+
+    Token0 : address UniswapV2Pair
+    Token1 : address UniswapV2Pair
+
+    Balance0 : uint256
+    Balance1 : uint256
+    Reserve0 : uint112
+    Reserve1 : uint112
+
+    PriceLast0 : uint256
+    PriceLast1 : uint256
+    BlockTimestampLast : uint32
+
+    Factory : address UniswapV2Factory
+    FeeTo   : address
+    KLast   : uint256
+
+    DstBal : uint256
+    Burned : uint256
+    TotalSupply : uint256
+
+    LockState : uint256
+
+where
+
+    // --- amounts paid into pool ---
+
+    Amount0 := Balance0 - Reserve0
+    Amount1 := Balance1 - Reserve1
+
+    // --- time since last call ---
+
+    TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+storage
+
+    token0  |-> Token0
+    token1  |-> Token1
+    factory |-> Factory
+
+    // --- reentrancy guard ---
+
+    lockState |-> LockState => LockState
+
+    // --- cached invariant update ---
+
+    kLast |-> KLast => 0
+
+    // --- mint liquidity tokens ---
+
+    balanceOf[to] |-> DstBal => DstBal + (Amount1 * TotalSupply) / Reserve0
+    totalSupply   |-> TotalSupply => TotalSupply + (Amount1 * TotalSupply) / Reserve0
+
+    // --- sync reserves to balances, update cached timestamp ---
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+      => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
+
+    // --- price accumulator updates ---
+
+    price0CumulativeLast |-> PriceLast0 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * TimeElapsed) + PriceLast0)) \
+        #else PriceLast0                                                            \
+      #fi
+
+    price1CumulativeLast |-> PriceLast1 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * TimeElapsed) + PriceLast1)) \
+        #else PriceLast1                                                            \
+      #fi
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff in range uint256
+
+    Amount0
+    Amount1
+
+    Amount0 * TotalSupply
+    Amount1 * TotalSupply
+
+    DstBal + (Amount1 * TotalSupply) / Reserve1
+    TotalSupply + (Amount1 * TotalSupply) / Reserve1
+
+iff
+
+    Reserve0 > 0
+    Reserve1 > 0
+
+    (Amount1 * TotalSupply) / Reserve1 > 0
+
+    // --- not payable ---
+
+    VCallValue == 0
+
+    // --- max call stack depth ---
+
+    VCallDepth < 1024
+
+    // --- reentrancy guard ---
+
+    LockState == 1
+
+if
+    // --- fee off ---
+
+    0 == FeeTo
+
+    // --- no storage collisions ---
+
+    0 =/= to
+
+    TotalSupply > 0
+    (Amount0 * TotalSupply) / Reserve0 > (Amount1 * TotalSupply) / Reserve1
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+
+returns (Amount1 * TotalSupply) / Reserve1
 ```
 
 # ERC20
