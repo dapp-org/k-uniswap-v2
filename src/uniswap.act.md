@@ -969,10 +969,6 @@ iff in range uint112
 
 iff in range uint256
 
-    // --- invariant calculation ---
-
-    Reserve0 * Reserve1
-
     // --- LP share calculations ---
 
     Amount0
@@ -996,8 +992,6 @@ iff in range uint256
     DstBal + (Amount1 * TotalSupply) / Reserve1
 
     // --- total supply updates ---
-
-    TotalSupply + EmptyLiquidity
 
     TotalSupply + (Amount0 * TotalSupply) / Reserve0
     TotalSupply + (Amount1 * TotalSupply) / Reserve1
