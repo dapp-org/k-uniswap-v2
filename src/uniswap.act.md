@@ -1165,9 +1165,7 @@ iff
 
     // --- LP shares must be created ---
 
-    Amount0 > 0
-    Amount1 > 0
-    #sqrt(Amount0 * Amount1) > 0
+    #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY > 0
 
     // --- not payable ---
 
