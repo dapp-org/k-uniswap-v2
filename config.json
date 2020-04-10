@@ -40,7 +40,7 @@
     "UniswapV2Pair_mint-feeOn-subsequent-noMint-gte_fail_rough": "1d",
     "UniswapV2Pair_mint-feeOn-subsequent-noMint-gte_pass": "1d",
     "UniswapV2Pair_mint-feeOn-subsequent-feeMinted-lt_pass_rough": "1d",
-    "UniswapV2Pair_mint-feeOn-subsequent-feeMinted-lt_fail_rough": "1d",
+    "UniswapV2Pair_mint-feeOn-subsequent-feeMinted-lt_fail_rough": "3h",
     "UniswapV2Pair_mint-feeOn-subsequent-feeMinted-lt_pass": "1d",
     "UniswapV2Pair_mint-feeOn-subsequent-feeMinted-gte_pass_rough": "1d",
     "UniswapV2Pair_mint-feeOn-subsequent-feeMinted-gte_fail_rough": "1d",
