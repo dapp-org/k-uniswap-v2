@@ -1560,10 +1560,6 @@ where
     Amount0 := Balance0 - Reserve0
     Amount1 := Balance1 - Reserve1
 
-    // --- LP share minting ---
-
-    (Amount0 * (TotalSupply + FeeLiquidity)) / Reserve0
-
     // --- fee minting ---
 
     RootK := #sqrt(Reserve0 * Reserve1)
@@ -1742,10 +1738,6 @@ where
 
     Amount0 := Balance0 - Reserve0
     Amount1 := Balance1 - Reserve1
-
-    // --- LP share minting ---
-
-    (Amount1 * (TotalSupply + FeeLiquidity)) / Reserve1
 
     // --- fee minting ---
 
