@@ -1652,6 +1652,8 @@ iff in range uint256
 
     FeeBal + FeeLiquidity
     DstBal + (Amount0 * (TotalSupply + FeeLiquidity)) / Reserve0
+
+    TotalSupply + FeeLiquidity
     TotalSupply + FeeLiquidity + (Amount0 * (TotalSupply + FeeLiquidity)) / Reserve0
 
 iff
@@ -1831,6 +1833,8 @@ iff in range uint256
 
     FeeBal + FeeLiquidity
     DstBal + (Amount1 * (TotalSupply + FeeLiquidity)) / Reserve1
+
+    TotalSupply + FeeLiquidity
     TotalSupply + FeeLiquidity + (Amount1 * (TotalSupply + FeeLiquidity)) / Reserve1
 
 iff
