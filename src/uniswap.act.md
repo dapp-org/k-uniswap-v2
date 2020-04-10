@@ -1273,7 +1273,7 @@ storage
 
     // --- sync reserves to balances, update cached timestamp ---
 
-    reserve0_reserve1_blockTimestampLast |-> #PackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
       => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
 
     // --- price accumulator updates ---
@@ -1433,7 +1433,7 @@ storage
 
     // --- sync reserves to balances, update cached timestamp ---
 
-    reserve0_reserve1_blockTimestampLast |-> #PackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
       => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
 
     // --- price accumulator updates ---
