@@ -1197,7 +1197,7 @@ calls
     UniswapV2Pair.balanceOf
     UniswapV2Factory.feeTo
 
-returns #sqrt(Amount0 * Amount1)
+returns #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
 ```
 
 #### `mint`: fee on, subsequent calls, no fee minted
