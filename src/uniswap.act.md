@@ -871,11 +871,12 @@ if
 
     0 == FeeTo
 
-    // --- no storage collisions ---
-
-    0 =/= to
+    // --- subsequent call ---
 
     TotalSupply > 0
+
+    // --- lt ---
+
     (Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1
 
 calls
@@ -1015,11 +1016,12 @@ if
 
     0 == FeeTo
 
-    // --- no storage collisions ---
-
-    0 =/= to
+    // --- subsequent call ---
 
     TotalSupply > 0
+
+    // --- gte ---
+
     (Amount0 * TotalSupply) / Reserve0 >= (Amount1 * TotalSupply) / Reserve1
 
 calls
@@ -1867,7 +1869,7 @@ if
     KLast > 0
     RootK > RootKLast
 
-    // --- lt ---
+    // --- gte ---
 
     (Amount0 * (TotalSupply + FeeLiquidity)) / Reserve0 >= (Amount1 * (TotalSupply + FeeLiquidity)) / Reserve1
 
