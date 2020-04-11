@@ -1662,7 +1662,7 @@ iff
 
     Reserve0 > 0
     Reserve1 > 0
-    FundedLiquidityFee > 0
+    (Amount0 * (TotalSupply + FeeLiquidity)) / Reserve0 > 0
 
     // --- not payable ---
 
@@ -1843,7 +1843,7 @@ iff
 
     Reserve0 > 0
     Reserve1 > 0
-    FundedLiquidityFee > 0
+    (Amount1 * (TotalSupply + FeeLiquidity)) / Reserve1 > 0
 
     // --- not payable ---
 
