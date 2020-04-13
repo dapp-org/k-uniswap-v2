@@ -101,9 +101,11 @@ rule ((X modInt Y) modInt Y) => (X modInt Y)
 `K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand.
 
 ```k
-rule (X &Int Y) ==Int (Y &Int X) => true
+rule (X &Int maxUInt32) => (maxUInt32 &Int X)
+rule (X &Int maxUInt112) => (maxUInt112 &Int X)
+rule (X &Int maxUInt160) => (maxUInt160 &Int X)
+rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
 ```
-
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
 #### Reads
