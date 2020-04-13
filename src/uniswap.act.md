@@ -663,11 +663,15 @@ storage
     token1  |-> Token1
     factory |-> Factory
 
+    // -- reentrancy guard ---
+
     lockState |-> LockState => LockState
+
+    // -- cache invariant ---
 
     kLast |-> KLast => #if FeeOn #then Balance0 * Balance1 #else 0 #fi
 
-    // -- mint tokens
+    // -- mint tokens ---
 
     balanceOf[to] |-> DstBal      => DstBal + #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
     balanceOf[0]  |-> Burned      => Burned + MINIMUM_LIQUIDITY
