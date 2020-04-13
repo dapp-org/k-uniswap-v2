@@ -377,7 +377,7 @@ This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
 ```act
-behaviour burn-no-fee-no-minting-supply-not-zero of UniswapV2Pair
+behaviour burn of UniswapV2Pair
 interface burn(address to)
 
 for all
