@@ -84,14 +84,16 @@ The solidity optimizer compiles `block.time % 2**32` to `block.time AND maxUInt3
 This lemma ensures the packed storage rules will apply.
 
 ```k
-rule (maxUInt32 &Int X) <=Int maxUInt32 => true
+rule (X &Int Y) <= X => true
+  requires X >=Int 0
 ```
 
 Repeated application of `modInt pow32` can be simplified as follows. This lets us clean the storage
 conditions in a few specs.
 
 ```k
-rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
+rule ((X modInt Y) modInt Y) => (X modInt Y)
+  requires X >=Int 0
 ```
 
 ### Commutivity For Bitwise `AND`
