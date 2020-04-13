@@ -470,6 +470,7 @@ iff in range uint256
     Amount0WithFee
     Amount1WithFee
     Supply - Balance
+    Reserve0 * Reserve1
 
     // _safeTransfer
     BalanceToken0 - Amount0
