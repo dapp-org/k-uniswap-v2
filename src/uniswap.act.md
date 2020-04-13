@@ -728,7 +728,7 @@ iff
 if
     // --- fee off ---
 
-    (FeeTo == 0 or KLast == 0)
+    (KLast == 0 or not FeeOn)
 
     // --- first call
 
@@ -736,7 +736,7 @@ if
 
     // --- no storage collisions ---
 
-    0 =/= to
+    to =/= 0
 
 calls
 
