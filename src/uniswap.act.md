@@ -643,6 +643,8 @@ where
 
     TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
 
+    FeeOn := FeeTo =/= 0
+
 storage Token0
 
     balanceOf[ACCT_ID] |-> Balance0
@@ -663,7 +665,7 @@ storage
 
     lockState |-> LockState => LockState
 
-    kLast |-> KLast => 0
+    kLast |-> KLast => #if FeeOn #then Balance0 * Balance1 #else 0 #fi
 
     // -- mint tokens
 
@@ -708,6 +710,8 @@ iff in range uint256
 
 iff
 
+    (FeeOn) impliesBool #rangeUInt(256, Balance0 * Balance1)
+
     // --- LP shares must be created ---
 
     #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY > 0
@@ -720,7 +724,7 @@ iff
 if
     // --- fee off ---
 
-    0 == FeeTo
+    (FeeTo == 0 or KLast == 0)
 
     // --- first call
 
