@@ -470,6 +470,7 @@ iff in range uint256
     Amount0WithFee
     Amount1WithFee
     Supply - Balance
+    // TODO move to fee-on spec
     Reserve0 * Reserve1
 
     // _safeTransfer
