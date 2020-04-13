@@ -639,6 +639,10 @@ where
     Amount0 := Balance0 - Reserve0
     Amount1 := Balance1 - Reserve1
 
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    FeeLiquidity := (TotalSupply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+
     MINIMUM_LIQUIDITY := 1000
 
     TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
@@ -714,23 +718,41 @@ iff in range uint256
 
 iff
 
+    // --- no overflow in _mintFee ---
+
     (FeeOn) impliesBool #rangeUInt(256, Balance0 * Balance1)
+
+    (FeeOn and KLast > 0) impliesBool #rangeUInt(256, Reserve0 * Reserve1)
+
+    (FeeOn and KLast > 0 and RootK > RootKLast) impliesBool ( \
+          #rangeUInt(256, RootK * 5)                          \
+      and #rangeUInt(256, RootK * 5 + RootKLast)              \
+      and #rangeUInt(256, RootK - RootKLast)                  \
+      and #rangeUInt(256, TotalSupply * (RootK - RootKLast))  \
+    )
 
     // --- LP shares must be created ---
 
     #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY > 0
 
-    VCallValue == 0
-    VCallDepth < 1024
+    // --- no reentrancy ---
 
     LockState == 1
 
+    // --- mint is not payable ---
+
+    VCallValue == 0
+
+    // --- mint is not payable ---
+
+    VCallDepth < 1024
+
 if
-    // --- fee off ---
+    // --- no fee minting ---
 
-    (KLast == 0 or not FeeOn)
+    FeeLiquidity == 0
 
-    // --- first call
+    // --- first call ---
 
     TotalSupply == 0
 
