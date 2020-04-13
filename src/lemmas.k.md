@@ -84,7 +84,7 @@ The solidity optimizer compiles `block.time % 2**32` to `block.time AND maxUInt3
 This lemma ensures the packed storage rules will apply.
 
 ```k
-rule (X &Int Y) <= X => true
+rule (X &Int Y) <=Int X => true
   requires X >=Int 0
 ```
 
