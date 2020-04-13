@@ -88,7 +88,7 @@ rule (X &Int Y) <= X => true
   requires X >=Int 0
 ```
 
-Repeated application of `modInt pow32` can be simplified as follows. This lets us clean the storage
+Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
 conditions in a few specs.
 
 ```k
