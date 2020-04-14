@@ -408,7 +408,7 @@ storage
     token1 |-> Token1
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
-    totalSupply |-> Supply => #if Minting #then Supply - Balance + Fee #else Supply - Balance #fi
+    totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if TimeElapsed > 0 and Reserve0 =/= 0 and Reserve1 =/= 0 #then chop(Price0 + PriceIncrease0) #else Price0 #fi
@@ -439,12 +439,12 @@ where
     RootKLast := #sqrt(KLast)
     Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
     Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
-    Amount0 := Balance * BalanceToken0 / Supply
-    Amount1 := Balance * BalanceToken1 / Supply
-    Amount0WithFee := Balance * BalanceToken0 / (Supply + Fee)
-    Amount1WithFee := Balance * BalanceToken1 / (Supply + Fee)
+    Amount0 := (Balance * BalanceToken0) / Supply
+    Amount1 := (Balance * BalanceToken1) / Supply
+    Amount0WithFee := (Balance * BalanceToken0) / (Supply + Fee)
+    Amount1WithFee := (Balance * BalanceToken1) / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
-    TimeElapsed := #if BlockTimestamp < BlockTimestampLast #then pow32 + BlockTimestamp - BlockTimestampLast #else BlockTimestamp - BlockTimestampLast #fi
+    TimeElapsed := #if BlockTimestamp < BlockTimestampLast #then (pow32 + BlockTimestamp) - BlockTimestampLast #else BlockTimestamp - BlockTimestampLast #fi
     PriceIncrease0 := (Reserve1 * pow112 / Reserve0) * TimeElapsed
     PriceIncrease1 := (Reserve0 * pow112 / Reserve1) * TimeElapsed
 
