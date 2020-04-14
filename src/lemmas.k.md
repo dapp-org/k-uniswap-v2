@@ -72,6 +72,12 @@ rule (X &Int Y) <=Int X => true
   requires X >=Int 0
 ```
 
+```k
+rule chop((X &Int Y) *Int Z) => (X &Int Y) *Int Z
+  requires (#rangeUInt(32,  X) orBool #rangeUInt(32, Y))
+  andBool #rangeUInt(224, Z)
+```
+
 Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
 conditions in a few specs.
 
