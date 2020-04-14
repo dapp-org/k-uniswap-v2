@@ -86,6 +86,8 @@ This lemmas ensures the packed storage rules will apply.
 ```k
 rule (X &Int Y) <=Int X => true
   requires X >=Int 0
+
+rule chop(((maxUInt32 &Int X) *Int pow224)) => (maxUInt32 &Int X) *Int pow224
 ```
 
 Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
