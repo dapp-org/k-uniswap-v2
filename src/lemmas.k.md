@@ -81,13 +81,11 @@ rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
 ### Bitwise Modulo
 
 The solidity optimizer compiles `block.time % 2**32` to `block.time AND maxUInt32`.
-These lemma ensure the packed storage rules will apply.
+This lemmas ensures the packed storage rules will apply.
 
 ```k
 rule (X &Int Y) <=Int X => true
   requires X >=Int 0
-
-rule ((maxUInt32 &Int X) *Int pow224) <=Int maxUInt256 => true
 ```
 
 Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
