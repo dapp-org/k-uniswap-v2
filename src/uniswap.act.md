@@ -537,77 +537,10 @@ calls
 
 ### Mint
 
-`mint` allows anyone to mint new liquidity tokens to the `to` address in return for adding tokens to
-the pool.
-
-#### Inputs and Front Running
-
-The input amounts are calculated by subtracting the cached reserves from the actual token balances.
-This means that liquidity providers need to transfer any tokens they want to add to the pool before
-calling `mint`. This should always be done as part of a single atomic transaction, or there is a
-risk that someone will frontrun the call to `mint` with their own call to `mint` and thus steal the
-tokens.
-
-#### Proportional Minting
-
-The amount of liquidity tokens created (`Liquidity`) is proportional to the amount of pool tokens provided:
-
-- If the pool is empty, `Liquidity` will be `sqrt(Amount0 * Amount1)`.
-- Otherwise, `Liquidity` will be `min((Amount0 * TotalSupply) / Reserve0, (Amount1 * TotalSupply) / Reserve1)`.
-
----
-
-TODO: why are these numbers good?
-
-Assumption:
-
-- empty condition preserves `x*y=k`.
-- non empty preserves LP Token <-> Pool Token price and ensures that calls to mint with unbalanced
-  token amounts are not profitable.
-
----
-
-#### Divide by Zero Guard
-
-`mint` will always revert if `Liquidity` is `0`, ensuring that `Reserve0` and `Reserve1` are always
-non-zero in non-empty case (`Liquidity > 0` in the empty case ensures that both `Amount0` and
-`Amount1` are greater than `0`, meaning that both reserves will always be non-zero after `_update`
-is invoked at the end of `mint`).
-
----
-
-TODO: is there some `sync` / `skim` trickery between the initial and subsequent calls that can break this?
-
-yes --> mint() -> erc20.burn() -> sync() -> mint()
-
----
-
-#### Restrictions on Underlying Token Balances
-
-Calls to `mint` will fail if the balance of the exchange in either `Token0` or `Token1` exceeds `uint112(-1)`.
-
-`uint112(-1)` is `5192296858534827628530496329220095`. Assuming an 18 decimal token, this would be a
-problem once the exchange has token balances greater than `5,192,296,858,534,827` (~ 5 quadrillion).
-This should not be an issue for non pathological tokens, but does pose a risk for tokens with
-extremely large supplies or very high decimals.
-
-#### `sqrt`
-
-This spec assumes a good implementation of `sqrt` by leaving the result of the call to `sqrt`
-symbolic and making claims only in terms of that symbolic result. Bugs in the implementation of
-`sqrt` could result in invalid behaviour for `mint` and are not covered here.
-
-#### Reentrancy
-
-`mint` is guarded by a mutex (`LockState`) and so is safe against reentrant calls.
-
-TODO: fee minting
-TODO: invariant checks (`kLast`)
-
 #### `mint`: no fee minted
 
 ```act
-behaviour mint-noFee-diff of UniswapV2Pair
+behaviour mint-noFee-first-diff of UniswapV2Pair
 interface mint(address to)
 
 for all
@@ -653,17 +586,347 @@ where
 
     MINIMUM_LIQUIDITY := 1000
 
-    EmptyLiquidity := #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+    // --- time elapsed since last block in which _update was called ---
 
-    FundedLiquidity := #min(              \
-      (Amount0 * TotalSupply) / Reserve0, \
-      (Amount1 * TotalSupply) / Reserve1  \
+    TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+storage
+
+    token0  |-> Token0
+    token1  |-> Token1
+    factory |-> Factory
+
+    // --- reentrancy guard ---
+
+    lockState |-> LockState => LockState
+
+    // --- cache invariant ---
+
+    kLast |-> KLast => #if FeeOn #then Balance0 * Balance1 #else 0 #fi
+
+    // --- mint tokens ---
+
+    balanceOf[to] |-> DstBal      => DstBal + #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+    balanceOf[0]  |-> Burned      => Burned + MINIMUM_LIQUIDITY
+    totalSupply   |-> TotalSupply => TotalSupply + #sqrt(Amount0 * Amount1)
+
+    // --- sync reserves to balances, update cached timestamp ---
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+      => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
+
+    // --- price accumulator updates ---
+
+    price0CumulativeLast |-> PriceLast0 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * TimeElapsed) + PriceLast0)) \
+        #else PriceLast0                                                            \
+      #fi
+
+    price1CumulativeLast |-> PriceLast1 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * TimeElapsed) + PriceLast1)) \
+        #else PriceLast1                                                            \
+      #fi
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff in range uint256
+
+    Amount0
+    Amount1
+
+    Amount0 * Amount1
+    #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+
+    Burned + MINIMUM_LIQUIDITY
+
+    DstBal + #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+
+iff
+
+    // --- conditional artihmetic safety checks (_mintFee) ---
+
+    (FeeOn) impliesBool #rangeUInt(256, Balance0 * Balance1)
+
+    (FeeOn and KLast > 0) impliesBool #rangeUInt(256, Reserve0 * Reserve1)
+
+    (FeeOn and KLast > 0 and RootK > RootKLast) impliesBool ( \
+          #rangeUInt(256, RootK * 5)                          \
+      and #rangeUInt(256, RootK * 5 + RootKLast)              \
+      and #rangeUInt(256, RootK - RootKLast)                  \
+      and #rangeUInt(256, TotalSupply * (RootK - RootKLast))  \
     )
 
-    SharesMinted := #if TotalSupply == 0 \
-      #then EmptyLiquidity               \
-      #else FundedLiquidity              \
-    #fi
+    // --- LP shares must be minted ---
+
+    #sqrt(Amount0 * Amount1) > 0
+
+    // --- no reentrancy ---
+
+    LockState == 1
+
+    // --- mint is not payable ---
+
+    VCallValue == 0
+
+    // --- call stack does not overflow ---
+
+    VCallDepth < 1024
+
+if
+    // --- no fee minting ---
+
+    FeeLiquidity == 0
+
+    // --- no storage collisions ---
+
+    to =/= 0
+
+    // --- first call ---
+
+    TotalSupply == 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+
+returns #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY
+```
+
+```act
+behaviour mint-noFee-subsequent-lt-diff of UniswapV2Pair
+interface mint(address to)
+
+for all
+
+    Token0 : address UniswapV2Pair
+    Token1 : address UniswapV2Pair
+
+    Balance0 : uint256
+    Balance1 : uint256
+    Reserve0 : uint112
+    Reserve1 : uint112
+
+    PriceLast0 : uint256
+    PriceLast1 : uint256
+    BlockTimestampLast : uint32
+
+    Factory : address UniswapV2Factory
+    FeeTo   : address
+    KLast   : uint256
+
+    DstBal      : uint256
+    Burned      : uint256
+    TotalSupply : uint256
+
+    LockState : uint256
+
+where
+
+    // --- input token amounts ---
+
+    Amount0 := Balance0 - Reserve0
+    Amount1 := Balance1 - Reserve1
+
+    // --- fee liquidity Calculations ---
+
+    FeeOn := FeeTo =/= 0
+
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    FeeLiquidity := (TotalSupply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+
+    // --- LP share burning ---
+
+    SharesBurned := #if TotalSupply == 0 #then MINIMUM_LIQUIDITY #else 0 #fi
+
+    // --- time elapsed since last block in which _update was called ---
+
+    TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+storage
+
+    token0  |-> Token0
+    token1  |-> Token1
+    factory |-> Factory
+
+    // --- reentrancy guard ---
+
+    lockState |-> LockState => LockState
+
+    // --- cache invariant ---
+
+    kLast |-> KLast => #if FeeOn #then Balance0 * Balance1 #else 0 #fi
+
+    // --- mint tokens ---
+
+    balanceOf[to] |-> DstBal      => DstBal + (Amount0 * TotalSupply / Reserve0)
+    totalSupply   |-> TotalSupply => TotalSupply + (Amount0 * TotalSupply / Reserve0)
+
+    // --- sync reserves to balances, update cached timestamp ---
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+      => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
+
+    // --- price accumulator updates ---
+
+    price0CumulativeLast |-> PriceLast0 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * TimeElapsed) + PriceLast0)) \
+        #else PriceLast0                                                            \
+      #fi
+
+    price1CumulativeLast |-> PriceLast1 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * TimeElapsed) + PriceLast1)) \
+        #else PriceLast1                                                            \
+      #fi
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff in range uint256
+
+    Amount0
+    Amount1
+
+    Amount0 * TotalSupply
+    Amount1 * TotalSupply
+
+    DstBal + (Amount0 * TotalSupply / Reserve0)
+    TotalSupply + (Amount0 * TotalSupply / Reserve0)
+
+iff
+
+    // --- no divide by zeros ---
+
+    Reserve0 > 0
+    Reserve1 > 0
+
+    // --- conditional artihmetic safety checks ---
+
+    (FeeOn) impliesBool #rangeUInt(256, Balance0 * Balance1)
+
+    (FeeOn and KLast > 0) impliesBool #rangeUInt(256, Reserve0 * Reserve1)
+
+    (FeeOn and KLast > 0 and RootK > RootKLast) impliesBool ( \
+          #rangeUInt(256, RootK * 5)                          \
+      and #rangeUInt(256, RootK * 5 + RootKLast)              \
+      and #rangeUInt(256, RootK - RootKLast)                  \
+      and #rangeUInt(256, TotalSupply * (RootK - RootKLast))  \
+    )
+
+    // --- LP shares must be minted ---
+
+    (Amount0 * TotalSupply) / Reserve0 > 0
+
+    // --- no reentrancy ---
+
+    LockState == 1
+
+    // --- mint is not payable ---
+
+    VCallValue == 0
+
+    // --- call stack does not overflow ---
+
+    VCallDepth < 1024
+
+if
+    // --- no fee minting ---
+
+    FeeLiquidity == 0
+
+    // --- no storage collisions ---
+
+    to =/= 0
+
+    // --- subsequent lt ---
+
+    TotalSupply > 0
+    (Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+
+returns (Amount0 * TotalSupply) / Reserve0
+```
+
+```act
+behaviour mint-noFee-subsequent-gte-diff of UniswapV2Pair
+interface mint(address to)
+
+for all
+
+    Token0 : address UniswapV2Pair
+    Token1 : address UniswapV2Pair
+
+    Balance0 : uint256
+    Balance1 : uint256
+    Reserve0 : uint112
+    Reserve1 : uint112
+
+    PriceLast0 : uint256
+    PriceLast1 : uint256
+    BlockTimestampLast : uint32
+
+    Factory : address UniswapV2Factory
+    FeeTo   : address
+    KLast   : uint256
+
+    DstBal      : uint256
+    Burned      : uint256
+    TotalSupply : uint256
+
+    LockState : uint256
+
+where
+
+    // --- input token amounts ---
+
+    Amount0 := Balance0 - Reserve0
+    Amount1 := Balance1 - Reserve1
+
+    // --- fee liquidity Calculations ---
+
+    FeeOn := FeeTo =/= 0
+
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    FeeLiquidity := (TotalSupply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
 
     // --- LP share burning ---
 
@@ -701,9 +964,8 @@ storage
 
     // -- mint tokens ---
 
-    balanceOf[to] |-> DstBal      => DstBal + SharesMinted
-    balanceOf[0]  |-> Burned      => Burned + SharesBurned
-    totalSupply   |-> TotalSupply => TotalSupply + SharesMinted + SharesBurned
+    balanceOf[to] |-> DstBal      => DstBal + (Amount1 * TotalSupply / Reserve1)
+    totalSupply   |-> TotalSupply => TotalSupply + (Amount1 * TotalSupply / Reserve1)
 
     // --- sync reserves to balances, update cached timestamp ---
 
@@ -734,39 +996,20 @@ iff in range uint256
     Amount0
     Amount1
 
+    Amount0 * TotalSupply
+    Amount1 * TotalSupply
+
+    DstBal + (Amount1 * TotalSupply / Reserve1)
+    TotalSupply + (Amount1 * TotalSupply / Reserve1)
+
 iff
 
-    // --- conditional artihmetic safety checks (LP share minting) ---
+    // --- no divide by zeros ---
 
-    (TotalSupply == 0) impliesBool (                                             \
-          #rangeUInt(256, Amount0 * Amount1)                                     \
-      and #rangeUInt(256, Burned + MINIMUM_LIQUIDITY)                            \
-      and #rangeUInt(256, #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY)          \
-      and #rangeUInt(256, DstBal + #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY) \
-    )
+    Reserve0 > 0
+    Reserve1 > 0
 
-    (TotalSupply > 0) impliesBool (              \
-          Reserve0 > 0                           \
-      and Reserve1 > 0                           \
-      and #rangeUInt(256, Amount0 * TotalSupply) \
-      and #rangeUInt(256, Amount1 * TotalSupply) \
-    )
-
-    (TotalSupply > 0                                                              \
-      and (Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1 \
-    ) impliesBool (                                                               \
-          #rangeUInt(256, DstBal + (Amount0 * TotalSupply / Reserve0))            \
-      and #rangeUInt(256, TotalSupply + (Amount0 * TotalSupply / Reserve0))       \
-    )
-
-    (TotalSupply > 0                                                               \
-      and (Amount0 * TotalSupply) / Reserve0 >= (Amount1 * TotalSupply) / Reserve1 \
-    ) impliesBool (                                                                \
-          #rangeUInt(256, DstBal + (Amount1 * TotalSupply / Reserve1))             \
-      and #rangeUInt(256, TotalSupply + (Amount1 * TotalSupply / Reserve1))        \
-    )
-
-    // --- conditional artihmetic safety checks (_mintFee) ---
+    // --- conditional artihmetic safety checks ---
 
     (FeeOn) impliesBool #rangeUInt(256, Balance0 * Balance1)
 
@@ -781,19 +1024,7 @@ iff
 
     // --- LP shares must be minted ---
 
-    (TotalSupply == 0) impliesBool (#sqrt(Amount0 * Amount1) > 0)
-
-    (TotalSupply > 0                                                              \
-      and (Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1 \
-    ) impliesBool (                                                               \
-      (Amount0 * TotalSupply) / Reserve0 > 0                                      \
-    )
-
-    (TotalSupply > 0                                                               \
-      and (Amount0 * TotalSupply) / Reserve0 >= (Amount1 * TotalSupply) / Reserve1 \
-    ) impliesBool (                                                                \
-      (Amount1 * TotalSupply) / Reserve1 > 0                                       \
-    )
+    (Amount1 * TotalSupply) / Reserve1 > 0
 
     // --- no reentrancy ---
 
@@ -816,12 +1047,17 @@ if
 
     to =/= 0
 
+    // --- subsequent gte ---
+
+    TotalSupply > 0
+    (Amount0 * TotalSupply) / Reserve0 >= (Amount1 * TotalSupply) / Reserve1
+
 calls
 
     UniswapV2Pair.balanceOf
     UniswapV2Factory.feeTo
 
-returns SharesMinted
+returns (Amount1 * TotalSupply) / Reserve1
 ```
 
 #### `mint`: fee minted
