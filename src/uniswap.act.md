@@ -990,7 +990,9 @@ if
     KLast > 0
     RootK > RootKLast
     FeeLiquidity > 0
-    TotalSupply > 0 // implied by above condition, but added here to make life easier for the prover
+
+    // implied by FeeLiquidity > 0, but added here to make life easier for the prover
+    TotalSupply > 0
 
     // --- no storage collisions ---
 
