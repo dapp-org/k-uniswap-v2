@@ -492,7 +492,6 @@ iff
     LockState == 1
     VCallValue == 0
     VCallDepth < 1024
-    Supply > 0
 
 if
 
