@@ -14,10 +14,11 @@ let
 in
   pkgs.mkShell {
     name = "k-uniswap";
-    buildInputs = klab.buildInputs ++ [
+    buildInputs = klab.buildInputs ++ (with pkgs; [
+      cacert
       dapptools.dapp
-      pkgs.yarn
-    ];
+      yarn
+    ]);
     shellHook = ''
       export NIX_PATH="nixpkgs=${pkgs.path}"
       export DAPPTOOLS=${dappSrc}

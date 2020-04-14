@@ -1,6 +1,7 @@
 {
   "name": "k-uniswap",
   "url": "https://github.com/dapp-org/k-uniswap-v2/",
+  "host": "dapp.ci",
   "src": {
     "specification": "./src/uniswap.act.md",
     "smt_prelude": "./src/prelude.smt2.md",
