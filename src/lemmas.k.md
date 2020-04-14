@@ -73,9 +73,7 @@ rule (X &Int Y) <=Int X => true
 ```
 
 ```k
-rule chop((X &Int Y) *Int Z) => (X &Int Y) *Int Z
-  requires (#rangeUInt(32,  X) orBool #rangeUInt(32, Y))
-  andBool #rangeUInt(224, Z)
+rule ((maxUInt32 &Int X) *Int pow224) <=Int maxUInt256 => true
 ```
 
 Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
