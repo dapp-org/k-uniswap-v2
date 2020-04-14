@@ -96,6 +96,10 @@ rule ((X modInt Y) modInt Y) => (X modInt Y)
   requires X >=Int 0
 ```
 
+```k
+rule chop((maxUInt32 &Int TIME) * pow224) => (maxUInt32 & TIME) * pow224
+```
+
 ### Commutivity For Bitwise `AND`
 
 `K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand.
