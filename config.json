@@ -30,5 +30,8 @@
     "UniswapV2Pair_burn_fail": "50G"
   },
   "dapp_root": "./uniswap-v2-core",
-  "solc_output_path": "build/Combined-Json.json"
+  "solc_output_path": "build/Combined-Json.json",
+  "dirty_rules": [
+    "./src/dirty_lemmas.k.md"
+  ]
 }
