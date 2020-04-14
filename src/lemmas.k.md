@@ -88,16 +88,18 @@ rule (X &Int Y) <=Int X => true
   requires X >=Int 0
 ```
 
+```k
+rule chop((X &Int Y) *Int Z) => (X &Int Y) *Int Z
+  requires (#rangeUInt(32,  X) orBool #rangeUInt(32, Y))
+  andBool #rangeUInt(224, Z)
+```
+
 Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
 conditions in a few specs.
 
 ```k
 rule ((X modInt Y) modInt Y) => (X modInt Y)
   requires X >=Int 0
-```
-
-```k
-rule chop((maxUInt32 &Int TIME) *Int pow224) => (maxUInt32 &Int TIME) *Int pow224
 ```
 
 ### Commutivity For Bitwise `AND`
