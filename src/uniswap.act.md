@@ -943,8 +943,8 @@ iff in range uint256
 
     Reserve0 * Reserve1
 
-    Amount0 * TotalSupply
-    Amount1 * TotalSupply
+    Amount0 * (TotalSupply + FeeLiquidity)
+    Amount1 * (TotalSupply + FeeLiquidity)
 
     RootK * 5
     RootK * 5 + RootKLast
