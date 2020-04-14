@@ -779,9 +779,21 @@ iff
       and #rangeUInt(256, TotalSupply * (RootK - RootKLast))  \
     )
 
-    // --- LP shares must be created ---
+    // --- LP shares must be minted ---
 
-    SharesMinted > 0
+    (TotalSupply == 0) impliesBool (#sqrt(Amount0 * Amount1) > 0)
+
+    (TotalSupply > 0                                                              \
+      and (Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1 \
+    ) impliesBool (                                                               \
+      (Amount0 * TotalSupply) / Reserve0 > 0                                      \
+    )
+
+    (TotalSupply > 0                                                               \
+      and (Amount0 * TotalSupply) / Reserve0 >= (Amount1 * TotalSupply) / Reserve1 \
+    ) impliesBool (                                                                \
+      (Amount1 * TotalSupply) / Reserve1 > 0                                       \
+    )
 
     // --- no reentrancy ---
 
