@@ -89,7 +89,7 @@ rule (X &Int Y) <=Int X => true
 ```
 
 ```k
-rule ((maxUInt32 &Int X) *Int pow224) <= maxUInt256 => true
+rule ((maxUInt32 &Int X) *Int pow224) <=Int maxUInt256 => true
 ```
 
 Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
