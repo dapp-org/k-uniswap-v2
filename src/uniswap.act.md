@@ -498,6 +498,8 @@ if
 
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
+    KLast == 0
+    Fee == 0
     notBool(Minting)
     notBool(FeeOn)
     Supply =/= 0
