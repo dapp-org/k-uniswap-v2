@@ -497,10 +497,7 @@ if
 
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
-    KLast == 0
-    Fee == 0
-    notBool(Minting)
-    notBool(FeeOn)
+    FeeTo == 0
     Supply =/= 0
     TimeElapsed > 0
     Reserve0 =/= 0
