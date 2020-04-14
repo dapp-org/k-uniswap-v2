@@ -675,7 +675,7 @@ iff
 
     // --- LP shares must be minted ---
 
-    #sqrt(Amount0 * Amount1) > 0
+    #sqrt(Amount0 * Amount1) - MINIMUM_LIQUIDITY > 0
 
     // --- no reentrancy ---
 
