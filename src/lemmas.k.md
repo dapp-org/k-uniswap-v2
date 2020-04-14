@@ -97,7 +97,7 @@ rule ((X modInt Y) modInt Y) => (X modInt Y)
 ```
 
 ```k
-rule chop((maxUInt32 &Int TIME) * pow224) => (maxUInt32 & TIME) * pow224
+rule chop((maxUInt32 &Int TIME) *Int pow224) => (maxUInt32 &Int TIME) *Int pow224
 ```
 
 ### Commutivity For Bitwise `AND`
