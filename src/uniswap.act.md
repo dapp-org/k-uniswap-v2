@@ -501,6 +501,12 @@ if
     Supply =/= 0
     Reserve0 =/= 0
     Reserve1 =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Pair.getReserves
+    UniswapV2Factory.feeTo
 ```
 ### Sync
 
