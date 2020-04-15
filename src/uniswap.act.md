@@ -498,6 +498,7 @@ if
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
     Fee == 0
+    KLast == 0
     Supply =/= 0
     Reserve0 =/= 0
     Reserve1 =/= 0
