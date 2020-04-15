@@ -36,7 +36,10 @@
     "UniswapV2Pair_mint-noFee-subsequent-gte_pass": "1d",
     "UniswapV2Pair_mint-feeMinted-diff_pass_rough": "1d",
     "UniswapV2Pair_mint-feeMinted-diff_fail_rough": "1d",
-    "UniswapV2Pair_mint-feeMinted-diff_pass": "1d"
+    "UniswapV2Pair_mint-feeMinted-diff_pass": "1d",
+    "UniswapV2Pair_mint-feeMinted-same_pass_rough": "1d",
+    "UniswapV2Pair_mint-feeMinted-same_fail_rough": "1d",
+    "UniswapV2Pair_mint-feeMinted-same_pass": "1d"
   },
   "memory" : {
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
@@ -53,7 +56,10 @@
     "UniswapV2Pair_mint-noFee-subsequent-gte_pass": "30G",
     "UniswapV2Pair_mint-feeMinted-diff_pass_rough": "30G",
     "UniswapV2Pair_mint-feeMinted-diff_fail_rough": "30G",
-    "UniswapV2Pair_mint-feeMinted-diff_pass": "30G"
+    "UniswapV2Pair_mint-feeMinted-diff_pass": "30G",
+    "UniswapV2Pair_mint-feeMinted-same_pass_rough": "30G",
+    "UniswapV2Pair_mint-feeMinted-same_fail_rough": "30G",
+    "UniswapV2Pair_mint-feeMinted-same_pass": "30G"
   },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
