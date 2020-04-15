@@ -497,7 +497,7 @@ if
 
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
-    KLast == 0
+    not(Minting)
     Supply =/= 0
     Reserve0 =/= 0
     Reserve1 =/= 0
