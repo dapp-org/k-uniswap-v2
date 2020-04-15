@@ -502,7 +502,6 @@ if
     TimeElapsed == 0
     Reserve0 =/= 0
     Reserve1 =/= 0
-    BlockTimestamp > BlockTimestampLast
 ```
 ### Sync
 
