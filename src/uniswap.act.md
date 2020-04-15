@@ -505,7 +505,6 @@ if
 calls
 
     UniswapV2Pair.balanceOf
-    UniswapV2Pair.getReserves
     UniswapV2Factory.feeTo
 ```
 ### Sync
