@@ -407,7 +407,7 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else KLast #fi
+    kLast |-> KLast => #if FeeOn #then Reserve0 * Reserve1 #else 0 #fi
     totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
