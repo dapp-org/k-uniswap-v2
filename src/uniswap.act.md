@@ -1403,6 +1403,184 @@ calls
 returns #min(Reserve0Liquidity, Reserve1Liquidity)
 ```
 
+```act
+behaviour mint-feeMinted-same of UniswapV2Pair
+interface mint(address to)
+
+for all
+
+    Token0 : address UniswapV2Pair
+    Token1 : address UniswapV2Pair
+
+    Balance0 : uint256
+    Balance1 : uint256
+    Reserve0 : uint112
+    Reserve1 : uint112
+
+    PriceLast0 : uint256
+    PriceLast1 : uint256
+    BlockTimestampLast : uint32
+
+    Factory : address UniswapV2Factory
+    FeeTo   : address
+    KLast   : uint256
+
+    FeeBal      : uint256
+    TotalSupply : uint256
+
+    LockState : uint256
+
+where
+
+    // --- input token amounts ---
+
+    Amount0 := Balance0 - Reserve0
+    Amount1 := Balance1 - Reserve1
+
+    // --- fee liquidity Calculations ---
+
+    FeeOn := FeeTo =/= 0
+
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    FeeLiquidity := (TotalSupply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+
+    // --- LP share minting ---
+
+    Reserve0Liquidity := (Amount0 * (TotalSupply + FeeLiquidity)) / Reserve0
+    Reserve1Liquidity := (Amount1 * (TotalSupply + FeeLiquidity)) / Reserve1
+
+    // --- time elapsed since last block in which _update was called ---
+
+    TimeElapsed := ((TIME mod pow32) -Word BlockTimestampLast) mod pow32
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+storage
+
+    token0  |-> Token0
+    token1  |-> Token1
+    factory |-> Factory
+
+    // -- reentrancy guard ---
+
+    lockState |-> LockState => LockState
+
+    // -- cache invariant ---
+
+    kLast |-> KLast => Balance0 * Balance1
+
+    // -- mint tokens ---
+
+    balanceOf[FeeTo] |-> FeeBal => FeeBal + FeeLiquidity + #min(Reserve0Liquidity, Reserve1Liquidity)
+    totalSupply |-> TotalSupply => TotalSupply + FeeLiquidity + #min(Reserve0Liquidity, Reserve1Liquidity)
+
+    // --- sync reserves to balances, update cached timestamp ---
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) \
+      => #WordPackUInt112UInt112UInt32(Balance0, Balance1, (TIME mod pow32))
+
+    // --- price accumulator updates ---
+
+    price0CumulativeLast |-> PriceLast0 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve1) / Reserve0) * TimeElapsed) + PriceLast0)) \
+        #else PriceLast0                                                            \
+      #fi
+
+    price1CumulativeLast |-> PriceLast1 =>                                          \
+      #if Reserve0 =/= 0 and Reserve1 =/= 0 and TimeElapsed > 0                     \
+        #then chop(((((pow112 * Reserve0) / Reserve1) * TimeElapsed) + PriceLast1)) \
+        #else PriceLast1                                                            \
+      #fi
+
+iff in range uint112
+
+    Balance0
+    Balance1
+
+iff in range uint256
+
+    Amount0
+    Amount1
+
+    Balance0 * Balance1
+
+    Reserve0 * Reserve1
+
+    Amount0 * (TotalSupply + FeeLiquidity)
+    Amount1 * (TotalSupply + FeeLiquidity)
+
+    RootK * 5
+    RootK * 5 + RootKLast
+    RootK - RootKLast
+    TotalSupply * (RootK - RootKLast)
+
+    FeeBal + FeeLiquidity
+    TotalSupply + FeeLiquidity
+
+iff
+
+    Reserve0 > 0
+    Reserve1 > 0
+
+    Reserve0Liquidity < Reserve1Liquidity impliesBool (                   \
+          #rangeUInt(256, FeeBal + FeeLiquidity + Reserve0Liquidity)      \
+      and #rangeUInt(256, TotalSupply + FeeLiquidity + Reserve0Liquidity) \
+      and Reserve0Liquidity > 0                                           \
+    )
+
+    Reserve0Liquidity >= Reserve1Liquidity impliesBool (                  \
+          #rangeUInt(256, FeeBal + FeeLiquidity + Reserve1Liquidity)      \
+      and #rangeUInt(256, TotalSupply + FeeLiquidity + Reserve1Liquidity) \
+      and Reserve1Liquidity > 0                                           \
+    )
+
+    // --- no reentrancy ---
+
+    LockState == 1
+
+    // --- mint is not payable ---
+
+    VCallValue == 0
+
+    // --- call stack does not overflow ---
+
+    VCallDepth < 1024
+
+if
+    // --- fee minted ---
+
+    FeeOn
+    KLast > 0
+    RootK > RootKLast
+    FeeLiquidity > 0
+
+    // implied by FeeLiquidity > 0, but added here to make life easier for the prover
+    TotalSupply > 0
+
+    // --- fee recipient mints ---
+
+    to == FeeTo
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+
+returns #min(Reserve0Liquidity, Reserve1Liquidity)
+```
+
 # ERC20
 
 UniswapV2 liquidity token behaviours.
