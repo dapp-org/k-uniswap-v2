@@ -499,7 +499,6 @@ if
     FeeTo =/= ACCT_ID
     FeeTo == 0
     Supply =/= 0
-    TimeElapsed == 0
     Reserve0 =/= 0
     Reserve1 =/= 0
 ```
