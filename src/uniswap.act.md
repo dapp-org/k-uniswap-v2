@@ -424,6 +424,9 @@ iff
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
+    UniswapV2Pair.mul
 ```
 
 ### Skim
@@ -483,6 +486,8 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
 ```
 
 ```act
@@ -533,6 +538,8 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
 ```
 
 # ERC20
@@ -710,6 +717,11 @@ iff in range uint256
 if
     to =/= CALLER_ID
 
+calls
+
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
+
 returns 1
 ```
 
@@ -735,6 +747,11 @@ iff in range uint256
 
 if
     to == CALLER_ID
+
+calls
+
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
 
 returns 1
 ```
@@ -790,6 +807,11 @@ iff
 if
     from =/= to
 
+calls
+
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
+
 returns 1
 ```
 
@@ -817,6 +839,11 @@ iff
 
 if
     from == to
+
+calls
+
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
 
 returns 1
 ```
@@ -902,4 +929,71 @@ if
 
     // ignore overflow case
     #rangeUInt(256, Nonce + 1)
+```
+
+## SafeMath
+
+```act
+behaviour add of UniswapV2Pair
+interface add(uint256 x, uint256 y) internal
+
+pc
+
+    10940 => 3579
+
+stack
+
+    y : x : JMPTO : WS => JMPTO : x + y : WS
+
+iff in range uint256
+
+    x + y
+
+if
+
+    // TODO: strengthen
+    #sizeWordStack(WS) <= 100
+```
+
+```act
+behaviour sub of UniswapV2Pair
+interface sub(uint256 x, uint256 y) internal
+
+pc
+
+    8814 => 3579
+
+stack
+
+    y : x : JMPTO : WS => JMPTO : x - y : WS
+
+iff in range uint256
+
+    x - y
+
+if
+
+    // TODO: strengthen
+    #sizeWordStack(WS) <= 100
+```
+
+```act
+behaviour mul of UniswapV2Pair
+interface mul(uint256 x, uint256 y) internal
+
+pc
+
+    8680 => 3579
+
+stack
+
+    y : x : JMPTO : WS => JMPTO : x * y : WS
+
+iff in range uint256
+
+    x * y
+
+if
+
+    #sizeWordStack(WS) <= 1000
 ```
