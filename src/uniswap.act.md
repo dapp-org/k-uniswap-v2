@@ -1049,3 +1049,45 @@ if
     // ignore overflow case
     #rangeUInt(256, Nonce + 1)
 ```
+## SafeMath
+
+```act
+behaviour add of UniswapV2Pair
+interface add(uint256 x, uint256 y) internal
+pc
+    12130 => 3865
+stack
+    y : x : JMPTO : WS => JMPTO : x + y : WS
+iff in range uint256
+    x + y
+if
+    // TODO: strengthen
+    #sizeWordStack(WS) <= 100
+```
+
+```act
+behaviour sub of UniswapV2Pair
+interface sub(uint256 x, uint256 y) internal
+pc
+    11297 => 3865
+stack
+    y : x : JMPTO : WS => JMPTO : x - y : WS
+iff in range uint256
+    x - y
+if
+    // TODO: strengthen
+    #sizeWordStack(WS) <= 100
+```
+
+```act
+behaviour mul of UniswapV2Pair
+interface mul(uint256 x, uint256 y) internal
+pc
+    11163 => 3865
+stack
+    y : x : JMPTO : WS => JMPTO : x * y : WS
+iff in range uint256
+    x * y
+if
+    #sizeWordStack(WS) <= 1000
+```
