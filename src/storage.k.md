@@ -31,10 +31,11 @@ syntax Int ::= "#UniswapV2Pair.balanceOf" "[" Int "]" [function]
 rule #UniswapV2Pair.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 ```
 
-`75506153327051474587906755573858019282972751592871715030499431892688993766217` is the value of
-`#hashedLocation("Solidity", 1, 0)`. It's presence in the storage map (as a result of writes to
-`balanceOf[0]`) means that `K` cannot be sure that writes to any other storage mappings do not
-colide with this one. We assume here that this is not the case.
+Writes to `balanceOf[0]` are implemented via the `#hashedLocation("Solidity", 1, 0)` construct, which evaluates to `75506153327051474587906755573858019282972751592871715030499431892688993766217`.
+
+The presence of both concrete and symbolic keys in the storage map means that `K` cannot deduce that none of the symbolic keys collide with the concrete one, and so leaves the map unsimplified.
+
+We state here that no such collisions are possible, allowing for simplification.
 
 ```k
 rule keccakIntList(A B) ==K 75506153327051474587906755573858019282972751592871715030499431892688993766217 => false
