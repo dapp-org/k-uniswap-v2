@@ -346,3 +346,14 @@ rule X |Int #asWord(#padToWidth(32, WS)) => #asWord(#take(4, #asByteStack(X)) ++
   andBool #rangeUInt(256, X)
   andBool #sizeWordStack(WS) ==Int 28
 ```
+
+### Writes To Memory
+
+We teach K how to write some expressions involving division to memory. This is used when writing the
+expression for fee liquidity into memory.
+
+```k
+rule #padToWidth(32, #asByteStack(X /Int Y)) => #asByteStackInWidth(X /Int Y, 32)
+  requires #rangeUInt(256, X)
+  andBool #rangeUInt(256, Y)
+```
