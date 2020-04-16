@@ -537,6 +537,27 @@ calls
 
 ### Mint
 
+`mint` allows anyone to mint new liquidity tokens to the `to` address in return for adding tokens to
+the pool.
+
+6 specs in total are required to exhaustively cover the behaviour. They cover the following cases:
+
+- no fee minted (`FeeLiquidity == 0`)
+  - first call to contract (`TotalSupply == 0`)
+    - diff: `to =/= 0`
+    - same: `to == 0`
+  - subsequent call to contract (`TotalSupply > 0`
+    - lt: `(Amount0 * TotalSupply) / Reserve0 < (Amount1 * TotalSupply) / Reserve1`
+    - gte: `(Amount0 * TotalSupply) / Reserve0 >= (Amount1 * TotalSupply) / Reserve1`
+- fee minted (`FeeLiquidity > 0`)
+  - diff: `to =/= FeeTo`
+  - same: `to == FeeTo`
+
+The decomposition into both `diff` and `same` cases, and fee and no fee cases, is required to avoid
+logical inconsistencies when writing to multiple locations within the same storage mapping in a
+single spec. The decomposition into first / subsequent cases in the no fee minted branch is a
+performance optimization to keep proof times somewhat reasonable.
+
 #### `mint`: no fee minted
 
 ```act
