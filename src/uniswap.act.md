@@ -506,8 +506,13 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.getReserves
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
+    UniswapV2Pair.mul
     UniswapV2Factory.feeTo
 ```
+
 ### Sync
 
 ```act

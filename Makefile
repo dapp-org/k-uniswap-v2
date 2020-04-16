@@ -20,3 +20,53 @@ waffle:
 prove: klab waffle
 	klab build
 	klab prove-all
+
+# --- safemath ---
+
+add:
+	klab build
+	klab prove --dump --log UniswapV2Pair_add_pass_rough
+	klab get-gas UniswapV2Pair_add_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair_add_pass
+
+sub:
+	klab build
+	klab prove --dump --log UniswapV2Pair_sub_pass_rough
+	klab get-gas UniswapV2Pair_sub_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair_sub_pass
+
+mul:
+	klab build
+	klab prove --dump --log UniswapV2Pair_mul_pass_rough
+	klab get-gas UniswapV2Pair_mul_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair_mul_pass
+
+# --- ERC20 ---
+
+balanceOf:
+	klab build
+	klab prove --dump --log UniswapV2Pair_balanceOf_pass_rough
+	klab get-gas UniswapV2Pair_balanceOf_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair_balanceOf_pass
+
+# --- Factory ---
+
+feeTo:
+	klab build
+	klab prove --dump --log UniswapV2Pair_feeTo_pass_rough
+	klab get-gas UniswapV2Pair_feeTo_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair_feeTo_pass
+
+# --- Pair ---
+
+getReserves:
+	klab build
+	klab prove --dump --log UniswapV2Pair_getReserves_pass_rough
+	klab get-gas UniswapV2Pair_getReserves_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair_getReserves_pass
