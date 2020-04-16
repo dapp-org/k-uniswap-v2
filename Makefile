@@ -21,52 +21,60 @@ prove: klab waffle
 	klab build
 	klab prove-all
 
+cache: .make.add .make.sub .make.mul .make.balanceOf .make.feeTo .make.getReserves
+
 # --- safemath ---
 
-add:
+.make.add:
 	klab build
 	klab prove --dump --log UniswapV2Pair_add_pass_rough
 	klab get-gas UniswapV2Pair_add_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_add_pass
+	touch $@
 
-sub:
+.make.sub:
 	klab build
 	klab prove --dump --log UniswapV2Pair_sub_pass_rough
 	klab get-gas UniswapV2Pair_sub_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_sub_pass
+	touch $@
 
-mul:
+.make.mul:
 	klab build
 	klab prove --dump --log UniswapV2Pair_mul_pass_rough
 	klab get-gas UniswapV2Pair_mul_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_mul_pass
+	touch $@
 
 # --- ERC20 ---
 
-balanceOf:
+.make.balanceOf:
 	klab build
 	klab prove --dump --log UniswapV2Pair_balanceOf_pass_rough
 	klab get-gas UniswapV2Pair_balanceOf_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_balanceOf_pass
+	touch $@
 
 # --- Factory ---
 
-feeTo:
+.make.feeTo:
 	klab build
 	klab prove --dump --log UniswapV2Pair_feeTo_pass_rough
 	klab get-gas UniswapV2Pair_feeTo_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_feeTo_pass
+	touch $@
 
 # --- Pair ---
 
-getReserves:
+.make.getReserves:
 	klab build
 	klab prove --dump --log UniswapV2Pair_getReserves_pass_rough
 	klab get-gas UniswapV2Pair_getReserves_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_getReserves_pass
+	touch $@
