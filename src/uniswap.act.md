@@ -1164,6 +1164,7 @@ calls
     UniswapV2Pair.add
     UniswapV2Pair.sub
     UniswapV2Pair.mul
+    UniswapV2Factory.feeTo
 
 returns #if FeeOn #then 1 #else 0 #fi
 ```
