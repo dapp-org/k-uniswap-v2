@@ -31,6 +31,26 @@ syntax Int ::= "#UniswapV2Pair.balanceOf" "[" Int "]" [function]
 rule #UniswapV2Pair.balanceOf[A] => #hashedLocation("Solidity", 1, A)
 ```
 
+Writes to `balanceOf[0]` are implemented via the `#hashedLocation("Solidity", 1, 0)` construct, which evaluates to `75506153327051474587906755573858019282972751592871715030499431892688993766217`.
+
+The presence of both concrete and symbolic keys in the storage map means that `K` cannot deduce that none of the symbolic keys collide with the concrete one, and so leaves the map unsimplified.
+
+We state here that no such collisions are possible, allowing for simplification.
+
+```k
+rule keccakIntList(A B) ==K 75506153327051474587906755573858019282972751592871715030499431892688993766217 => false
+requires A =/=Int 0
+
+rule keccakIntList(A B) ==K 75506153327051474587906755573858019282972751592871715030499431892688993766217 => false
+requires 0 =/=Int A
+
+rule 75506153327051474587906755573858019282972751592871715030499431892688993766217 ==K keccakIntList(A B) => false
+requires A =/=Int 0
+
+rule 78338746147236970124700731725183845421594913511827187288591969170390706184117 ==K keccakIntList(A B) => false
+requires 0 =/=Int A
+```
+
 #### 2 - allowance
 
 ```k
