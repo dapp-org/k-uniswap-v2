@@ -491,7 +491,7 @@ iff
     Amount1WithFee > 0
     LockState == 1
     VCallValue == 0
-    VCallDepth < 1024
+    VCallDepth <= 1023
 
 if
 
@@ -1095,4 +1095,73 @@ iff in range uint256
     x * y
 if
     #sizeWordStack(WS) <= 1000
+```
+
+## _mintFee
+
+```act
+behaviour _mintFee of UniswapV2Pair
+interface _mintFee(uint112 _reserve0, uint112 _reserve1)
+
+for all
+
+    Factory      : address UniswapV2Factory
+    KLast        : uint256
+    FeeBal       : uint256
+    TotalSupply  : uint256
+
+where
+
+    FeeOn := FeeTo =/= 0
+    RootK := #sqrt(_reserve0 * _reserve1)
+    RootKLast := #sqrt(KLast)
+    FeeLiquidity := (TotalSupply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+storage
+
+    factory |-> Factory
+    kLast   |-> KLast => #if FeeOn #then KLast #else 0 #fi
+
+    totalSupply |-> TotalSupply => TotalSupply +                          \
+      #if FeeOn and KLast > 0 and RootK > RootKLast and FeeLiquidity > 0  \
+      #then FeeLiquidity                                                  \
+      #else 0                                                             \
+    #fi
+
+    balanceOf[FeeTo] |-> FeeBal => FeeBal +                               \
+      #if FeeOn and KLast > 0 and RootK > RootKLast and FeeLiquidity > 0  \
+      #then FeeLiquidity                                                  \
+      #else 0                                                             \
+    #fi
+
+iff
+
+    (FeeOn) impliesBool #rangeUInt(256, Balance0 * Balance1)
+
+    (FeeOn and KLast > 0) impliesBool #rangeUInt(256, Reserve0 * Reserve1)
+
+    (FeeOn and KLast > 0 and RootK > RootKLast) impliesBool ( \
+          #rangeUInt(256, RootK * 5)                          \
+      and #rangeUInt(256, RootK * 5 + RootKLast)              \
+      and #rangeUInt(256, RootK - RootKLast)                  \
+      and #rangeUInt(256, TotalSupply * (RootK - RootKLast))  \
+    )
+
+    (FeeOn and KLast > 0 and RootK > RootKLast and FeeLiquidity > 0) impliesBool ( \
+          #rangeUInt(256, FeeBal + FeeLiquidity)                                   \
+    )
+
+    VCallValue == 0
+
+calls
+
+    UniswapV2Pair.add
+    UniswapV2Pair.sub
+    UniswapV2Pair.mul
+
+returns #if FeeOn #then 1 #else 0 #fi
 ```

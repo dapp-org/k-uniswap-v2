@@ -63,10 +63,10 @@ cache: .make.add .make.sub .make.mul .make.balanceOf .make.feeTo .make.getReserv
 
 .make.feeTo:
 	klab build
-	klab prove --dump --log UniswapV2Pair_feeTo_pass_rough
-	klab get-gas UniswapV2Pair_feeTo_pass_rough
+	klab prove --dump --log UniswapV2Factory_feeTo_pass_rough
+	klab get-gas UniswapV2Factory_feeTo_pass_rough
 	klab build
-	klab prove --log UniswapV2Pair_feeTo_pass
+	klab prove --log UniswapV2Factory_feeTo_pass
 	touch $@
 
 # --- Pair ---
@@ -77,4 +77,12 @@ cache: .make.add .make.sub .make.mul .make.balanceOf .make.feeTo .make.getReserv
 	klab get-gas UniswapV2Pair_getReserves_pass_rough
 	klab build
 	klab prove --log UniswapV2Pair_getReserves_pass
+	touch $@
+
+.make._mintFee:
+	klab build
+	klab prove --dump --log --kdebug UniswapV2Pair__mintFee_pass_rough
+	klab get-gas UniswapV2Pair__mintFee_pass_rough
+	klab build
+	klab prove --log UniswapV2Pair__mintFee_pass
 	touch $@
