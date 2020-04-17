@@ -2,7 +2,7 @@ DAPP_DIR=$(CURDIR)/uniswap-v2-core
 
 .PHONY: all klab dapp waffle prove
 
-all: klab waffle
+all: klab
 
 klab:
 	cd deps/klab && make deps && cd -
@@ -17,6 +17,6 @@ dapp:
 waffle:
 	cd $(DAPP_DIR) && yarn install && yarn compile && cd -
 
-prove: klab waffle
+prove: klab
 	klab build
 	klab prove-all
