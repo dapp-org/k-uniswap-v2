@@ -4,6 +4,9 @@
   "src": {
     "specification": "./src/uniswap.act.md",
     "smt_prelude": "./src/prelude.smt2.md",
+    "dirty_rules": [
+      "./src/dirty_lemmas.k.md"
+    ],
     "rules": [
       "./src/storage.k.md",
       "./src/lemmas.k.md"

@@ -1,3 +1,14 @@
 ```k
-rule #abiCallData("_mintFee", #uint112(ABI__reserve0), #uint112(ABI__reserve1)) ++ CD => parseByteStack("0xf65d5f86") ++ ABI__reserve0 ++ ABI_reserve1 ++ CD
+syntax TypedArg ::= #uint112 ( Int )
+
+rule #typeName(#uint112( _ )) => "uint112"
+
+rule #lenOfHead(#uint112( _ )) => 32
+
+rule #isStaticType(#uint112( _ )) => true
+
+rule #enc(#uint112( DATA )) => #buf(32, #getValue(#uint112( DATA )))
+
+rule #getValue(#uint112( DATA )) => DATA
+  requires #rangeUInt(112, DATA)
 ```
