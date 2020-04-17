@@ -1157,6 +1157,8 @@ iff
 
     VCallValue == 0
 
+    VCallDepth < 1024
+
 calls
 
     UniswapV2Pair.add
