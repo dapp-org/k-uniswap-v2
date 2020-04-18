@@ -101,7 +101,7 @@ rule #UniswapV2Pair.token1 => 7
 ```k
 // word packing helper
 syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
-rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 +Int X
+rule Z *Int pow224 +Int Y *Int pow112 +Int X => #WordPackUInt112UInt112UInt32(X, Y, Z)
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
