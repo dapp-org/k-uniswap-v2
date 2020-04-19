@@ -6,6 +6,9 @@ Defining shortnames for constants here allows us to keep act specification a
 little less verbose.
 
 ```k
+syntax Int ::= "Constants.EIP712Domain" [function]
+rule Constants.EIP712Domain => keccak(#parseByteStackRaw("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")) [macro]
+
 syntax Int ::= "Constants.PermitTypehash" [function]
 rule Constants.PermitTypehash => keccak(#parseByteStackRaw("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)")) [macro]
 ```
@@ -172,9 +175,6 @@ slot 3, the number represented to here by `pair0`. Subsequent addresses are
 stored at a `uint256` offset from this key.
 
 ```k
-syntax Int ::= "pair0" [function]
-rule pair0 => 87903029871075914254377627908054574944891091886930582284385770809450030037083 [macro]
-
 syntax Int ::= "#UniswapV2Factory.allPairs" "[" Int "]" [function]
 rule #UniswapV2Factory.allPairs[N] => pair0 +Int N
 ```
