@@ -108,11 +108,11 @@ conditions in a few specs.
 rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
 ```
 
-Simplify idempotent application of the modulo operation:
+Simplify idempotent applications of the modulo operation:
 
 ```k
-rule X modInt pow32 => X
-    requires #rangeUInt(32, X)
+rule X modInt Y => X
+  requires X <Int Y
 ```
 
 ### Commutativity For Bitwise `AND`
@@ -219,7 +219,7 @@ rule takeWordStack(20, #asByteStack(X)) =>
 
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
-Define the symbolic term representing pack storage:
+Define the symbolic term representing packed storage:
 
 ```k
 syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
