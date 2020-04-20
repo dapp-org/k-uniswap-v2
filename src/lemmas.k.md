@@ -219,6 +219,12 @@ rule takeWordStack(20, #asByteStack(X)) =>
 
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
+Define the symbolic term representing pack storage:
+
+```k
+syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
+```
+
 #### Reads
 
 Solidity reads from packed storage locations with the following sequence:
