@@ -7,6 +7,7 @@ UniswapV2Factory
 
 Returns the address to which fees are minted.
 
+```act
 behaviour feeTo of UniswapV2Factory
 interface feeTo()
 
