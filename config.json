@@ -54,7 +54,9 @@
     "UniswapV2Pair_swap3_fail_rough": "3d",
     "UniswapV2Pair_swap_pass": "4d",
     "UniswapV2Pair_swap2_pass": "4d",
-    "UniswapV2Pair_swap3_pass": "3d"
+    "UniswapV2Pair_swap3_pass": "3d",
+    "UniswapV2Pair_skim-back_pass": "1d",
+    "UniswapV2Pair_skim_pass": "1d"
   },
   "memory" : {
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
@@ -89,7 +91,9 @@
     "UniswapV2Pair_swap3_fail_rough": "35G",
     "UniswapV2Pair_swap_pass": "35G",
     "UniswapV2Pair_swap2_pass": "35G",
-    "UniswapV2Pair_swap3_pass": "35G"
+    "UniswapV2Pair_swap3_pass": "35G",
+    "UniswapV2Pair_skim-back_pass": "30G",
+    "UniswapV2Pair_skim_pass": "30G"
   },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
