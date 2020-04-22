@@ -671,6 +671,8 @@ iff in range uint256
     Supply - Balance
     // TODO move to fee-on spec
     BalanceToken0 * BalanceToken1
+    (BalanceToken0 - Amount0) * (BalanceToken1 - Amount1)
+    (BalanceToken0 - Amount0WithFee) * (BalanceToken1 - Amount1WithFee)
 
     // _safeTransfer
     BalanceToken0 - Amount0
