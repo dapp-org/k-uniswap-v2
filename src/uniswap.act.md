@@ -610,8 +610,8 @@ storage
     totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
-    price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(Price0 + PriceIncrease0) #else Price0 #fi
-    price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(Price1 + PriceIncrease1) #else Price1 #fi
+    price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease1 + Price1) #else Price1 #fi
     lockState |-> LockState => LockState
 
 storage Token0
