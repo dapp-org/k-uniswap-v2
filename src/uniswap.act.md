@@ -581,24 +581,24 @@ interface burn(address to)
 
 for all
 
-    Reserve0           : uint112
-    Reserve1           : uint112
-    BlockTimestampLast : uint32
-    Token0             : address UniswapV2Pair
-    Token1             : address UniswapV2Pair
-    Balance            : uint256
-    BalanceFeeTo       : uint256
-    BalanceToken0      : uint112
-    BalanceToken1      : uint112
-    BalanceToToken0    : uint256
-    BalanceToToken1    : uint256
-    FeeTo              : address
-    Factory            : address UniswapV2Factory
-    KLast              : uint256
-    Supply             : uint256
-    Price0             : uint256
-    Price1             : uint256
-    LockState          : uint256
+    Reserve0                : uint112
+    Reserve1                : uint112
+    BlockTimestampLast      : uint32
+    Token0                  : address UniswapV2Pair
+    Token1                  : address UniswapV2Pair
+    Balance                 : uint256
+    Balance_FeeRecipient    : uint256
+    BalanceToken0           : uint112
+    BalanceToken1           : uint112
+    BalanceToken0_Recipient : uint256
+    BalanceToken1_Recipient : uint256
+    FeeRecipient            : address
+    Factory                 : address UniswapV2Factory
+    KLast                   : uint256
+    Supply                  : uint256
+    Price0                  : uint256
+    Price1                  : uint256
+    LockState               : uint256
 
 storage
 
@@ -608,7 +608,7 @@ storage
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then BalanceToken0 * BalanceToken1 #else 0 #fi
     totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
-    balanceOf[FeeTo] |-> BalanceFeeTo => #if Minting #then BalanceFeeTo + Fee #else BalanceFeeTo #fi
+    balanceOf[FeeRecipient] |-> Balance_FeeRecipient => #if Minting #then Balance_FeeRecipient + Fee #else Balance_FeeRecipient #fi
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease1 + Price1) #else Price1 #fi
@@ -617,23 +617,23 @@ storage
 storage Token0
 
     balanceOf[ACCT_ID] |-> BalanceToken0 => (BalanceToken0 - Amount0)
-    balanceOf[to] |-> BalanceToToken0 => (BalanceToToken0 + Amount0)
+    balanceOf[to] |-> BalanceToken0_Recipient => (BalanceToken0_Recipient + Amount0)
 
 
 storage Token1
 
     balanceOf[ACCT_ID] |-> BalanceToken1 => (BalanceToken1 - Amount1)
-    balanceOf[to] |-> BalanceToToken1 => (BalanceToToken1 + Amount1)
+    balanceOf[to] |-> BalanceToken1_Recipient => (BalanceToken1_Recipient + Amount1)
 
 storage Factory
 
-    feeTo |-> FeeTo
+    feeTo |-> FeeRecipient
 
 returns Amount0 : Amount1
 
 where
 
-    FeeOn := FeeTo =/= 0
+    FeeOn := FeeRecipient =/= 0
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
     Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
@@ -659,7 +659,7 @@ iff in range uint256
     (RootK * 5) + RootKLast
     Fee
     Supply + Fee
-    BalanceFeeTo + Fee
+    Balance_FeeRecipient + Fee
 
     // burn
     Balance * BalanceToken0
@@ -677,10 +677,10 @@ iff in range uint256
     BalanceToken1 - Amount1
     BalanceToken0 - Amount0WithFee
     BalanceToken1 - Amount1WithFee
-    BalanceToToken0 + Amount0
-    BalanceToToken1 + Amount1
-    BalanceToToken0 + Amount0WithFee
-    BalanceToToken1 + Amount1WithFee
+    BalanceToken0_Recipient + Amount0
+    BalanceToken1_Recipient + Amount1
+    BalanceToken0_Recipient + Amount0WithFee
+    BalanceToken1_Recipient + Amount1WithFee
 
 iff
 
@@ -697,9 +697,9 @@ if
     // variant: diff
     to =/= ACCT_ID
     // variant: feeTo-diff
-    FeeTo =/= ACCT_ID
+    FeeRecipient =/= ACCT_ID
     // variant: feeOff
-    FeeTo == 0
+    FeeRecipient == 0
     // tmp
     KLast == 0
     Reserve0 =/= 0
