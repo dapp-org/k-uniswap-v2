@@ -666,21 +666,29 @@ iff in range uint256
     Balance * Balance1
     Amount0
     Amount1
+    // variant: feeOn
     Amount0WithFee
     Amount1WithFee
+
     Supply - Balance
-    // TODO move to fee-on spec
+    // variant: feeOn
     (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee)
+
+    // _safeTransfer
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+    // variant: feeOn
+    Balance0_To + Amount0WithFee
+    Balance1_To + Amount1WithFee
+
+iff in range uint112
 
     // _safeTransfer
     Balance0 - Amount0
     Balance1 - Amount1
+    // variant: feeOn
     Balance0 - Amount0WithFee
     Balance1 - Amount1WithFee
-    Balance0_To + Amount0
-    Balance1_To + Amount1
-    Balance0_To + Amount0WithFee
-    Balance1_To + Amount1WithFee
 
 iff
 
