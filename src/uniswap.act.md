@@ -644,8 +644,8 @@ where
     Amount1WithFee := (Balance * BalanceToken1) / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
     TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
-    PriceIncrease0 := ((Reserve1 * pow112) / Reserve0) * TimeElapsed
-    PriceIncrease1 := ((Reserve0 * pow112) / Reserve1) * TimeElapsed
+    PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
+    PriceIncrease1 := ((pow112 * Reserve0) / Reserve1) * TimeElapsed
 
 iff in range uint256
 
