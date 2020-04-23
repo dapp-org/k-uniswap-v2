@@ -701,6 +701,7 @@ if
     Supply =/= 0
     Reserve0 =/= 0
     Reserve1 =/= 0
+    TimeElapsed > 0
 
 calls
 
