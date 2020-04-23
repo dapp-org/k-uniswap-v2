@@ -694,13 +694,19 @@ iff
 
 if
 
+    // variant: diff
     to =/= ACCT_ID
+    // variant: feeTo-diff
     FeeTo =/= ACCT_ID
+    // variant: feeOff
     FeeTo == 0
+    // tmp
     KLast == 0
-    Supply =/= 0
     Reserve0 =/= 0
     Reserve1 =/= 0
+    // variant: no supply
+    Supply =/= 0
+    // variant: no timestamp overflow
     TimeElapsed > 0
 
 calls
