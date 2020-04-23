@@ -108,7 +108,14 @@ conditions in a few specs.
 rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
 ```
 
-### Commutivity For Bitwise `AND`
+Simplify idempotent applications of the modulo operation:
+
+```k
+rule X modInt Y => X
+  requires X <Int Y
+```
+
+### Commutativity For Bitwise `AND`
 
 `K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand.
 
@@ -212,6 +219,12 @@ rule takeWordStack(20, #asByteStack(X)) =>
 
 ### Packed Storage { `uint32` `uint112` `uint112` }
 
+Define the symbolic term representing packed storage:
+
+```k
+syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
+```
+
 #### Reads
 
 Solidity reads from packed storage locations with the following sequence:
@@ -228,22 +241,13 @@ These lemmas define the read operations specific to each packed storage location
 
 ```k
 // Reserve0
-rule (maxUInt112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => X
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
+rule maxUInt112 &Int #WordPackUInt112UInt112UInt32(A, B, C) => A
 
 // Reserve1
-rule (maxUInt112 &Int (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) /Int pow112)) => Y
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
+rule maxUInt112 &Int (#WordPackUInt112UInt112UInt32(A, B, C) /Int pow112 ) => B
 
 // BlockTimestampLast
-rule (maxUInt32 &Int (((Z *Int pow224) +Int ((Y *Int pow112) +Int X)) /Int pow224)) => Z
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
+rule #WordPackUInt112UInt112UInt32(A, B, C) /Int pow224 => C
 ```
 
 #### Writes
@@ -273,45 +277,19 @@ solidity.
 Mask target range to zero:
 
 ```k
-// all regions potentially non-zero
-rule (notMaxUInt112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => ((Z *Int pow224) +Int (Y *Int pow112))
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-// reserve0 is zero
-rule (notMaxUInt112 &Int ((Z *Int pow224) +Int (Y *Int pow112))) => ((Z *Int pow224) +Int (Y *Int pow112))
-  requires #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-// reserve1 is zero
-rule (notMaxUInt112 &Int ((Z *Int pow224) +Int X)) => (Z *Int pow224)
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(32, Z)
-
-// reserve0 and reserve1 are zero
-rule (notMaxUInt112 &Int (Z *Int pow224)) => (Z *Int pow224)
-  requires #rangeUInt(32, Z)
+rule notMaxUInt112 &Int #WordPackUInt112UInt112UInt32(A, B, C) => #WordPackUInt112UInt112UInt32(0, B, C)
 ```
 
 Write new value:
 
 ```k
-// all regions potentially non-zero OR reserve0 is zero
-rule (X |Int ((Z *Int pow224) +Int (Y *Int pow112))) => ((Z *Int pow224) +Int (Y *Int pow112) +Int X)
+rule X |Int #WordPackUInt112UInt112UInt32(0, B, C) => #WordPackUInt112UInt112UInt32(X, B, C)
   requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-// reserve1 is zero
-rule (X |Int (Z *Int pow224)) => ((Z *Int pow224) +Int X)
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(32, Z)
 ```
 
 ##### Write `reserve1`
 
-Constants:
+The below constant represents `not(maxUInt112 * pow112)`, in hex `0xffffffff0000000000000000000000000000ffffffffffffffffffffffffffff`:
 
 ```k
 syntax Int ::= "notMaxUInt112xPow112"
@@ -321,31 +299,14 @@ rule notMaxUInt112xPow112 => 115792089210356248756420345214020892766250359184300
 Mask target range to zero:
 
 ```k
-// all regions potentially non-zero
-rule (notMaxUInt112xPow112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => ((Z *Int pow224) +Int X)
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-// reserve1 is zero
-rule (notMaxUInt112xPow112 &Int ((Z *Int pow224) +Int X)) => ((Z *Int pow224) +Int X)
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(32, Z)
+rule notMaxUInt112xPow112 &Int #WordPackUInt112UInt112UInt32(A, B, C) => #WordPackUInt112UInt112UInt32(A, 0, C)
 ```
 
 Write new value:
 
 ```k
-// all regions potentially non-zero OR reserve1 is zero
-rule ((pow112 *Int Y) |Int ((Z *Int pow224) +Int X)) => ((Z *Int pow224) +Int (Y *Int pow112) +Int X)
+rule (pow112 *Int X) |Int #WordPackUInt112UInt112UInt32(A, 0, C) => #WordPackUInt112UInt112UInt32(A, X, C)
   requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
-
-// reserve0 is zero
-rule ((pow112 *Int Y) |Int (Z *Int pow224)) => ((Z *Int pow224) +Int (Y *Int pow112))
-  requires #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
 ```
 
 ##### Write `blockTimestampLast`
@@ -355,19 +316,14 @@ other words, and directly applies a mask of `&Int pow224`, instead of bitshiftin
 for `reserve0` and `reserve1`. This only happens when the optimizer is enabled.
 
 ```k
-rule (maxUInt224 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => ((Y *Int pow112) +Int X)
-requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
+rule maxUInt224 &Int #WordPackUInt112UInt112UInt32(A, B, C) => #WordPackUInt112UInt112UInt32(A, B, 0)
 ```
 
 write new value:
 
 ```k
-rule ((Z *Int pow224) |Int ((Y *Int pow112) +Int X)) => ((Z *Int pow224) +Int (Y *Int pow112) +Int X)
-  requires #rangeUInt(112, X)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
+rule (X *Int pow224) |Int #WordPackUInt112UInt112UInt32(A, B, 0) => #WordPackUInt112UInt112UInt32(A, B, X)
+  requires #rangeUInt(32, X)
 ```
 
 ### Masking For Address Types (`uint160`)
