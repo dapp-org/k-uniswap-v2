@@ -694,8 +694,10 @@ iff
 
     Amount0 > 0
     Amount1 > 0
+    // variant: feeOn
     Amount0WithFee > 0
     Amount1WithFee > 0
+
     LockState == 1
     VCallValue == 0
     VCallDepth < 1024
@@ -708,6 +710,9 @@ if
     FeeTo =/= ACCT_ID
     // variant: feeOff
     FeeTo == 0
+    // variant: feeOn
+    // FeeTo =/= 0
+
     // tmp
     KLast == 0
     Reserve0 =/= 0
