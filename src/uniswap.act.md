@@ -602,11 +602,11 @@ for all
 
 storage
 
-    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(Balance0, Balance1, BlockTimestamp)
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => #if FeeOn #then Balance0 * Balance1 #else 0 #fi
+    kLast |-> KLast => #if FeeOn #then (Balance0 - Amount0) * (Balance1 - Amount1) #else 0 #fi
     totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> Balance_FeeTo => #if Minting #then Balance_FeeTo + Fee #else Balance_FeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
