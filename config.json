@@ -24,7 +24,7 @@
   "timeouts": {
     "UniswapV2Pair_burn_pass_rough": "1d",
     "UniswapV2Pair_burn_fail_rough": "1d",
-    "UniswapV2Pair_burn_pass": "1d",
+    "UniswapV2Pair_burn_pass": "3d",
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "1d",
     "UniswapV2Pair_mint-noFee-first-diff_fail_rough": "1d",
     "UniswapV2Pair_mint-noFee-first-diff_pass": "1d",
