@@ -897,8 +897,7 @@ storage
     token1 |-> Token1
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then (Balance0 - Amount0) * (Balance1 - Amount1) #else 0 #fi
-    totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
-    balanceOf[FeeTo] |-> Balance_FeeTo => #if Minting #then Balance_FeeTo + Fee #else Balance_FeeTo #fi
+    totalSupply |-> Supply => Supply - Balance
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease1 + Price1) #else Price1 #fi
@@ -924,14 +923,8 @@ returns Amount0 : Amount1
 where
 
     FeeOn := FeeTo =/= 0
-    RootK := #sqrt(Reserve0 * Reserve1)
-    RootKLast := #sqrt(KLast)
-    Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
-    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := (Balance * Balance0) / Supply
     Amount1 := (Balance * Balance1) / Supply
-    Amount0WithFee := (Balance * Balance0) / (Supply + Fee)
-    Amount1WithFee := (Balance * Balance1) / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
     TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
     PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
@@ -939,54 +932,28 @@ where
 
 iff in range uint256
 
-    // _mintFee
-    Reserve0 * Reserve1
-    RootK
-    RootKLast
-    RootK - RootKLast
-    Supply * (RootK - RootKLast)
-    RootK * 5
-    (RootK * 5) + RootKLast
-    Fee
-    Supply + Fee
-    Balance_FeeTo + Fee
-
     // burn
     Balance * Balance0
     Balance * Balance1
     Amount0
     Amount1
-    // variant: feeOn
-    Amount0WithFee
-    Amount1WithFee
 
     Supply - Balance
-    // variant: feeOn
-    (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee)
 
     // _safeTransfer
     Balance0_To + Amount0
     Balance1_To + Amount1
-    // variant: feeOn
-    Balance0_To + Amount0WithFee
-    Balance1_To + Amount1WithFee
 
 iff in range uint112
 
     // _safeTransfer
     Balance0 - Amount0
     Balance1 - Amount1
-    // variant: feeOn
-    Balance0 - Amount0WithFee
-    Balance1 - Amount1WithFee
 
 iff
 
     Amount0 > 0
     Amount1 > 0
-    // variant: feeOn
-    Amount0WithFee > 0
-    Amount1WithFee > 0
 
     LockState == 1
     VCallValue == 0
@@ -1042,8 +1009,7 @@ storage
     token1 |-> Token1
     factory |-> Factory
     kLast |-> KLast => #if FeeOn #then (Balance0 - Amount0) * (Balance1 - Amount1) #else 0 #fi
-    totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
-    balanceOf[FeeTo] |-> Balance_FeeTo => #if Minting #then Balance_FeeTo + Fee #else Balance_FeeTo #fi
+    totalSupply |-> Supply => Supply - Balance
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease1 + Price1) #else Price1 #fi
@@ -1069,14 +1035,8 @@ returns Amount0 : Amount1
 where
 
     FeeOn := FeeTo =/= 0
-    RootK := #sqrt(Reserve0 * Reserve1)
-    RootKLast := #sqrt(KLast)
-    Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
-    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := (Balance * Balance0) / Supply
     Amount1 := (Balance * Balance1) / Supply
-    Amount0WithFee := (Balance * Balance0) / (Supply + Fee)
-    Amount1WithFee := (Balance * Balance1) / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
     TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
     PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
@@ -1084,54 +1044,28 @@ where
 
 iff in range uint256
 
-    // _mintFee
-    Reserve0 * Reserve1
-    RootK
-    RootKLast
-    RootK - RootKLast
-    Supply * (RootK - RootKLast)
-    RootK * 5
-    (RootK * 5) + RootKLast
-    Fee
-    Supply + Fee
-    Balance_FeeTo + Fee
-
     // burn
     Balance * Balance0
     Balance * Balance1
     Amount0
     Amount1
-    // variant: feeOn
-    Amount0WithFee
-    Amount1WithFee
 
     Supply - Balance
-    // variant: feeOn
-    (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee)
 
     // _safeTransfer
     Balance0_To + Amount0
     Balance1_To + Amount1
-    // variant: feeOn
-    Balance0_To + Amount0WithFee
-    Balance1_To + Amount1WithFee
 
 iff in range uint112
 
     // _safeTransfer
     Balance0 - Amount0
     Balance1 - Amount1
-    // variant: feeOn
-    Balance0 - Amount0WithFee
-    Balance1 - Amount1WithFee
 
 iff
 
     Amount0 > 0
     Amount1 > 0
-    // variant: feeOn
-    Amount0WithFee > 0
-    Amount1WithFee > 0
 
     LockState == 1
     VCallValue == 0
