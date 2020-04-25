@@ -712,8 +712,6 @@ if
 
     // variant: no supply
     Supply =/= 0
-    // variant: no timestamp overflow
-    TimeElapsed > 0
     KLast == 0
 
 calls
@@ -859,8 +857,6 @@ if
 
     // variant: no supply
     Supply =/= 0
-    // variant: no timestamp overflow
-    TimeElapsed > 0
     KLast =/= 0
 
 calls
@@ -1006,8 +1002,6 @@ if
 
     // variant: no supply
     Supply =/= 0
-    // variant: no timestamp overflow
-    TimeElapsed > 0
 
 calls
 
