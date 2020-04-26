@@ -45,7 +45,10 @@
     "UniswapV2Factory_createPair-lt_pass": "72h",
     "UniswapV2Factory_createPair-gt_pass_rough": "72h",
     "UniswapV2Factory_createPair-gt_fail_rough": "72h",
-    "UniswapV2Factory_createPair-gt_pass": "72h"
+    "UniswapV2Factory_createPair-gt_pass": "72h",
+    "UniswapV2Factory_swap_rough": "3d",
+    "UniswapV2Factory_swap_fail_rough": "3d",
+    "UniswapV2Factory_swap_pass": "3d"
   },
   "memory" : {
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
@@ -71,7 +74,10 @@
     "UniswapV2Factory_createPair-lt_pass": "25G",
     "UniswapV2Factory_createPair-gt_pass_rough": "25G",
     "UniswapV2Factory_createPair-gt_fail_rough": "25G",
-    "UniswapV2Factory_createPair-gt_pass": "25G"
+    "UniswapV2Factory_createPair-gt_pass": "25G",
+    "UniswapV2Factory_swap_pass_rough": "25G",
+    "UniswapV2Factory_swap_fail_rough": "25G",
+    "UniswapV2Factory_swap_pass": "25G"
   },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
