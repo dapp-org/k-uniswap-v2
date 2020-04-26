@@ -795,7 +795,7 @@ iff in range uint112
 
 iff
 
-    Minting impliesBool (                                 \
+    (RootK > RootKLast and Fee > 0) impliesBool (         \
             #rangeUInt(256, RootK - RootKLast)            \
         and #rangeUInt(256, Supply * (RootK - RootKLast)) \
         and #rangeUInt(256, RootK * 5)                    \
