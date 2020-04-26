@@ -659,9 +659,10 @@ if
     to =/= ACCT_ID
     // variant: feeTo-diff
     FeeTo =/= ACCT_ID
-    FeeTo =/= 0
 
     Supply == 0
+
+    FeeOn
     KLast =/= 0
     RootK > RootKLast
 
