@@ -620,10 +620,6 @@ if
     calldata ==K .WordStack
     TIME < pow32
     TIME >= BlockTimestampLast
-
-    amount0Out =/= 0
-    amount1Out =/= 0
-    TIME - BlockTimestampLast =/= 0
 ```
 
 # ERC20
