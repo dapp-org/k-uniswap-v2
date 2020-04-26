@@ -561,6 +561,49 @@ iff
     VCallValue == 0
 ```
 
+```act
+failure burn-totalSupplyZero of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    Balance_FeeTo      : uint256
+    Balance0           : uint112
+    Balance1           : uint112
+    Balance0_To        : uint256
+    Balance1_To        : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    totalSupply |-> Supply => Supply
+
+iff
+
+    VCallValue == 0
+    CALLER_ID =/= To
+
+if
+    Supply == 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+```
+
 ### Sync
 
 ```act
