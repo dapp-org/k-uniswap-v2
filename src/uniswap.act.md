@@ -559,13 +559,13 @@ storage
 
 storage Token0
 
-    balanceOf[ACCT_ID] |-> Balance0 - amount0Out
-    balanceOf[to]      |-> DstBal0 + amount0Out
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - amount0Out
+    balanceOf[to]      |-> DstBal0 => DstBal0 + amount0Out
 
 storage Token1
 
-    balanceOf[ACCT_ID] |-> Balance1 - amount1Out
-    balanceOf[to]      |-> DstBal1 + amount1Out
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - amount1Out
+    balanceOf[to]      |-> DstBal1 => DstBal1 + amount1Out
 
 where
 
