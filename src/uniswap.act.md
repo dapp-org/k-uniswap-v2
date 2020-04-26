@@ -561,6 +561,113 @@ iff
     VCallValue == 0
 ```
 
+```act
+failure burn-reentrant of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    Balance_FeeTo      : uint256
+    Balance0           : uint112
+    Balance1           : uint112
+    Balance0_To        : uint256
+    Balance1_To        : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast
+    totalSupply |-> Supply => Supply - Balance
+    balanceOf[ACCT_ID] |-> Balance => 0
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => (Balance0 - Amount0)
+    balanceOf[to] |-> Balance0_To
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => (Balance1 - Amount1)
+    balanceOf[to] |-> Balance1_To
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    Amount0 := (Balance * Balance0) / Supply
+    Amount1 := (Balance * Balance1) / Supply
+    BlockTimestamp := TIME mod pow32
+
+iff in range uint256
+
+    // burn
+    Balance * Balance0
+    Balance * Balance1
+    Amount0
+    Amount1
+
+    Supply - Balance
+
+    // _safeTransfer
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+
+iff in range uint112
+
+    // _safeTransfer
+    Balance0 - Amount0
+    Balance1 - Amount1
+
+iff
+
+    Amount0 > 0
+    Amount1 > 0
+
+    LockState == 1
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    // variant: diff
+    to =/= ACCT_ID
+    // variant: feeTo-diff
+    FeeTo =/= ACCT_ID
+    FeeTo == 0
+    KLast == 0
+
+    // variant: no supply
+    Supply =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+    UniswapV2Pair.mint-noFee-first-diff
+```
+
 ### Sync
 
 ```act
