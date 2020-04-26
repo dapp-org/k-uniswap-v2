@@ -588,20 +588,88 @@ for all
 
 storage
 
-    totalSupply |-> Supply => Supply
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast
+    totalSupply |-> Supply
+    balanceOf[FeeTo] |-> 0
+    balanceOf[ACCT_ID] |-> 0
+    price0CumulativeLast |-> 0
+    price1CumulativeLast |-> 0
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0
+    balanceOf[to] |-> Balance0_To
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1
+    balanceOf[to] |-> Balance1_To
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    FeeOn := FeeTo =/= 0
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
+    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
+    Amount0 := (Balance * Balance0) / Supply
+    Amount1 := (Balance * Balance1) / Supply
+
+iff in range uint256
+
+    // _mintFee
+    Reserve0 * Reserve1
+    RootK
+    RootKLast
+
+    // burn
+    Balance * Balance0
+    Balance * Balance1
+    Amount0
+    Amount1
 
 iff
 
+    Minting impliesBool (                                 \
+            #rangeUInt(256, RootK - RootKLast)            \
+        and #rangeUInt(256, Supply * (RootK - RootKLast)) \
+        and #rangeUInt(256, RootK * 5)                    \
+        and #rangeUInt(256, (RootK * 5) + RootKLast)      \
+        and #rangeUInt(256, Fee)                          \
+    )
+
+    LockState == 1
+
     VCallValue == 0
-    CALLER_ID =/= To
+    VCallDepth < 1024
 
 if
+
+    // variant: diff
+    to =/= ACCT_ID
+    // variant: feeTo-diff
+    FeeTo =/= ACCT_ID
+    FeeTo =/= 0
+
     Supply == 0
+    KLast =/= 0
+    RootK > RootKLast
 
 calls
 
     UniswapV2Pair.balanceOf
-    UniswapV2Factory.feeTo
 ```
 
 ### Sync
