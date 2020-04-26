@@ -747,7 +747,6 @@ for all
     Balance0           : uint112
     Balance1           : uint112
     BlockTimestampLast : uint32
-    Unlocked           : bool
     Token0             : address UniswapV2Pair
     Token1             : address UniswapV2Pair
     Price0             : uint256
@@ -761,7 +760,7 @@ storage
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(Balance0 - amount0Out, Balance1 - amount1Out, TIME)
     token0   |-> Token0
     token1   |-> Token1
-    unlocked |-> Unlocked
+    lockState |-> 1
     price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
 
@@ -786,7 +785,6 @@ where
 
 iff
 
-    Unlocked == 1
     VCallValue == 0
     VCallDepth < 1024
     amount0Out < Reserve0
