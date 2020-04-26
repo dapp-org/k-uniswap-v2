@@ -799,7 +799,7 @@ iff
             #rangeUInt(256, RootK - RootKLast)            \
         and #rangeUInt(256, Supply * (RootK - RootKLast)) \
         and #rangeUInt(256, RootK * 5)                    \
-        and #rangeUint(256, (RootK * 5) + RootKLast)      \
+        and #rangeUInt(256, (RootK * 5) + RootKLast)      \
         and #rangeUInt(256, Fee)                          \
         and #rangeUInt(256, Supply + Fee)                 \
         and #rangeUInt(256, Balance_FeeTo + Fee)          \
