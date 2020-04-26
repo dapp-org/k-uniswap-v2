@@ -515,6 +515,18 @@ syntax Bool ::= #notPrecompileAddress ( Int ) [function]
 // ---------------------------------------
 rule #notPrecompileAddress ( X ) => 0 ==Int X orBool (10 <=Int X andBool #rangeAddress(X))
 
+// New addresses are not precompiles
+
+rule #newAddr(A, B, C) in #precompiledAccounts(SCHED) => false
+rule #newAddr(A, B) in #precompiledAccounts(SCHED) => false
+
+// New addresses are not zero
+
+rule #newAddr(A, B, C) ==K 0 => false
+rule #newAddr(A, B) ==K 0 => false
+rule 0 ==K #newAddr(A, B, C) => false
+rule 0 ==K #newAddr(A, B) => false
+
 // ABSTRACT SEMANTICS.k
 
   rule <k> LT W0 W1 => bool2Word(W0  <Int W1) ~> #push ... </k> [trusted]
@@ -525,9 +537,6 @@ rule #notPrecompileAddress ( X ) => 0 ==Int X orBool (10 <=Int X andBool #rangeA
 
 //RULES MUST USE ==K and not ==Int
 //Warning: assumes injective hashing
-rule #newAddr(A, B) ==K 0 => false
-
-rule 0 ==K #newAddr(A, B, C) => false
 
 rule keccakIntList(A B .IntList) ==K keccakIntList(C D .IntList) => A ==Int C andBool B ==Int D
 
@@ -597,7 +606,7 @@ syntax Int ::= "#UniswapV2Exchange.token1" [function]
 rule #UniswapV2Exchange.token1 => 7
 // word packing helper
 syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
-rule #WordPackUInt112UInt112UInt32(X, Y, Z) => Z *Int pow224 +Int Y *Int pow112 +Int X
+rule Z *Int pow224 +Int Y *Int pow112 +Int X => #WordPackUInt112UInt112UInt32(X, Y, Z)
   requires #rangeUInt(112, X)
   andBool #rangeUInt(112, Y)
   andBool #rangeUInt(32, Z)
@@ -705,10 +714,10 @@ rule (X |Int (Z *Int pow224)) => ((Z *Int pow224) +Int X)
   andBool #rangeUInt(32, Z)
 syntax Int ::= "notMaxUInt112xPow112"                                                                       [function]
 rule notMaxUInt112xPow112 => 115792089210356248756420345214020892766250359184300278151744640057305848610815 [macro]
-rule (I +Int ((Z *Int pow224) +Int ((Y *Int pow112) -Int J))) => ((Z *Int pow224) +Int ((Y *Int pow112) +Int (I -Int J)))
-  requires #rangeUInt(112, I -Int J)
-  andBool #rangeUInt(112, Y)
-  andBool #rangeUInt(32, Z)
+// rule (I +Int ((Z *Int pow224) +Int ((Y *Int pow112) -Int J))) => ((Z *Int pow224) +Int ((Y *Int pow112) +Int (I -Int J)))
+//   requires #rangeUInt(112, I -Int J)
+//   andBool #rangeUInt(112, Y)
+//   andBool #rangeUInt(32, Z)
 // all regions potentially non-zero
 rule (notMaxUInt112xPow112 &Int ((Z *Int pow224) +Int ((Y *Int pow112) +Int X))) => ((Z *Int pow224) +Int X)
   requires #rangeUInt(112, X)
@@ -768,131 +777,15 @@ rule X |Int #asWord(#padToWidth(32, WS)) => #asWord(#take(4, #asByteStack(X)) ++
   andBool #sizeWordStack(WS) ==Int 28
 rule #padToWidth(32, #asByteStack(#asWord(#padRightToWidth(32, (nthbyteof(XX, 28, 32) : nthbyteof(XX, 29, 32) : nthbyteof(XX, 30, 32) : nthbyteof(XX, 31, 32) : .WordStack) )))) => (nthbyteof(XX, 28, 32) : nthbyteof(XX, 29, 32) : nthbyteof(XX, 30, 32) : nthbyteof(XX, 31, 32) : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : 0 : .WordStack)
 
+rule X modInt Y => X
+  requires X <Int Y
 
-// dyn_ prefix for handling dynamic data
-
-// real size of the "rest" of the wordstack with some weird ceil32 voodoo
-syntax Int ::= "#dyn_size" "(" ByteArray "," ByteArray ")" [function, smtlib(cleanCalldata)]
-
-rule #sizeWordStack(XS
-  ++ #padToWidth((#ceil32(#sizeWordStack(XS)) -Int #sizeWordStack(XS)), .WordStack)
-  ++ CD) => #dyn_size(XS, CD)
-
-
-//
-// syntax Int ::= "#dyn_length" "(" ByteArray "," ByteArray ")" [function, smtlib(dyn_length)]
-// rule #asWord(takeWordStack(32, (
-//        #padToWidth(32, #asByteStack(#getValue(#uint256(#sizeWordStack(XS)))))
-//     ++ XS
-//     ++ #padToWidth((#ceil32(#sizeWordStack(XS)) -Int #sizeWordStack(XS)), .WordStack)
-//     ++ CD
-//   ))) => #dyn_length(XS, CD)
-
-// TODO - temporary rule to neglect dynamic memory gas
-// rule #memoryUsageUpdate(X, Y, #dyn_length(Z, CD)) => 0
-
-// ?
-// rule #padToWidth(32, #asByteStack(#dyn_length(ABI_calldata, CD))) => (nthbyteof(#dyn_length(ABI_calldata, CD), 0, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 1, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 2, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 3, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 4, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 5, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 6, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 7, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 8, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 9, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 10, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 11, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 12, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 13, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 14, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 15, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 16, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 17, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 18, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 19, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 20, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 21, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 22, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 23, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 24, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 25, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 26, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 27, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 28, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 29, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 30, 32)
-//  : nthbyteof(#dyn_length(ABI_calldata, CD), 31, 32)
-//  : .WordStack
-// )
-
-// rule #take(#dyn_length(ABI_calldata, CD), #drop(32, #padToWidth(32, X) ++ (ABI_calldata ++ XX))) => ABI_calldata
-
-// rule takeWordStack(32, padToWidth(32, X) ++ XS) => X
-// rule #take(32, #padToWidth(32, X) ++ XS) => X
-
-// takeWordStack(32, #padToWidth(32, X) ++ XS)
-// X  #asByteStack(#getValue(#uint256(#sizeWordStack(ABI_calldata))))
-// XS ABI_calldata ++ (#padToWidth((#ceil32(#sizeWordStack(ABI_calldata)) - #sizeWordStack(ABI_calldata)), .WordStack) ++ CD)
-
-rule #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1,    #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, #drop(1, (#padToWidth(32, X) ++ XS))))))))))))))))))))))))))))))))) => XS
-
-rule #take(#sizeWordStack(X), X ++ XS) => X
-
-
-// ??
-// rule takeWordStack(#dyn_length(ABI_calldata, CD), (ABI_calldata ++ #padToWidth((#ceil32(#sizeWordStack(ABI_calldata)) -Int #sizeWordStack(ABI_calldata)), .WordStack) ++ CD)) => (ABI_calldata ++ #padToWidth((#ceil32(#sizeWordStack(ABI_calldata)) -Int #sizeWordStack(ABI_calldata)), .WordStack))
-
-//rule (maxInt(0, ((#dyn_length(ABI_calldata, CD) +Int 583) /Int 32)) *Int 3) +Int ((maxInt(0, ((#dyn_length(ABI_calldata, CD) +Int 583) /Int 32)) *Int maxInt(0, ((#dyn_length(ABI_calldata, CD) +Int 583) /Int 32))) /Int 512) =>
-//  (((#dyn_length(ABI_calldata, CD) +Int 583) /Int 32) *Int 3) +Int (( ((#dyn_length(ABI_calldata, CD) +Int 583) /Int 32) *Int  ((#dyn_length(ABI_calldata, CD) +Int 583) /Int 32)) /Int 512)
-
-
-
-// !!! padToWidth(32, X) => X if len(X) >= 32 !!!
-
-
-
-// map propagae map_update
-rule #range(XS [ K1 <- V1 ], K2, Length, .WordStack) => #range(XS, K2, Length, .WordStack)
-requires K1 >=Int K2 +Int Length
-
-rule XS:Map [ K1 <- V1 ] [ K2 <- V2 ] => XS [ K2 <- V2] [ K1 <- V1 ]
-  requires K1 >Int K2
-
-rule XS:Map [ K1 <- V1 ] [ K2 <- V2 ] => XS [ K2 <- V2 ]
-  requires K1 ==Int K2
-
-rule XS:Map [ K1:Int := V1:WordStack ] [ K2 <- V2 ] => XS [ K2 <- V2 ] [ K1 := V1 ]
-  requires K1 >Int K2
-
-// map propagate assign
-rule #range(X [ K1 := V1:WordStack ], K2, Length, WS) => #range(X, K2, Length, WS)
-  requires K2 +Int Length <=Int K1
-
-
-syntax Int ::= "not31"                                                             [function]
-rule not31 => 115792089237316195423570985008687907853269984665640564039457584007913129639904 [macro]
-
-// todo get better rule :(
-rule chop(520 +Int ((X +Int 31) &Int not31)) => 520 +Int ((X +Int 31) &Int not31)
-
-rule maxInt(X, Y /Int Z) => Y /Int Z
-  requires X *Int Z <=Int Y
-
-rule maxInt(Y /Int Z, X) => Y /Int Z
-  requires X *Int Z <=Int Y
-
-rule (X +Int Y) -Word Z => Y +Int (X -Int Z)
-  requires #isConcrete(X)
-  andBool #isConcrete(Z)
-  andBool notBool #isConcrete(Y)
-  andBool X >=Int Z
-
-
-syntax Bool ::= "#unknown_address" "(" Int  ")" [function, smtlib(unknown_address)]
-syntax Int ::= "#usedGas" "(" Int  ")" [function, smtlib(usedGas)]
-
-rule Cmem(_, _) => 0
+rule maxUInt112 &Int #WordPackUInt112UInt112UInt32(A, B, C) => A
+rule maxUInt112 &Int (#WordPackUInt112UInt112UInt32(A, B, C) /Int pow112 ) => B
+rule #WordPackUInt112UInt112UInt32(A, B, C) /Int pow224 => C
+rule X |Int (notMaxUInt112 &Int #WordPackUInt112UInt112UInt32(A, B, C)) => #WordPackUInt112UInt112UInt32(X, B, C)
+rule (pow112 *Int X) |Int (notMaxUInt112xPow112 &Int #WordPackUInt112UInt112UInt32(A, B, C)) => #WordPackUInt112UInt112UInt32(A, X, C)
+rule (pow224 *Int X) |Int (maxUInt224 &Int #WordPackUInt112UInt112UInt32(A, B, C)) => #WordPackUInt112UInt112UInt32(A, B, X)
+rule (X *Int pow224) |Int (maxUInt224 &Int #WordPackUInt112UInt112UInt32(A, B, C)) => #WordPackUInt112UInt112UInt32(A, B, X)
 
 endmodule
