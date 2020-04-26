@@ -719,7 +719,7 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => #if FeeOn #then (Balance0 - Amount0) * (Balance1 - Amount1) #else 0 #fi
+    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
     totalSupply |-> Supply => #if Minting #then (Supply - Balance) + Fee #else Supply - Balance #fi
     balanceOf[FeeTo] |-> Balance_FeeTo => #if Minting #then Balance_FeeTo + Fee #else Balance_FeeTo #fi
     balanceOf[ACCT_ID] |-> Balance => 0
@@ -766,13 +766,15 @@ iff in range uint256
     Reserve0 * Reserve1
     RootK
     RootKLast
-    RootK - RootKLast
-    Supply * (RootK - RootKLast)
-    RootK * 5
-    (RootK * 5) + RootKLast
-    Fee
-    Supply + Fee
-    Balance_FeeTo + Fee
+    Minting impliesBool \(
+        RootK - RootKLast
+        Supply * (RootK - RootKLast)
+        RootK * 5
+        (RootK * 5) + RootKLast
+        Fee
+        Supply + Fee
+        Balance_FeeTo + Fee
+    \)
 
     // burn
     Balance * Balance0
@@ -781,8 +783,8 @@ iff in range uint256
     Amount1
     Amount0WithFee
     Amount1WithFee
-
     Supply - Balance
+
     (Balance0 - Amount0) * (Balance1 - Amount1)
     (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee)
 
@@ -804,11 +806,10 @@ iff
 
     Amount0 > 0
     Amount1 > 0
-    // variant: feeOn
     Amount0WithFee > 0
     Amount1WithFee > 0
-
     LockState == 1
+
     VCallValue == 0
     VCallDepth < 1024
 
