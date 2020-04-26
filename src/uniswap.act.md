@@ -640,15 +640,13 @@ iff in range uint256
     Amount0
     Amount1
 
-iff
+    RootK - RootKLast
+    Supply * (RootK - RootKLast)
+    RootK * 5
+    (RootK * 5) + RootKLast
+    Fee
 
-    Minting impliesBool (                                 \
-            #rangeUInt(256, RootK - RootKLast)            \
-        and #rangeUInt(256, Supply * (RootK - RootKLast)) \
-        and #rangeUInt(256, RootK * 5)                    \
-        and #rangeUInt(256, (RootK * 5) + RootKLast)      \
-        and #rangeUInt(256, Fee)                          \
-    )
+iff
 
     LockState == 1
 
