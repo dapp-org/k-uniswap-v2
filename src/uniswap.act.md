@@ -766,15 +766,15 @@ iff in range uint256
     Reserve0 * Reserve1
     RootK
     RootKLast
-    Minting impliesBool \(
-        RootK - RootKLast
-        Supply * (RootK - RootKLast)
-        RootK * 5
-        (RootK * 5) + RootKLast
-        Fee
-        Supply + Fee
-        Balance_FeeTo + Fee
-    \)
+    Minting impliesBool ( \
+        RootK - RootKLast \
+        Supply * (RootK - RootKLast) \
+        RootK * 5 \
+        (RootK * 5) + RootKLast \
+        Fee \
+        Supply + Fee \
+        Balance_FeeTo + Fee \
+    )
 
     // burn
     Balance * Balance0
