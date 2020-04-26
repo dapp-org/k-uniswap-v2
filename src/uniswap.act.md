@@ -862,7 +862,7 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => #if FeeOn #then (Balance0 - Amount0) * (Balance1 - Amount1) #else 0 #fi
+    kLast |-> KLast => 0
     totalSupply |-> Supply => Supply - Balance
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
@@ -888,7 +888,6 @@ returns Amount0 : Amount1
 
 where
 
-    FeeOn := FeeTo =/= 0
     Amount0 := (Balance * Balance0) / Supply
     Amount1 := (Balance * Balance1) / Supply
     BlockTimestamp := TIME mod pow32
@@ -974,7 +973,7 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => #if FeeOn #then (Balance0 - Amount0) * (Balance1 - Amount1) #else 0 #fi
+    kLast |-> KLast => 0
     totalSupply |-> Supply => Supply - Balance
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
@@ -1000,7 +999,6 @@ returns Amount0 : Amount1
 
 where
 
-    FeeOn := FeeTo =/= 0
     Amount0 := (Balance * Balance0) / Supply
     Amount1 := (Balance * Balance1) / Supply
     BlockTimestamp := TIME mod pow32
