@@ -734,6 +734,102 @@ calls
     UniswapV2Pair.balanceOf
 ```
 
+### Swap
+
+```act
+behaviour swap of UniswapV2Pair
+interface swap(uint amount0Out, uint amount1Out, address to, bytes calldata data)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    Balance0           : uint112
+    Balance1           : uint112
+    BlockTimestampLast : uint32
+    Unlocked           : bool
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Price0             : uint256
+    Price1             : uint256
+    DstBal0            : uint256
+    DstBal1            : uint256
+    BlockTimestampLast : uint32
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(Balance0 - amount0Out, Balance1 - amount1Out, TIME)
+    token0   |-> Token0
+    token1   |-> Token1
+    unlocked |-> Unlocked
+    price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - amount0Out
+    balanceOf[to]      |-> DstBal0 => DstBal0 + amount0Out
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - amount1Out
+    balanceOf[to]      |-> DstBal1 => DstBal1 + amount1Out
+
+where
+
+    Amount0In := (Reserve0 - amount0Out) < (Balance0 - amount0Out)
+    Amount1In := (Reserve1 - amount1Out) < (Balance1 - amount1Out)
+    K00 := ((Reserve0 * Reserve1) * 1000000) <=  (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))
+    K01 := ((Reserve0 * Reserve1) * 1000000) <= ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * ((Balance1 - amount1Out) * 1000))
+    K10 := ((Reserve0 * Reserve1) * 1000000) <= (((Balance0 - amount0Out) * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3)))
+
+
+iff
+
+    Unlocked == 1
+    VCallValue == 0
+    VCallDepth < 1024
+    amount0Out < Reserve0
+    amount1Out < Reserve1
+    amount0Out =/=K 0 orBool amount1Out =/=K 0
+    Amount0In orBool Amount1In
+    (notBool Amount0In) orBool (notBool Amount1In) orBool K00
+    (notBool Amount0In) orBool Amount1In orBool K01
+    Amount0In orBool (notBool Amount1In) orBool K10
+
+
+iff in range uint112
+
+    Balance0 - amount0Out
+    Balance1 - amount1Out
+
+iff in range uint256
+
+    DstBal0  + amount0Out
+    DstBal1  + amount1Out
+    Balance0 - (amount0Out + (Reserve0 - amount0Out))
+    Balance1 * 1000
+    (Balance1 - Reserve1) * 3
+    (Balance0 - amount0Out) * 1000
+    (((Balance0 * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))))
+    (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))
+    ((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)
+    ((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)
+    (((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0
+    (((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1
+
+
+if
+
+    Token0 =/= Token1
+    Token0 =/= to
+    Token1 =/= to
+    ACCT_ID =/= to
+    calldata ==K .WordStack
+    TIME < pow32
+    TIME >= BlockTimestampLast
+```
+
 ### Mint
 
 `mint` allows anyone to mint new liquidity tokens to the `to` address in return for adding tokens to
