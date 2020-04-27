@@ -561,8 +561,10 @@ iff
     VCallValue == 0
 ```
 
+##### totalSupply == 0
+
 ```act
-failure burn-totalSupplyZero of UniswapV2Pair
+failure burn-feeOff-kLastZero-totalSupplyZero of UniswapV2Pair
 interface burn(address to)
 
 for all
@@ -594,10 +596,7 @@ storage
     factory |-> Factory
     kLast |-> KLast
     totalSupply |-> Supply
-    balanceOf[FeeTo] |-> 0
-    balanceOf[ACCT_ID] |-> 0
-    price0CumulativeLast |-> 0
-    price1CumulativeLast |-> 0
+    balanceOf[ACCT_ID] |-> Balance
     lockState |-> LockState => LockState
 
 storage Token0
@@ -615,60 +614,29 @@ storage Factory
 
     feeTo |-> FeeTo
 
-returns Amount0 : Amount1
-
-where
-
-    FeeOn := FeeTo =/= 0
-    RootK := #sqrt(Reserve0 * Reserve1)
-    RootKLast := #sqrt(KLast)
-    Fee := Supply * (RootK - RootKLast) / ((RootK * 5) + RootKLast)
-    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
-    Amount0 := (Balance * Balance0) / Supply
-    Amount1 := (Balance * Balance1) / Supply
-
 iff in range uint256
 
-    // _mintFee
-    Reserve0 * Reserve1
-    RootK
-    RootKLast
-
-    // burn
     Balance * Balance0
     Balance * Balance1
-    Amount0
-    Amount1
-
-    RootK - RootKLast
-    Supply * (RootK - RootKLast)
-    RootK * 5
-    (RootK * 5) + RootKLast
-    Fee
 
 iff
 
     LockState == 1
-
     VCallValue == 0
     VCallDepth < 1024
 
 if
 
-    // variant: diff
-    to =/= ACCT_ID
-    // variant: feeTo-diff
-    FeeTo =/= ACCT_ID
+    FeeTo == 0
+    KLast == 0
 
     Supply == 0
-
-    FeeOn
-    KLast =/= 0
-    RootK > RootKLast
 
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.transfer-diff
+    UniswapV2Factory.feeTo
 ```
 
 ### Sync
