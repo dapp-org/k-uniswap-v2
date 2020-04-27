@@ -22,6 +22,9 @@
     }
   },
   "timeouts": {
+    "UniswapV2Pair_burn-back-feeOff-klastNonZero_pass_rough": "3d",
+    "UniswapV2Pair_burn-back-feeOff-klastNonZero_fail_rough": "3d",
+    "UniswapV2Pair_burn-back-feeOff-klastNonZero_pass": "3d",
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "1d",
     "UniswapV2Pair_mint-noFee-first-diff_fail_rough": "1d",
     "UniswapV2Pair_mint-noFee-first-diff_pass": "1d",
@@ -48,6 +51,9 @@
     "UniswapV2Factory_createPair-gt_pass": "72h"
   },
   "memory" : {
+    "UniswapV2Pair_burn-back-feeOff-klastNonZero_pass_rough": "30G",
+    "UniswapV2Pair_burn-back-feeOff-klastNonZero_fail_rough": "30G",
+    "UniswapV2Pair_burn-back-feeOff-klastNonZero_pass": "30G",
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
     "UniswapV2Pair_mint-noFee-first-diff_fail_rough": "30G",
     "UniswapV2Pair_mint-noFee-first-diff_pass": "30G",
