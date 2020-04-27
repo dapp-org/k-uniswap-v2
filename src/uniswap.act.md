@@ -575,7 +575,6 @@ for all
     Token0             : address UniswapV2Pair
     Token1             : address UniswapV2Pair
     Balance            : uint256
-    Balance_FeeTo      : uint256
     Balance0           : uint112
     Balance1           : uint112
     Balance0_To        : uint256
@@ -584,8 +583,6 @@ for all
     Factory            : address UniswapV2Factory
     KLast              : uint256
     Supply             : uint256
-    Price0             : uint256
-    Price1             : uint256
     LockState          : uint256
 
 storage
