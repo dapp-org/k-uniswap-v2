@@ -742,6 +742,7 @@ interface swap(uint amount0Out, uint amount1Out, address to, bytes calldata data
 
 for all
 
+    LockState          : uint256
     Reserve0           : uint112
     Reserve1           : uint112
     Balance0           : uint112
@@ -760,7 +761,7 @@ storage
     reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(Balance0 - amount0Out, Balance1 - amount1Out, TIME)
     token0   |-> Token0
     token1   |-> Token1
-    lockState |-> 1
+    lockState |-> LockState
     price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
     price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
 
@@ -785,10 +786,13 @@ where
 
 iff
 
+    LockState == 1
     VCallValue == 0
     VCallDepth < 1024
     amount0Out < Reserve0
     amount1Out < Reserve1
+    Token0 =/= to
+    Token1 =/= to
     amount0Out =/=K 0 orBool amount1Out =/=K 0
     Amount0In orBool Amount1In
     (notBool Amount0In) orBool (notBool Amount1In) orBool K00
@@ -811,21 +815,13 @@ iff in range uint256
     (Balance0 - amount0Out) * 1000
     (((Balance0 * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))))
     (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))
-    ((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)
-    ((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)
-    (((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0
-    (((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1
 
 
 if
 
     Token0 =/= Token1
-    Token0 =/= to
-    Token1 =/= to
     ACCT_ID =/= to
     calldata ==K .WordStack
-    TIME < pow32
-    TIME >= BlockTimestampLast
 ```
 
 ### Mint
