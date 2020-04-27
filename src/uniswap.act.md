@@ -685,6 +685,7 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.transfer-diff
     UniswapV2Factory.feeTo
 ```
 
@@ -829,6 +830,7 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.transfer-diff
     UniswapV2Factory.feeTo
 ```
 
@@ -940,6 +942,7 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.transfer-diff
     UniswapV2Factory.feeTo
 ```
 
@@ -1051,6 +1054,7 @@ if
 calls
 
     UniswapV2Pair.balanceOf
+    UniswapV2Pair.transfer-diff
     UniswapV2Factory.feeTo
 ```
 
