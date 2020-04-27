@@ -962,8 +962,7 @@ if
 
     // variant: diff
     to =/= ACCT_ID
-    // variant: feeTo-diff
-    FeeTo =/= ACCT_ID
+
     FeeTo == 0
     KLast == 0
 
@@ -1076,8 +1075,7 @@ if
 
     // variant: diff
     to =/= ACCT_ID
-    // variant: feeTo-diff
-    FeeTo =/= ACCT_ID
+
     FeeTo == 0
     KLast =/= 0
 
