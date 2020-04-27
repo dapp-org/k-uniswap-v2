@@ -649,7 +649,6 @@ iff in range uint256
     Amount1
 
     Supply - Balance
-    (Balance0 - Amount0) * (Balance1 - Amount1)
 
     // _safeTransfer
     Balance0_To + Amount0
@@ -776,9 +775,6 @@ iff in range uint256
     Amount0WithFee
     Amount1WithFee
     Supply - Balance
-
-    (Balance0 - Amount0) * (Balance1 - Amount1)
-    (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee)
 
     // _safeTransfer
     Balance0_To + Amount0
