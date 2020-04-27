@@ -564,16 +564,42 @@ iff
 ### Burn
 
 The `burn` function burns all the liquidity tokens owned by the pair
-contract and sends a proportionate amount of each token in the pair to the
+contract and sends a proportional amount of each token in the pair to the
 address specified by `to`.
 Sending liquidity tokens to the contract and calling `burn` should happen
 atomically, otherwise the tokens can be withdrawn by a third-party with a call
 to `skim`.
 
-`burn` also optionally generates protocol fees, if the value of `feeTo` is not `0`.
+`burn` also optionally generates protocol fees, if the value of `feeTo` is not
+`0`. The fees are sent to the `feeTo` address.
 
 This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
+
+There are 4 specs for `burn`: 2 variants for `feeOn`, and 2 variants for `kLast == 0`.
+
+The variants on `feeOn` are there to clearly display how the function behaves in
+these two states. The variants on `kLast` are there for performance reasons, to
+ensure the proofs run in a reasonable amount of time, without causing timeouts
+or out-of-memory errors.
+
+There are other possible variants which we're not exploring here:
+- `totalSupply == 0`
+- `feeTo == CALLER_ID`
+- `to == CALLER_ID`
+
+The `totalSupply == 0` variant would cover the case when `burn` is called when
+no liquidity has been minted yet. In that case, there will be a division by
+zero, which will cause the caller to lose their gas. This scenario is relatively
+rare and relatively low-risk, so it hasn't been prioritized.
+
+The `feeTo == CALLER_ID` and `to == CALLER_ID` variants would require a separate
+spec to work around storage collisions. Because these variants do not
+meaningfully affect the security of the system, they haven't been prioritized.
+
+#### FeeOn variants
+
+##### KLast == 0
 
 ```act
 behaviour burn-feeOn-kLastZero of UniswapV2Pair
@@ -687,6 +713,8 @@ calls
     UniswapV2Pair.transfer-diff
     UniswapV2Factory.feeTo
 ```
+
+##### KLast =/= 0
 
 ```act
 behaviour burn-feeOn-kLastNonZero of UniswapV2Pair
@@ -833,6 +861,10 @@ calls
     UniswapV2Factory.feeTo
 ```
 
+#### FeeOff variants
+
+##### KLast == 0
+
 ```act
 behaviour burn-feeOff-kLastZero of UniswapV2Pair
 interface burn(address to)
@@ -944,6 +976,8 @@ calls
     UniswapV2Pair.transfer-diff
     UniswapV2Factory.feeTo
 ```
+
+##### KLast =/= 0
 
 ```act
 behaviour burn-feeOff-kLastNonZero of UniswapV2Pair
