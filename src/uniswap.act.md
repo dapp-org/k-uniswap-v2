@@ -822,6 +822,14 @@ if
     Token0 =/= Token1
     ACCT_ID =/= to
     calldata ==K .WordStack
+    TIME < pow32
+    TIME >= BlockTimestampLast
+
+    amount0Out =/= 0
+    amount1Out == 0
+    Reserve0 - amount0Out < Balance0 - amount0Out
+    Reserve1 < Balance1
+    TIME - BlockTimestampLast =/= 0
 ```
 
 ### Mint
