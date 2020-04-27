@@ -805,7 +805,7 @@ iff
     )
 
     Fee > 0 impliesBool (                        \
-        and #rangeUInt(256, Supply + Fee)        \
+            #rangeUInt(256, Supply + Fee)        \
         and #rangeUInt(256, Balance_FeeTo + Fee) \
     )
 
