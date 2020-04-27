@@ -796,14 +796,17 @@ iff in range uint112
 
 iff
 
-    (RootK > RootKLast and Fee > 0) impliesBool (         \
+    RootK > RootKLast impliesBool (                       \
             #rangeUInt(256, RootK - RootKLast)            \
         and #rangeUInt(256, Supply * (RootK - RootKLast)) \
         and #rangeUInt(256, RootK * 5)                    \
         and #rangeUInt(256, (RootK * 5) + RootKLast)      \
         and #rangeUInt(256, Fee)                          \
-        and #rangeUInt(256, Supply + Fee)                 \
-        and #rangeUInt(256, Balance_FeeTo + Fee)          \
+    )
+
+    Fee > 0 impliesBool (                        \
+        and #rangeUInt(256, Supply + Fee)        \
+        and #rangeUInt(256, Balance_FeeTo + Fee) \
     )
 
     Amount0 > 0
