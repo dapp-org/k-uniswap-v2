@@ -762,8 +762,8 @@ storage
     token0   |-> Token0
     token1   |-> Token1
     lockState |-> LockState
-    price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
-    price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then ((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
+    price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then chop((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then chop((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
 
 storage Token0
 
