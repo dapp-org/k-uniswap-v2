@@ -77,7 +77,7 @@
     "UniswapV2Pair_burn-feeOn-kLastNonZero_pass_rough": "30G",
     "UniswapV2Pair_burn-feeOn-kLastNonZero_fail_rough": "30G",
     "UniswapV2Pair_burn-feeOn-kLastNonZero_pass": "30G",
-    "UniswapV2Pair_burn-feeOff-kLastZero_pass_rough": "3d",
+    "UniswapV2Pair_burn-feeOff-kLastZero_pass_rough": "30G",
     "UniswapV2Pair_burn-feeOff-kLastZero_fail_rough": "30G",
     "UniswapV2Pair_burn-feeOff-kLastZero_pass": "30G",
     "UniswapV2Pair_burn-feeOff-kLastNonZero_pass_rough": "30G",
