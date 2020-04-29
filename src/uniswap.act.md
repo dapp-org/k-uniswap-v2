@@ -822,9 +822,9 @@ storage Factory
 
 returnsRaw \
     #if Minting #then \
-        #buf(32, Amount0) ++ #buf(32, Amount1)
-    #else \
         #buf(32, Amount0WithFee) ++ #buf(32, Amount1WithFee)
+    #else \
+        #buf(32, Amount0) ++ #buf(32, Amount1)
     #fi
 
 where
