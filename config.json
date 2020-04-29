@@ -46,7 +46,7 @@
     "UniswapV2Factory_createPair-gt_pass_rough": "72h",
     "UniswapV2Factory_createPair-gt_fail_rough": "72h",
     "UniswapV2Factory_createPair-gt_pass": "72h",
-    "UniswapV2Pair_swap_rough": "3d",
+    "UniswapV2Pair_swap_pass_rough": "3d",
     "UniswapV2Pair_swap_fail_rough": "3d",
     "UniswapV2Pair_swap_pass": "3d"
   },
