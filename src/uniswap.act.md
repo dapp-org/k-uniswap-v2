@@ -797,25 +797,7 @@ iff in range uint256
     // burn
     Balance * Balance0
     Balance * Balance1
-    Amount0
-    Amount1
-    Amount0WithFee
-    Amount1WithFee
     Supply - Balance
-
-    // _safeTransfer
-    Balance0_To + Amount0
-    Balance1_To + Amount1
-    Balance0_To + Amount0WithFee
-    Balance1_To + Amount1WithFee
-
-iff in range uint112
-
-    // _safeTransfer
-    Balance0 - Amount0
-    Balance1 - Amount1
-    Balance0 - Amount0WithFee
-    Balance1 - Amount1WithFee
 
 iff
 
@@ -827,15 +809,30 @@ iff
         and #rangeUInt(256, Fee)                          \
     )
 
-    Fee > 0 impliesBool (                        \
-            #rangeUInt(256, Supply + Fee)        \
-        and #rangeUInt(256, Balance_FeeTo + Fee) \
+    (RootK > RootKLast and Fee == 0) impliesBool (        \
+            Amount0 > 0                                   \
+        and Amount1 > 0                                   \
+        and #rangeUInt(256, Amount0)                      \
+        and #rangeUInt(256, Amount1)                      \
+        and #rangeUInt(256, Balance0_To + Amount0)        \
+        and #rangeUInt(256, Balance1_To + Amount1)        \
+        and #rangeUInt(112, Balance0 - Amount0)           \
+        and #rangeUInt(112, Balance1 - Amount1)           \
     )
 
-    Amount0 > 0
-    Amount1 > 0
-    Amount0WithFee > 0
-    Amount1WithFee > 0
+    Minting impliesBool (                                 \
+            Amount0WithFee > 0                            \
+        and Amount1WithFee > 0                            \
+        and #rangeUInt(256, Supply + Fee)                 \
+        and #rangeUInt(256, Balance_FeeTo + Fee)          \
+        and #rangeUInt(256, Amount0WithFee)               \
+        and #rangeUInt(256, Amount1WithFee)               \
+        and #rangeUInt(256, Balance0_To + Amount0WithFee) \
+        and #rangeUInt(256, Balance1_To + Amount1WithFee) \
+        and #rangeUInt(112, Balance0 - Amount0WithFee)    \
+        and #rangeUInt(112, Balance1 - Amount1WithFee)    \
+    )
+
     LockState == 1
 
     VCallValue == 0
