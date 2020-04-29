@@ -743,34 +743,89 @@ for all
 
 storage
 
-    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+        #if Minting #then \
+            #WordPackUInt112UInt112UInt32((Balance0 - Amount0WithFee), (Balance1 - Amount1WithFee), BlockTimestamp) \
+        #else \
+            #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp) \
+        #fi
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
-    totalSupply |-> Supply => #if Minting #then (Supply + Fee) - Balance #else Supply - Balance #fi
-    balanceOf[FeeTo] |-> Balance_FeeTo => #if Minting #then Balance_FeeTo + Fee #else Balance_FeeTo #fi
+    kLast |-> KLast => \
+        #if Minting #then \
+            (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee) \
+        #else \
+            (Balance0 - Amount0) * (Balance1 - Amount1) \
+        #fi
+    totalSupply |-> Supply => \
+        #if Minting #then \
+            (Supply + Fee) - Balance \
+        #else \
+            Supply - Balance \
+        #fi
+    balanceOf[FeeTo] |-> Balance_FeeTo => \
+        #if Minting #then \
+            Balance_FeeTo + Fee \
+        #else \
+            Balance_FeeTo \
+        #fi
     balanceOf[ACCT_ID] |-> Balance => 0
-    price0CumulativeLast |-> Price0 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease0 + Price0) #else Price0 #fi
-    price1CumulativeLast |-> Price1 => #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then chop(PriceIncrease1 + Price1) #else Price1 #fi
+    price0CumulativeLast |-> Price0 => \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease0 + Price0) \
+        #else \
+            Price0 \
+        #fi
+    price1CumulativeLast |-> Price1 => \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease1 + Price1) \
+        #else \
+            Price1 \
+        #fi
     lockState |-> LockState => LockState
 
 storage Token0
 
-    balanceOf[ACCT_ID] |-> Balance0 => (Balance0 - Amount0)
-    balanceOf[to] |-> Balance0_To => (Balance0_To + Amount0)
+    balanceOf[ACCT_ID] |-> Balance0 => \
+        #if Minting #then \
+            (Balance0 - Amount0WithFee) \
+        #else \
+            (Balance0 - Amount0) \
+        #fi
+    balanceOf[to] |-> Balance0_To => \
+        #if Minting #then \
+            (Balance0_To + Amount0WithFee) \
+        #else \
+            (Balance0_To + Amount0) \
+        #fi
 
 
 storage Token1
 
-    balanceOf[ACCT_ID] |-> Balance1 => (Balance1 - Amount1)
-    balanceOf[to] |-> Balance1_To => (Balance1_To + Amount1)
+    balanceOf[ACCT_ID] |-> Balance1 => \
+        if Minting #then \
+            (Balance1 - Amount1WithFee) \
+        #else \
+            (Balance1 - Amount1) \
+        #fi
+    balanceOf[to] |-> Balance1_To => \
+        if Minting #then \
+            (Balance1_To + Amount1WithFee) \
+        #else \
+            (Balance1_To + Amount1) \
+        #fi
 
 storage Factory
 
     feeTo |-> FeeTo
 
-returns Amount0 : Amount1
+returns \
+    #if Minting #then \
+        Amount0 : Amount1 \
+    #else \
+        Amount0WithFee : Amount1WithFee \
+    #fi
 
 where
 
