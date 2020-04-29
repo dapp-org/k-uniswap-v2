@@ -779,42 +779,187 @@ where
 
     Amount0In := (Reserve0 - amount0Out) < (Balance0 - amount0Out)
     Amount1In := (Reserve1 - amount1Out) < (Balance1 - amount1Out)
-    K00 := ((Reserve0 * Reserve1) * 1000000) <=  (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))
-    K01 := ((Reserve0 * Reserve1) * 1000000) <= ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * ((Balance1 - amount1Out) * 1000))
-    K10 := ((Reserve0 * Reserve1) * 1000000) <= (((Balance0 - amount0Out) * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3)))
-
+    ValidEmptyCall := (VCallDepth < 1024) andBool (0 <= ACCT_ID_balance)
+    A := Reserve0 < Balance0
+    B := (((Balance0 * 1000) - ((Balance0 - Reserve0) * 3)) * ((Balance1 - amount1Out) * 1000)) < ((Reserve0 * Reserve1) * 1000000)
+    C := ((Balance0 * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    V := ((Balance1 - amount1Out) * 1000) ==K 0
+    L := A and (notBool B) and (notBool V) and (notBool Amount1In)
+    R := (notBool A) and (notBool C) and Amount1In
 
 iff
 
-    LockState == 1
     VCallValue == 0
-    VCallDepth < 1024
-    amount0Out < Reserve0
+    1 == LockState
     amount1Out < Reserve1
-    Token0 =/= to
-    Token1 =/= to
-    amount0Out =/=K 0 orBool amount1Out =/=K 0
-    Amount0In orBool Amount1In
-    (notBool Amount0In) orBool (notBool Amount1In) orBool K00
-    (notBool Amount0In) orBool Amount1In orBool K01
-    Amount0In orBool (notBool Amount1In) orBool K10
+    to =/= Token0
+    to =/= Token1
+    ValidEmptyCall
+    0 < amount1Out
+    0 < Reserve0
+    #rangeUInt(256, Balance1 - amount1Out)
+    #rangeUInt(256, DstBal1 + amount1Out)
 
+    L or R
 
-iff in range uint112
+if
 
-    Balance0 - amount0Out
-    Balance1 - amount1Out
+    Token0 =/= Token1
+    ACCT_ID =/= to
+    calldata ==K .WordStack
+    TIME < pow32
+    TIME >= BlockTimestampLast
 
-iff in range uint256
+    amount0Out == 0
+```
 
-    DstBal0  + amount0Out
-    DstBal1  + amount1Out
-    Balance0 - (amount0Out + (Reserve0 - amount0Out))
-    Balance1 * 1000
-    (Balance1 - Reserve1) * 3
-    (Balance0 - amount0Out) * 1000
-    (((Balance0 * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))))
-    (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))
+TODO amount0Out =/= 0
+
+```act
+behaviour swap2 of UniswapV2Pair
+interface swap(uint amount0Out, uint amount1Out, address to, bytes calldata data)
+
+for all
+
+    LockState          : uint256
+    Reserve0           : uint112
+    Reserve1           : uint112
+    Balance0           : uint112
+    Balance1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Price0             : uint256
+    Price1             : uint256
+    DstBal0            : uint256
+    DstBal1            : uint256
+    BlockTimestampLast : uint32
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(Balance0 - amount0Out, Balance1 - amount1Out, TIME)
+    token0   |-> Token0
+    token1   |-> Token1
+    lockState |-> LockState
+    price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then chop((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then chop((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - amount0Out
+    balanceOf[to]      |-> DstBal0 => DstBal0 + amount0Out
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - amount1Out
+    balanceOf[to]      |-> DstBal1 => DstBal1 + amount1Out
+
+where
+
+    Amount0In := (Reserve0 - amount0Out) < (Balance0 - amount0Out)
+    Amount1In := (Reserve1 - amount1Out) < (Balance1 - amount1Out)
+    ValidEmptyCall := (VCallDepth < 1024) andBool (0 <= ACCT_ID_balance)
+    N := Reserve1 < Balance1
+    Q := (((Balance0 - ABI_amount0Out) * 1000) * ((Balance1 * 1000) - ((Balance1 - Reserve1) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    O := (Balance1 * 1000) ==K 0
+    P := ((((Balance0 - ABI_amount0Out) * 1000) - ((Balance0 - (ABI_amount0Out + (Reserve0 - ABI_amount0Out))) * 3)) * (Balance1 * 1000)) < ((Reserve0 * Reserve1) * 1000000)
+    L := (notBool Amount0In) and N and Q
+    R := Amount0In and (notBool N) and (notBool O) and (notBool P)
+
+iff
+
+    VCallValue == 0
+    1 == LockState
+    amount1Out < Reserve1
+    to =/= Token0
+    to =/= Token1
+    ValidEmptyCall
+
+    amount0Out < Reserve0
+    #rangeUInt(256, Balance0 - amount0Out)
+    #rangeUInt(256, DstBal0 + amount0Out)
+    L or R
+
+if
+
+    Token0 =/= Token1
+    ACCT_ID =/= to
+    calldata ==K .WordStack
+    TIME < pow32
+    TIME >= BlockTimestampLast
+
+    amount0Out =/= 0
+    amount1Out == 0
+```
+
+```act
+behaviour swap3 of UniswapV2Pair
+interface swap(uint amount0Out, uint amount1Out, address to, bytes calldata data)
+
+for all
+
+    LockState          : uint256
+    Reserve0           : uint112
+    Reserve1           : uint112
+    Balance0           : uint112
+    Balance1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Price0             : uint256
+    Price1             : uint256
+    DstBal0            : uint256
+    DstBal1            : uint256
+    BlockTimestampLast : uint32
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => #WordPackUInt112UInt112UInt32(Balance0 - amount0Out, Balance1 - amount1Out, TIME)
+    token0   |-> Token0
+    token1   |-> Token1
+    lockState |-> LockState
+    price0CumulativeLast |-> Price0 => #if TIME - BlockTimestampLast =/= 0 #then chop((((pow112 * Reserve1) / Reserve0) * (TIME - BlockTimestampLast)) + Price0) #else Price0 #fi
+    price1CumulativeLast |-> Price1 => #if TIME - BlockTimestampLast =/= 0 #then chop((((pow112 * Reserve0) / Reserve1) * (TIME - BlockTimestampLast)) + Price1) #else Price1 #fi
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - amount0Out
+    balanceOf[to]      |-> DstBal0 => DstBal0 + amount0Out
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - amount1Out
+    balanceOf[to]      |-> DstBal1 => DstBal1 + amount1Out
+
+where
+
+    Amount0In := (Reserve0 - amount0Out) < (Balance0 - amount0Out)
+    Amount1In := (Reserve1 - amount1Out) < (Balance1 - amount1Out)
+    ValidEmptyCall := (VCallDepth < 1024) andBool (0 <= ACCT_ID_balance)
+    V := ((Balance1 - ABI_amount1Out) * 1000) ==K 0
+    W := chop(((((Balance0 - ABI_amount0Out) * 1000) - ((Balance0 - (ABI_amount0Out + (Reserve0 - ABI_amount0Out))) * 3)) * ((Balance1 - ABI_amount1Out) * 1000))) < ((Reserve0 * Reserve1) * 1000000)
+    U := #rangeUInt(256, (((Balance0 - ABI_amount0Out) * 1000) - ((Balance0 - (ABI_amount0Out + (Reserve0 - ABI_amount0Out))) * 3)) * (((Balance1 - ABI_amount1Out) * 1000) - ((Balance1 - (ABI_amount1Out + (Reserve1 - ABI_amount1Out))) * 3)))
+    X := (((Balance0 - ABI_amount0Out) * 1000) * (((Balance1 - ABI_amount1Out) * 1000) - ((Balance1 - (ABI_amount1Out + (Reserve1 - ABI_amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    K11 := Amount0In and Amount1In and (notBool U)
+    K01 := Amount0In and (notBool Amount1In) and (notBool V) and (notBool W)
+    K10 := (notBool Amount0In) and Amount0In and (notBool X)
+
+iff
+
+    VCallValue == 0
+    1 == LockState
+    amount1Out < Reserve1
+    to =/= Token0
+    to =/= Token1
+    ValidEmptyCall
+
+    amount0Out < Reserve0
+    #rangeUInt(256, Balance0 - amount0Out)
+    #rangeUInt(256, DstBal0 + amount0Out)
+    #rangeUInt(256, Balance1 - amount1Out)
+    #rangeUInt(256, DstBal1 + amount1Out)
+
+    K11 or K01 or K10
 
 
 if
@@ -824,6 +969,9 @@ if
     calldata ==K .WordStack
     TIME < pow32
     TIME >= BlockTimestampLast
+
+    amount0Out =/= 0
+    amount1Out =/= 0
 ```
 
 ### Mint
