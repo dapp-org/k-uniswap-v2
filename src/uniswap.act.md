@@ -638,8 +638,6 @@ iff in range uint112
     // _safeTransfer
     Balance0 - Amount0
     Balance1 - Amount1
-    Balance0 + Amount0
-    Balance1 + Amount1
 
 
 iff
@@ -653,12 +651,12 @@ iff
 
 if
 
+    // variant: transfer back to pair contract
     to == ACCT_ID
 
     FeeTo == 0
     KLast =/= 0
 
-    // variant: no supply
     Supply =/= 0
 
 calls
