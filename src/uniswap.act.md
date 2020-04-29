@@ -804,13 +804,13 @@ storage Token0
 storage Token1
 
     balanceOf[ACCT_ID] |-> Balance1 => \
-        if Minting #then \
+        #if Minting #then \
             (Balance1 - Amount1WithFee) \
         #else \
             (Balance1 - Amount1) \
         #fi
     balanceOf[to] |-> Balance1_To => \
-        if Minting #then \
+        #if Minting #then \
             (Balance1_To + Amount1WithFee) \
         #else \
             (Balance1_To + Amount1) \
