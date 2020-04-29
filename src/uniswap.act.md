@@ -820,7 +820,7 @@ storage Factory
 
     feeTo |-> FeeTo
 
-returns \
+returnsRaw \
     #if Minting #then \
         Amount0 : Amount1 \
     #else \
