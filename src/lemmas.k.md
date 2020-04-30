@@ -75,20 +75,6 @@ library to the logical `#rangeUInt` conditions expressed within the specs.
 rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
   requires #rangeUInt(256, A)
   andBool #rangeUInt(256, B)
-
-// add
-rule (chop(X +Int Y) >=Int X) => #rangeUInt(256, X +Int Y)
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
-
-rule (X <=Int chop(X +Int Y)) => #rangeUInt(256, X +Int Y)
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
-
-// mul
-rule (chop(X *Int Y) /Int Y ==K X) => #rangeUInt(256, X *Int Y)
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
 ```
 
 ### Bitwise Modulo
