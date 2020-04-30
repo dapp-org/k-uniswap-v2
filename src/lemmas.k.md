@@ -173,6 +173,8 @@ overlapping words to memory. The first 40 bytes is then read back from memory
 to provide the packed result. These rules handle the writing of the shifted
 addresses to memory and the reduction of the resulting byte array.
 
+TODO: would be nice to document the meaning of this 96 with a variable.
+
 ```k
 rule chop(A <<Int 96) => A <<Int 96
   requires #rangeAddress(A)
