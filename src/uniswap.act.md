@@ -576,7 +576,16 @@ to `skim`.
 This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
-There are 4 specs for `burn`: 2 variants for `feeOn`, and 2 variants for `kLast == 0`.
+There are 6 specs for `burn`:
+
+`feeOn`specs:
+- `klast == 0`
+- `klast =/= 0`
+    - `fee == 0`
+    - `fee =/= 0`
+`feeOff` specs:
+- `klast == 0`
+- `klast =/= 0`
 
 The variants on `feeOn` are there to clearly display how the function behaves in
 these two states. The variants on `kLast` are there for performance reasons, to
@@ -716,8 +725,10 @@ calls
 
 ##### KLast =/= 0
 
+###### Fee == 0
+
 ```act
-behaviour burn-feeOn-kLastNonZero of UniswapV2Pair
+behaviour burn-feeOn-kLastNonZero-feeZero of UniswapV2Pair
 interface burn(address to)
 
 for all
@@ -743,33 +754,16 @@ for all
 
 storage
 
-    reserve0_reserve1_blockTimestampLast |-> #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
-        #if Minting #then                                                                                             \
-            #WordPackUInt112UInt112UInt32((Balance0 - Amount0WithFee), (Balance1 - Amount1WithFee), BlockTimestamp)   \
-        #else                                                                                                         \
-            #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)                 \
-        #fi
+    reserve0_reserve1_blockTimestampLast |-> \
+        #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+        #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast =>                                                \
-        #if Minting #then                                             \
-            (Balance0 - Amount0WithFee) * (Balance1 - Amount1WithFee) \
-        #else                                                         \
-            (Balance0 - Amount0) * (Balance1 - Amount1)               \
+            (Balance0 - Amount0) * (Balance1 - Amount1)
+    totalSupply |-> Supply => upply - Balance
         #fi
-    totalSupply |-> Supply =>        \
-        #if Minting #then            \
-            (Supply + Fee) - Balance \
-        #else                        \
-            Supply - Balance         \
-        #fi
-    balanceOf[FeeTo] |-> Balance_FeeTo => \
-        #if Minting #then                 \
-            Balance_FeeTo + Fee           \
-        #else                             \
-            Balance_FeeTo                 \
-        #fi
+    balanceOf[FeeTo] |-> Balance_FeeTo => Balance_FeeTo
     balanceOf[ACCT_ID] |-> Balance => 0
     price0CumulativeLast |-> Price0 =>                                        \
         #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
@@ -787,45 +781,20 @@ storage
 
 storage Token0
 
-    balanceOf[ACCT_ID] |-> Balance0 =>  \
-        #if Minting #then               \
-            (Balance0 - Amount0WithFee) \
-        #else                           \
-            (Balance0 - Amount0)        \
-        #fi
-    balanceOf[to] |-> Balance0_To =>       \
-        #if Minting #then                  \
-            (Balance0_To + Amount0WithFee) \
-        #else                              \
-            (Balance0_To + Amount0)        \
-        #fi
+    balanceOf[ACCT_ID] |-> Balance0 => (Balance0 - Amount0)
+    balanceOf[to] |-> Balance0_To => (Balance0_To + Amount0)
 
 
 storage Token1
 
-    balanceOf[ACCT_ID] |-> Balance1 =>  \
-        #if Minting #then               \
-            (Balance1 - Amount1WithFee) \
-        #else                           \
-            (Balance1 - Amount1)        \
-        #fi
-    balanceOf[to] |-> Balance1_To =>       \
-        #if Minting #then                  \
-            (Balance1_To + Amount1WithFee) \
-        #else                              \
-            (Balance1_To + Amount1)        \
-        #fi
+    balanceOf[ACCT_ID] |-> Balance1 => (Balance1 - Amount1)
+    balanceOf[to] |-> Balance1_To => (Balance1_To + Amount1)
 
 storage Factory
 
     feeTo |-> FeeTo
 
-returnsRaw                                                   \
-    #if Minting #then                                        \
-        #buf(32, Amount0WithFee) ++ #buf(32, Amount1WithFee) \
-    #else                                                    \
-        #buf(32, Amount0) ++ #buf(32, Amount1)               \
-    #fi
+returns Amount0 : Amount1
 
 where
 
@@ -836,8 +805,6 @@ where
     Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := (Balance * Balance0) / Supply
     Amount1 := (Balance * Balance1) / Supply
-    Amount0WithFee := (Balance * Balance0) / (Supply + Fee)
-    Amount1WithFee := (Balance * Balance1) / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
     TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
     PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
@@ -853,7 +820,158 @@ iff in range uint256
     // burn
     Balance * Balance0
     Balance * Balance1
+    Amount0
+    Amount1
     Supply - Balance
+
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+
+iff in range uint112
+
+    Balance0 - Amount0
+    Balance1 - Amount1
+
+iff
+
+    RootK > RootKLast impliesBool (                       \
+            #rangeUInt(256, RootK - RootKLast)            \
+        and #rangeUInt(256, Supply * (RootK - RootKLast)) \
+        and #rangeUInt(256, RootK * 5)                    \
+        and #rangeUInt(256, (RootK * 5) + RootKLast)      \
+    )
+
+    Amount0 > 0
+    Amount1 > 0
+
+    LockState == 1
+
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    Fee == 0
+
+    to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
+    FeeTo =/= 0
+
+    // variant: no supply
+    Supply =/= 0
+    KLast =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+```
+
+###### Fee == 0
+
+```act
+behaviour burn-feeOn-kLastNonZero-feeNonZero of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    Balance_FeeTo      : uint256
+    Balance0           : uint112
+    Balance1           : uint112
+    Balance0_To        : uint256
+    Balance1_To        : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> \
+        #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+        #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
+    totalSupply |-> Supply => (Supply + Fee) - Balance
+    balanceOf[FeeTo] |-> Balance_FeeTo => Balance_FeeTo + Fee
+    balanceOf[ACCT_ID] |-> Balance => 0
+    price0CumulativeLast |-> Price0 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease0 + Price0)                                     \
+        #else                                                                 \
+            Price0                                                            \
+        #fi
+    price1CumulativeLast |-> Price1 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease1 + Price1)                                     \
+        #else                                                                 \
+            Price1                                                            \
+        #fi
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - Amount0
+    balanceOf[to] |-> Balance0_To => Balance0_To + Amount0
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 =>  \ (Balance1 - Amount1) \
+    balanceOf[to] |-> Balance1_To =>       \ (Balance1_To + Amount1) \
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    FeeOn := FeeTo =/= 0
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    Fee := (Supply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
+    Amount0 := (Balance * Balance0) / (Supply + Fee)
+    Amount1 := (Balance * Balance1) / (Supply + Fee)
+    BlockTimestamp := TIME mod pow32
+    TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
+    PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
+    PriceIncrease1 := ((pow112 * Reserve0) / Reserve1) * TimeElapsed
+
+iff in range uint256
+
+    // _mintFee
+    Reserve0 * Reserve1
+    RootK
+    RootKLast
+
+    // burn
+    Balance * Balance0
+    Balance * Balance1
+    Amount0
+    Amount1
+    Supply - Balance
+
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+
+iff in range uint112
+
+   Balance0 - Amount0
+   Balance1 - Amount1
 
 iff
 
@@ -863,31 +981,12 @@ iff
         and #rangeUInt(256, RootK * 5)                    \
         and #rangeUInt(256, (RootK * 5) + RootKLast)      \
         and #rangeUInt(256, Fee)                          \
-    )
-
-    (RootK > RootKLast and Fee == 0) impliesBool (        \
-            Amount0 > 0                                   \
-        and Amount1 > 0                                   \
-        and #rangeUInt(256, Amount0)                      \
-        and #rangeUInt(256, Amount1)                      \
-        and #rangeUInt(256, Balance0_To + Amount0)        \
-        and #rangeUInt(256, Balance1_To + Amount1)        \
-        and #rangeUInt(112, Balance0 - Amount0)           \
-        and #rangeUInt(112, Balance1 - Amount1)           \
-    )
-
-    Minting impliesBool (                                 \
-            Amount0WithFee > 0                            \
-        and Amount1WithFee > 0                            \
         and #rangeUInt(256, Supply + Fee)                 \
         and #rangeUInt(256, Balance_FeeTo + Fee)          \
-        and #rangeUInt(256, Amount0WithFee)               \
-        and #rangeUInt(256, Amount1WithFee)               \
-        and #rangeUInt(256, Balance0_To + Amount0WithFee) \
-        and #rangeUInt(256, Balance1_To + Amount1WithFee) \
-        and #rangeUInt(112, Balance0 - Amount0WithFee)    \
-        and #rangeUInt(112, Balance1 - Amount1WithFee)    \
     )
+
+    Amount0 > 0
+    Amount1 > 0
 
     LockState == 1
 
@@ -896,9 +995,9 @@ iff
 
 if
 
-    // variant: diff
+    Fee =/= 0
+
     to =/= ACCT_ID
-    // variant: feeTo-diff
     FeeTo =/= ACCT_ID
     FeeTo =/= 0
 
