@@ -576,21 +576,16 @@ to `skim`.
 This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
-There are 6 specs for `burn`:
+There are 4 specs for `burn`: 2 variants are based on whether a fee is minted
+(the `feeMinted` variants). Each of those variants has, for performance reasons,
+two subvariants, based on the value of the `KLast` variable. These two
+subvariants ensure that execution finishes in a reasonable timeframe, and avoid
+out of memory errors:
 
-`feeOn`specs:
-- `klast == 0`
-- `klast =/= 0`
-    - `fee == 0`
-    - `fee =/= 0`
-`feeOff` specs:
-- `klast == 0`
-- `klast =/= 0`
-
-The variants on `feeOn` are there to clearly display how the function behaves in
-these two states. The variants on `kLast` are there for performance reasons, to
-ensure the proofs run in a reasonable amount of time, without causing timeouts
-or out-of-memory errors.
+-`feeMinted`
+- `noFeeMinted`
+    - `klast == 0`
+    - `klast =/= 0`
 
 There are other possible variants which we're not exploring here:
 - `totalSupply == 0`
