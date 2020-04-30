@@ -55,7 +55,7 @@ rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 
 ```k
 rule 0 /Int X => 0
-requires notBool (X ==Int 0)
+requires X =/=Int 0
 ```
 
 Helper for cleaner storage conditions.
