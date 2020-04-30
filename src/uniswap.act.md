@@ -800,7 +800,7 @@ iff
     #rangeUInt(256, Balance1 - amount1Out)
     #rangeUInt(256, DstBal1 + amount1Out)
 
-    L or R
+    (notBool A) impliesBool ((notBool C) and Amount1In)
 
 if
 
@@ -860,11 +860,10 @@ where
     Amount1In := (Reserve1 - amount1Out) < (Balance1 - amount1Out)
     ValidEmptyCall := (VCallDepth < 1024) andBool (0 <= ACCT_ID_balance)
     N := Reserve1 < Balance1
-    Q := (((Balance0 - ABI_amount0Out) * 1000) * ((Balance1 * 1000) - ((Balance1 - Reserve1) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    Q := (((Balance0 - amount0Out) * 1000) * ((Balance1 * 1000) - ((Balance1 - Reserve1) * 3))) < ((Reserve0 * Reserve1) * 1000000)
     O := (Balance1 * 1000) ==K 0
-    P := ((((Balance0 - ABI_amount0Out) * 1000) - ((Balance0 - (ABI_amount0Out + (Reserve0 - ABI_amount0Out))) * 3)) * (Balance1 * 1000)) < ((Reserve0 * Reserve1) * 1000000)
-    L := (notBool Amount0In) and N and Q
-    R := Amount0In and (notBool N) and (notBool O) and (notBool P)
+    P := ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (Balance1 * 1000)) < ((Reserve0 * Reserve1) * 1000000)
+    S := ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * ((Balance1 * 1000) - ((Balance1 - Reserve1) * 3))) < ((Reserve0 * Reserve1) * 1000000)
 
 iff
 
@@ -878,7 +877,9 @@ iff
     amount0Out < Reserve0
     #rangeUInt(256, Balance0 - amount0Out)
     #rangeUInt(256, DstBal0 + amount0Out)
-    L or R
+    (notBool Amount0In) impliesBool (N and (notBool Q))
+    Amount0In impliesBool ((N impliesBool (notBool S)) and ((notBool N) impliesBool ((notBool O) and (notBool P))))
+
 
 if
 
@@ -936,31 +937,33 @@ where
     Amount0In := (Reserve0 - amount0Out) < (Balance0 - amount0Out)
     Amount1In := (Reserve1 - amount1Out) < (Balance1 - amount1Out)
     ValidEmptyCall := (VCallDepth < 1024) andBool (0 <= ACCT_ID_balance)
-    V := ((Balance1 - ABI_amount1Out) * 1000) ==K 0
-    W := chop(((((Balance0 - ABI_amount0Out) * 1000) - ((Balance0 - (ABI_amount0Out + (Reserve0 - ABI_amount0Out))) * 3)) * ((Balance1 - ABI_amount1Out) * 1000))) < ((Reserve0 * Reserve1) * 1000000)
-    U := #rangeUInt(256, (((Balance0 - ABI_amount0Out) * 1000) - ((Balance0 - (ABI_amount0Out + (Reserve0 - ABI_amount0Out))) * 3)) * (((Balance1 - ABI_amount1Out) * 1000) - ((Balance1 - (ABI_amount1Out + (Reserve1 - ABI_amount1Out))) * 3)))
-    X := (((Balance0 - ABI_amount0Out) * 1000) * (((Balance1 - ABI_amount1Out) * 1000) - ((Balance1 - (ABI_amount1Out + (Reserve1 - ABI_amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
-    K11 := Amount0In and Amount1In and (notBool U)
-    K01 := Amount0In and (notBool Amount1In) and (notBool V) and (notBool W)
-    K10 := (notBool Amount0In) and Amount0In and (notBool X)
+    V := ((Balance1 - amount1Out) * 1000) ==K 0
+    W := ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * ((Balance1 - amount1Out) * 1000)) < ((Reserve0 * Reserve1) * 1000000)
+    Y := ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    U := #rangeUInt(256, (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3)))
+    X := (((Balance0 - amount0Out) * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    K11 := (Amount0In and Amount1In) impliesBool (U and (notBool Y))
+    K01 := (Amount0In and (notBool Amount1In)) impliesBool ((notBool V) and U and (notBool W))
+    K10 := ((notBool Amount0In)) impliesBool (U and Amount1In and (notBool X))
 
 iff
 
     VCallValue == 0
     1 == LockState
     amount1Out < Reserve1
+    amount0Out < Reserve0
     to =/= Token0
     to =/= Token1
     ValidEmptyCall
 
-    amount0Out < Reserve0
     #rangeUInt(256, Balance0 - amount0Out)
     #rangeUInt(256, DstBal0 + amount0Out)
     #rangeUInt(256, Balance1 - amount1Out)
     #rangeUInt(256, DstBal1 + amount1Out)
 
-    K11 or K01 or K10
-
+    K11
+    K01
+    K10
 
 if
 
