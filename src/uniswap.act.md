@@ -864,7 +864,7 @@ calls
     UniswapV2Factory.feeTo
 ```
 
-###### Fee == 0
+###### Fee =/= 0
 
 ```act
 behaviour burn-feeOn-kLastNonZero-feeNonZero of UniswapV2Pair
