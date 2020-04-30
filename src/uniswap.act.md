@@ -781,14 +781,14 @@ storage
 
 storage Token0
 
-    balanceOf[ACCT_ID] |-> Balance0 => (Balance0 - Amount0)
-    balanceOf[to] |-> Balance0_To => (Balance0_To + Amount0)
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - Amount0
+    balanceOf[to] |-> Balance0_To => Balance0_To + Amount0
 
 
 storage Token1
 
-    balanceOf[ACCT_ID] |-> Balance1 => (Balance1 - Amount1)
-    balanceOf[to] |-> Balance1_To => (Balance1_To + Amount1)
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - Amount1
+    balanceOf[to] |-> Balance1_To => Balance1_To + Amount1
 
 storage Factory
 
@@ -928,8 +928,8 @@ storage Token0
 
 storage Token1
 
-    balanceOf[ACCT_ID] |-> Balance1 =>  \ (Balance1 - Amount1) \
-    balanceOf[to] |-> Balance1_To =>       \ (Balance1_To + Amount1) \
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - Amount1
+    balanceOf[to] |-> Balance1_To => Balance1_To + Amount1
 
 storage Factory
 
