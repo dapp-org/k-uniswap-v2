@@ -142,9 +142,10 @@ syntax Int ::= "maxPairs"
 rule maxPairs => (maxUInt256 -Int pair0) +Int 1 [macro]
 ```
 
-Important to note is that that there is no guarentee that the storage keys of
-`allPairs` will not collide with storage keys of `getPair`. We make the
-low probablity assumption that there will be no such collision in the factory.
+Important to note is that that there is no guarantee that the storage keys of
+`allPairs` will not collide with storage keys of `getPair`. Because the
+likelihood of such collisions is very low, we declare in these lemmas that they
+can't happen in the factory.
 
 ```k
 rule N +Int pair0 => pair0 +Int N
