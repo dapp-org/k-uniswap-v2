@@ -801,7 +801,6 @@ where
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
     Fee := (Supply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
-    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := (Balance * Balance0) / Supply
     Amount1 := (Balance * Balance1) / Supply
     BlockTimestamp := TIME mod pow32
@@ -942,7 +941,6 @@ where
     RootK := #sqrt(Reserve0 * Reserve1)
     RootKLast := #sqrt(KLast)
     Fee := (Supply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
-    Minting := (KLast =/= 0) and FeeOn and (RootK > RootKLast) and (Fee > 0)
     Amount0 := (Balance * Balance0) / (Supply + Fee)
     Amount1 := (Balance * Balance1) / (Supply + Fee)
     BlockTimestamp := TIME mod pow32
