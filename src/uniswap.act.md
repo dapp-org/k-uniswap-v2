@@ -811,7 +811,6 @@ where
 iff in range uint256
 
     // _mintFee
-    Reserve0 * Reserve1
     RootK
     RootKLast
 
@@ -951,7 +950,6 @@ where
 iff in range uint256
 
     // _mintFee
-    Reserve0 * Reserve1
     RootK
     RootKLast
 
