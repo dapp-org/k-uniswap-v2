@@ -101,16 +101,17 @@ rule X modInt Y => X
   requires X <Int Y
 ```
 
-### Commutativity For Bitwise `AND`
+### Normal Form for Bitwise `AND`
 
-`K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand.
+These lemmas ensure that the concrete value is always on the left hand-side of
+the bitwise `AND`:
 
 ```k
-rule (X &Int maxUInt32) => (maxUInt32 &Int X)
-rule (X &Int maxUInt112) => (maxUInt112 &Int X)
-rule (X &Int maxUInt160) => (maxUInt160 &Int X)
-rule (X &Int notMaxUInt160) => (notMaxUInt160 &Int X)
-rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
+rule X &Int maxUInt32 => maxUInt32 &Int X
+rule X &Int maxUInt112 => maxUInt112 &Int X
+rule X &Int maxUInt160 => maxUInt160 &Int X
+rule X &Int notMaxUInt160 => notMaxUInt160 &Int X
+rule X &Int notMaxUInt224 => notMaxUInt224 &Int X
 ```
 
 ### Factory pairs array
