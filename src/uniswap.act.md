@@ -693,7 +693,7 @@ iff in range uint256
     RootK - RootKLast
     Supply * (RootK - RootKLast)
     RootK * 5
-    (RootK * 5) + RootKLast)
+    (RootK * 5) + RootKLast
     Fee
     Supply + Fee
     Balance_FeeTo + Fee
