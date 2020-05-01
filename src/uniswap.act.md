@@ -990,15 +990,17 @@ iff
 
 if
 
-    Fee =/= 0
+    // fee is minted
+    FeeTo =/= 0
+    KLast =/= 0
+    RootK > RootKLast
+    Fee > 0
 
     to =/= ACCT_ID
     FeeTo =/= ACCT_ID
-    FeeTo =/= 0
 
     // variant: no supply
     Supply =/= 0
-    KLast =/= 0
 
 calls
 
