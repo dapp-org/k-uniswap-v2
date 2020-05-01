@@ -576,21 +576,15 @@ to `skim`.
 This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
-There are 6 specs for `burn`:
+There are 3 specs for `burn`: 2 main variants, based on whether a fee is minted;
+and 2 subvariants, based on whether `KLast` is zero. The subvariants are
+there for performance reasons, to ensure the proofs run in a reasonable amount
+of time, without causing timeouts or out-of-memory errors.
 
-`feeOn`specs:
-- `klast == 0`
-- `klast =/= 0`
-    - `fee == 0`
-    - `fee =/= 0`
-`feeOff` specs:
-- `klast == 0`
-- `klast =/= 0`
-
-The variants on `feeOn` are there to clearly display how the function behaves in
-these two states. The variants on `kLast` are there for performance reasons, to
-ensure the proofs run in a reasonable amount of time, without causing timeouts
-or out-of-memory errors.
+- `feeMinted`
+- `noFee`
+  - `klastZero`
+  - `klastNonZero`
 
 There are other possible variants which we're not exploring here:
 - `totalSupply == 0`
@@ -606,7 +600,397 @@ The `feeTo == CALLER_ID` and `to == CALLER_ID` variants would require a separate
 spec to work around storage collisions. Because these variants do not
 meaningfully affect the security of the system, they haven't been prioritized.
 
-#### FeeOn variants
+#### FeeMinted variant
+
+```act
+behaviour burn-feeMinted of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    Balance_FeeTo      : uint256
+    Balance0           : uint112
+    Balance1           : uint112
+    Balance0_To        : uint256
+    Balance1_To        : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> \
+        #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+        #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
+    totalSupply |-> Supply => (Supply + Fee) - Balance
+    balanceOf[FeeTo] |-> Balance_FeeTo => Balance_FeeTo + Fee
+    balanceOf[ACCT_ID] |-> Balance => 0
+    price0CumulativeLast |-> Price0 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease0 + Price0)                                     \
+        #else                                                                 \
+            Price0                                                            \
+        #fi
+    price1CumulativeLast |-> Price1 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease1 + Price1)                                     \
+        #else                                                                 \
+            Price1                                                            \
+        #fi
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - Amount0
+    balanceOf[to] |-> Balance0_To => Balance0_To + Amount0
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - Amount1
+    balanceOf[to] |-> Balance1_To => Balance1_To + Amount1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    FeeOn := FeeTo =/= 0
+    RootK := #sqrt(Reserve0 * Reserve1)
+    RootKLast := #sqrt(KLast)
+    Fee := (Supply * (RootK - RootKLast)) / ((RootK * 5) + RootKLast)
+    Amount0 := (Balance * Balance0) / (Supply + Fee)
+    Amount1 := (Balance * Balance1) / (Supply + Fee)
+    BlockTimestamp := TIME mod pow32
+    TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
+    PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
+    PriceIncrease1 := ((pow112 * Reserve0) / Reserve1) * TimeElapsed
+
+iff in range uint256
+
+    // _mintFee
+    RootK
+    RootKLast
+    RootK - RootKLast
+    Supply * (RootK - RootKLast)
+    RootK * 5
+    (RootK * 5) + RootKLast)
+    Fee
+    Supply + Fee
+    Balance_FeeTo + Fee
+
+    // burn
+    Balance * Balance0
+    Balance * Balance1
+    Amount0
+    Amount1
+    Supply - Balance
+
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+
+iff in range uint112
+
+   Balance0 - Amount0
+   Balance1 - Amount1
+
+iff
+
+    Amount0 > 0
+    Amount1 > 0
+
+    LockState == 1
+
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    // fee is minted
+    FeeTo =/= 0
+    KLast =/= 0
+    RootK > RootKLast
+    Fee > 0
+
+    // avoid storage collisions
+    to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
+
+    // avoid division by zero
+    Supply =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+```
+
+```act
+behaviour burn-noFee-klastNonZero of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    Balance_FeeTo      : uint256
+    Balance0           : uint112
+    Balance1           : uint112
+    Balance0_To        : uint256
+    Balance1_To        : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> \
+        #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+        #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
+    totalSupply |-> Supply => Supply - Balance
+    balanceOf[FeeTo] |-> Balance_FeeTo
+    balanceOf[ACCT_ID] |-> Balance => 0
+    price0CumulativeLast |-> Price0 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease0 + Price0)                                     \
+        #else                                                                 \
+            Price0                                                            \
+        #fi
+    price1CumulativeLast |-> Price1 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease1 + Price1)                                     \
+        #else                                                                 \
+            Price1                                                            \
+        #fi
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - Amount0
+    balanceOf[to] |-> Balance0_To => Balance0_To + Amount0
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - Amount1
+    balanceOf[to] |-> Balance1_To => Balance1_To + Amount1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    Amount0 := (Balance * Balance0) / Supply
+    Amount1 := (Balance * Balance1) / Supply
+    BlockTimestamp := TIME mod pow32
+    TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
+    PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
+    PriceIncrease1 := ((pow112 * Reserve0) / Reserve1) * TimeElapsed
+
+iff in range uint256
+
+    // burn
+    Balance * Balance0
+    Balance * Balance1
+    Amount0
+    Amount1
+    Supply - Balance
+
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+
+iff in range uint112
+
+   Balance0 - Amount0
+   Balance1 - Amount1
+
+iff
+
+    Amount0 > 0
+    Amount1 > 0
+
+    LockState == 1
+
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    // fee is not minted
+    FeeTo == 0
+
+    // KLast is non-zero
+    KLast =/= 0
+
+    // avoid storage collisions
+    to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
+
+    // avoid division by zero
+    Supply =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+```
+
+```act
+behaviour burn-noFee-klastZero of UniswapV2Pair
+interface burn(address to)
+
+for all
+
+    Reserve0           : uint112
+    Reserve1           : uint112
+    BlockTimestampLast : uint32
+    Token0             : address UniswapV2Pair
+    Token1             : address UniswapV2Pair
+    Balance            : uint256
+    Balance_FeeTo      : uint256
+    Balance0           : uint112
+    Balance1           : uint112
+    Balance0_To        : uint256
+    Balance1_To        : uint256
+    FeeTo              : address
+    Factory            : address UniswapV2Factory
+    KLast              : uint256
+    Supply             : uint256
+    Price0             : uint256
+    Price1             : uint256
+    LockState          : uint256
+
+storage
+
+    reserve0_reserve1_blockTimestampLast |-> \
+        #WordPackUInt112UInt112UInt32(Reserve0, Reserve1, BlockTimestampLast) => \
+        #WordPackUInt112UInt112UInt32((Balance0 - Amount0), (Balance1 - Amount1), BlockTimestamp)
+    token0 |-> Token0
+    token1 |-> Token1
+    factory |-> Factory
+    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
+    totalSupply |-> Supply => Supply - Balance
+    balanceOf[FeeTo] |-> Balance_FeeTo
+    balanceOf[ACCT_ID] |-> Balance => 0
+    price0CumulativeLast |-> Price0 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease0 + Price0)                                     \
+        #else                                                                 \
+            Price0                                                            \
+        #fi
+    price1CumulativeLast |-> Price1 =>                                        \
+        #if (TimeElapsed > 0) and (Reserve0 =/= 0) and (Reserve1 =/= 0) #then \
+            chop(PriceIncrease1 + Price1)                                     \
+        #else                                                                 \
+            Price1                                                            \
+        #fi
+    lockState |-> LockState => LockState
+
+storage Token0
+
+    balanceOf[ACCT_ID] |-> Balance0 => Balance0 - Amount0
+    balanceOf[to] |-> Balance0_To => Balance0_To + Amount0
+
+
+storage Token1
+
+    balanceOf[ACCT_ID] |-> Balance1 => Balance1 - Amount1
+    balanceOf[to] |-> Balance1_To => Balance1_To + Amount1
+
+storage Factory
+
+    feeTo |-> FeeTo
+
+returns Amount0 : Amount1
+
+where
+
+    Amount0 := (Balance * Balance0) / Supply
+    Amount1 := (Balance * Balance1) / Supply
+    BlockTimestamp := TIME mod pow32
+    TimeElapsed := (BlockTimestamp -Word BlockTimestampLast ) mod pow32
+    PriceIncrease0 := ((pow112 * Reserve1) / Reserve0) * TimeElapsed
+    PriceIncrease1 := ((pow112 * Reserve0) / Reserve1) * TimeElapsed
+
+iff in range uint256
+
+    // burn
+    Balance * Balance0
+    Balance * Balance1
+    Amount0
+    Amount1
+    Supply - Balance
+
+    Balance0_To + Amount0
+    Balance1_To + Amount1
+
+iff in range uint112
+
+   Balance0 - Amount0
+   Balance1 - Amount1
+
+iff
+
+    Amount0 > 0
+    Amount1 > 0
+
+    LockState == 1
+
+    VCallValue == 0
+    VCallDepth < 1024
+
+if
+
+    // fee is not minted
+    FeeTo == 0
+
+    // KLast is zero
+    KLast =/= 0
+
+    // avoid storage collisions
+    to =/= ACCT_ID
+    FeeTo =/= ACCT_ID
+
+    // avoid division by zero
+    Supply =/= 0
+
+calls
+
+    UniswapV2Pair.balanceOf
+    UniswapV2Factory.feeTo
+```
 
 ##### KLast == 0
 
