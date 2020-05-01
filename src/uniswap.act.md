@@ -781,7 +781,7 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
+    kLast |-> KLast => 0
     totalSupply |-> Supply => Supply - Balance
     balanceOf[FeeTo] |-> Balance_FeeTo
     balanceOf[ACCT_ID] |-> Balance => 0
@@ -907,7 +907,7 @@ storage
     token0 |-> Token0
     token1 |-> Token1
     factory |-> Factory
-    kLast |-> KLast => (Balance0 - Amount0) * (Balance1 - Amount1)
+    kLast |-> KLast => 0
     totalSupply |-> Supply => Supply - Balance
     balanceOf[FeeTo] |-> Balance_FeeTo
     balanceOf[ACCT_ID] |-> Balance => 0
