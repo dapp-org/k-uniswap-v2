@@ -48,7 +48,13 @@
     "UniswapV2Factory_createPair-gt_pass": "72h",
     "UniswapV2Pair_swap_pass_rough": "3d",
     "UniswapV2Pair_swap_fail_rough": "3d",
-    "UniswapV2Pair_swap_pass": "3d"
+    "UniswapV2Pair_swap2_pass_rough": "3d",
+    "UniswapV2Pair_swap2_fail_rough": "3d",
+    "UniswapV2Pair_swap3_pass_rough": "3d",
+    "UniswapV2Pair_swap3_fail_rough": "3d",
+    "UniswapV2Pair_swap_pass": "3d",
+    "UniswapV2Pair_swap2_pass": "3d",
+    "UniswapV2Pair_swap3_pass": "3d"
   },
   "memory" : {
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
@@ -77,7 +83,13 @@
     "UniswapV2Factory_createPair-gt_pass": "25G",
     "UniswapV2Pair_swap_pass_rough": "35G",
     "UniswapV2Pair_swap_fail_rough": "35G",
-    "UniswapV2Pair_swap_pass": "35G"
+    "UniswapV2Pair_swap2_pass_rough": "35G",
+    "UniswapV2Pair_swap2_fail_rough": "35G",
+    "UniswapV2Pair_swap3_pass_rough": "35G",
+    "UniswapV2Pair_swap3_fail_rough": "35G",
+    "UniswapV2Pair_swap_pass": "35G",
+    "UniswapV2Pair_swap2_pass": "35G",
+    "UniswapV2Pair_swap3_pass": "35G"
   },
   "dapp_root": "./uniswap-v2-core",
   "solc_output_path": "build/Combined-Json.json"
