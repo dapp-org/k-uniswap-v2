@@ -940,11 +940,14 @@ where
     V := ((Balance1 - amount1Out) * 1000) ==K 0
     W := ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * ((Balance1 - amount1Out) * 1000)) < ((Reserve0 * Reserve1) * 1000000)
     Y := ((((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    T := #rangeUInt(256, ((Balance0 - amount0Out) * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3)))
+    Z := #rangeUInt(256, (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * ((Balance1 - amount1Out) * 1000))
     U := #rangeUInt(256, (((Balance0 - amount0Out) * 1000) - ((Balance0 - (amount0Out + (Reserve0 - amount0Out))) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3)))
     X := (((Balance0 - amount0Out) * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
     K11 := (Amount0In and Amount1In) impliesBool (U and (notBool Y))
-    K01 := (Amount0In and (notBool Amount1In)) impliesBool ((notBool V) and U and (notBool W))
-    K10 := ((notBool Amount0In)) impliesBool (U and Amount1In and (notBool X))
+    K01 := (Amount0In and (notBool Amount1In)) impliesBool ((notBool V) and Z and (notBool W))
+    K10 := ((notBool Amount0In)) impliesBool (T and Amount1In and (notBool X))
+
 
 iff
 
