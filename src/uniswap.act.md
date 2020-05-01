@@ -585,8 +585,8 @@ argument to `burn` is the address of the pair contract.
 
 - `feeMinted`
 - `noFee`
-  - `klastZero`
-  - `klastNonZero`
+  - `kLastZero`
+  - `kLastNonZero`
     - `back`
 
 There are other possible variants which we're not exploring here:
@@ -749,7 +749,7 @@ calls
 ##### KLast =/= 0
 
 ```act
-behaviour burn-noFee-klastNonZero of UniswapV2Pair
+behaviour burn-noFee-kLastNonZero of UniswapV2Pair
 interface burn(address to)
 
 for all
@@ -875,7 +875,7 @@ calls
 ##### KLast == 0
 
 ```act
-behaviour burn-noFee-klastZero of UniswapV2Pair
+behaviour burn-noFee-kLastZero of UniswapV2Pair
 interface burn(address to)
 
 for all
