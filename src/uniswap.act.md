@@ -1001,7 +1001,7 @@ calls
 ##### to == ACCT_ID
 
 ```act
-behaviour burn-back-feeOff-kLastNonZero of UniswapV2Pair
+behaviour burn-back-noFee-kLastNonZero of UniswapV2Pair
 interface burn(address to)
 
 for all
