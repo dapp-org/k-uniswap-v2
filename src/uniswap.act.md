@@ -600,7 +600,7 @@ The `feeTo == CALLER_ID` and `to == CALLER_ID` variants would require a separate
 spec to work around storage collisions. Because these variants do not
 meaningfully affect the security of the system, they haven't been prioritized.
 
-#### FeeMinted variant
+#### feeMinted variant
 
 ```act
 behaviour burn-feeMinted of UniswapV2Pair
@@ -708,8 +708,8 @@ iff in range uint256
 
 iff in range uint112
 
-   Balance0 - Amount0
-   Balance1 - Amount1
+    Balance0 - Amount0
+    Balance1 - Amount1
 
 iff
 
@@ -741,6 +741,10 @@ calls
     UniswapV2Pair.balanceOf
     UniswapV2Factory.feeTo
 ```
+
+#### noFee variants
+
+##### KLast =/= 0
 
 ```act
 behaviour burn-noFee-klastNonZero of UniswapV2Pair
@@ -821,7 +825,6 @@ where
 
 iff in range uint256
 
-    // burn
     Balance * Balance0
     Balance * Balance1
     Amount0
@@ -833,8 +836,8 @@ iff in range uint256
 
 iff in range uint112
 
-   Balance0 - Amount0
-   Balance1 - Amount1
+    Balance0 - Amount0
+    Balance1 - Amount1
 
 iff
 
@@ -866,6 +869,8 @@ calls
     UniswapV2Pair.balanceOf
     UniswapV2Factory.feeTo
 ```
+
+##### KLast == 0
 
 ```act
 behaviour burn-noFee-klastZero of UniswapV2Pair
@@ -946,7 +951,6 @@ where
 
 iff in range uint256
 
-    // burn
     Balance * Balance0
     Balance * Balance1
     Amount0
@@ -958,8 +962,8 @@ iff in range uint256
 
 iff in range uint112
 
-   Balance0 - Amount0
-   Balance1 - Amount1
+    Balance0 - Amount0
+    Balance1 - Amount1
 
 iff
 
