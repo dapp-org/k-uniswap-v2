@@ -725,7 +725,7 @@ calls
 
 ##### KLast =/= 0
 
-###### Fee == 0
+###### Not minting
 
 ```act
 behaviour burn-feeOn-kLastNonZero-feeZero of UniswapV2Pair
@@ -864,7 +864,7 @@ calls
     UniswapV2Factory.feeTo
 ```
 
-###### Fee =/= 0
+###### Minting
 
 ```act
 behaviour burn-feeOn-kLastNonZero-feeNonZero of UniswapV2Pair
