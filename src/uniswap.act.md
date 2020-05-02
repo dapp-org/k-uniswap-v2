@@ -800,6 +800,7 @@ iff
     #rangeUInt(256, Balance1 - amount1Out)
     #rangeUInt(256, DstBal1 + amount1Out)
 
+    A impliesBool ((Amount1In impliesBool (notBool D)) and ((notBool Amount1In) impliesBool ((notBool V) and (notBool B))))
     (notBool A) impliesBool ((notBool C) and Amount1In)
 
 if
