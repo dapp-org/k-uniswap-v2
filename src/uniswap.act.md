@@ -576,12 +576,12 @@ to `skim`.
 This function requires that the `UniswapV2Pair` contract's balance of the
 two pair tokens does not exceed `MAX_UINT_112 - 1`.
 
-There are 4 specs for `burn`, split into 3 variants:
+There are 4 specs for `burn`:
 
 - `feeMinted`: a fee is minted;
-- `noFee-kLastZero`: a fee is not minted and `kLast` is zero;
-- `noFee-kLastNonZero-same` a fee is not minted, `kLast` is non-zero, and `to` is the pair contract
-- `noFee-kLastNonZero-diff` a fee is not minted, `kLast` is non-zero, and `to` is not the pair contract
+- `noFee-kLastZero`: no fee is minted, `kLast` is zero;
+- `noFee-kLastNonZero` no fee is minted, `kLast` is non-zero, `to` is not the pair contract's address
+- `noFee-kLastNonZero-same` no fee is minted, `kLast` is non-zero, `to` is the pair contract's address
 
 There are other possible variants which we're not exploring here:
 - `totalSupply == 0`
@@ -871,7 +871,7 @@ calls
 ###### to =/= ACCT_ID
 
 ```act
-behaviour burn-noFee-kLastNonZero-diff of UniswapV2Pair
+behaviour burn-noFee-kLastNonZero of UniswapV2Pair
 interface burn(address to)
 
 for all
