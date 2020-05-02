@@ -564,8 +564,8 @@ iff
 ### Burn
 
 The `burn` function burns all the liquidity tokens owned by the pair
-contract and sends a proportional amount of each token in the pair to the
-address specified by `to`.
+contract and sends a proportional amount of each token to the address specified
+by `to`.
 Sending liquidity tokens to the contract and calling `burn` should happen
 atomically, otherwise the tokens can be withdrawn by a third-party with a call
 to `skim`.
@@ -583,7 +583,9 @@ There are 4 specs for `burn`:
 - `noFee-kLastNonZero` no fee is minted, `kLast` is non-zero, `to` is not the pair contract's address
 - `noFee-kLastNonZero-same` no fee is minted, `kLast` is non-zero, `to` is the pair contract's address
 
-The variants around the value of `kLast` are there for performance reasons, so that the proofs complete in a reasonable amount of time, without causing out-of-memory errors.
+The variants around the value of `kLast` are there for performance reasons, so
+that the proofs complete in a reasonable amount of time, without causing
+out-of-memory errors.
 
 The variants around the value of `to` are only explored in the
 `noFee-kLastNonZero` case, again for performance and brevity reasons: it is
