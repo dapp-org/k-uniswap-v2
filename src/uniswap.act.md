@@ -583,18 +583,25 @@ There are 4 specs for `burn`:
 - `noFee-kLastNonZero` no fee is minted, `kLast` is non-zero, `to` is not the pair contract's address
 - `noFee-kLastNonZero-same` no fee is minted, `kLast` is non-zero, `to` is the pair contract's address
 
+The variants around the value of `kLast` are there for performance reasons, so that the proofs complete in a reasonable amount of time, without causing out-of-memory errors.
+
+The variants around the value of `to` are only explored in the
+`noFee-kLastNonZero` case, again for performance and brevity reasons: it is
+enough to demonstrate how `to == ACCT_ID` affects the contract's balances once,
+and we chose the case that requires the least amount of time to complete.
+
 There are other possible variants which we're not exploring here:
 - `totalSupply == 0`
 - `feeTo == CALLER_ID`
 
-The `totalSupply == 0` variant would cover the case when `burn` is called when
+The `totalSupply == 0` variant would cover the case in which `burn` is called when
 no liquidity has been minted yet. In that case, there will be a division by
 zero, which will cause the caller to lose their gas. This scenario is relatively
 rare and relatively low-risk, so it hasn't been prioritized.
 
-The `feeTo == CALLER_ID` and `to == CALLER_ID` variants would require a separate
-spec to work around storage collisions. Because these variants do not
-meaningfully affect the security of the system, they haven't been prioritized.
+The `feeTo == CALLER_ID` variant has been considered low-priority, since it can
+be considered as a misconfiguration that requires involvement of the
+`feeToSetter`, and therefore quite unlikely to happen in practice.
 
 #### feeMinted variant
 
