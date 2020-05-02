@@ -783,6 +783,7 @@ where
     A := Reserve0 < Balance0
     B := (((Balance0 * 1000) - ((Balance0 - Reserve0) * 3)) * ((Balance1 - amount1Out) * 1000)) < ((Reserve0 * Reserve1) * 1000000)
     C := ((Balance0 * 1000) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
+    D := (((Balance0 * 1000) - ((Balance0 - Reserve0) * 3)) * (((Balance1 - amount1Out) * 1000) - ((Balance1 - (amount1Out + (Reserve1 - amount1Out))) * 3))) < ((Reserve0 * Reserve1) * 1000000)
     V := ((Balance1 - amount1Out) * 1000) ==K 0
     L := A and (notBool B) and (notBool V) and (notBool Amount1In)
     R := (notBool A) and (notBool C) and Amount1In
