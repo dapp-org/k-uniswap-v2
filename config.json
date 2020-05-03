@@ -22,6 +22,18 @@
     }
   },
   "timeouts": {
+    "UniswapV2Pair_burn-feeMinted_pass_rough": "7d",
+    "UniswapV2Pair_burn-feeMinted_fail_rough": "7d",
+    "UniswapV2Pair_burn-feeMinted_pass": "7d",
+    "UniswapV2Pair_burn-noFee-kLastZero_pass_rough": "7d",
+    "UniswapV2Pair_burn-noFee-kLastZero_fail_rough": "7d",
+    "UniswapV2Pair_burn-noFee-kLastZero_pass": "7d",
+    "UniswapV2Pair_burn-noFee-kLastNonZero_pass_rough": "7d",
+    "UniswapV2Pair_burn-noFee-kLastNonZero_fail_rough": "7d",
+    "UniswapV2Pair_burn-noFee-kLastNonZero_pass": "7d",
+    "UniswapV2Pair_burn-back-noFee-kLastNonZero_pass_rough": "7d",
+    "UniswapV2Pair_burn-back-noFee-kLastNonZero_fail_rough": "7d",
+    "UniswapV2Pair_burn-back-noFee-kLastNonZero_pass": "7d",
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "1d",
     "UniswapV2Pair_mint-noFee-first-diff_fail_rough": "1d",
     "UniswapV2Pair_mint-noFee-first-diff_pass": "1d",
@@ -59,6 +71,18 @@
     "UniswapV2Pair_skim_pass": "1d"
   },
   "memory" : {
+    "UniswapV2Pair_burn-feeMinted_pass_rough": "30G",
+    "UniswapV2Pair_burn-feeMinted_fail_rough": "30G",
+    "UniswapV2Pair_burn-feeMinted_pass": "30G",
+    "UniswapV2Pair_burn-noFee-kLastZero_pass_rough": "30G",
+    "UniswapV2Pair_burn-noFee-kLastZero_fail_rough": "30G",
+    "UniswapV2Pair_burn-noFee-kLastZero_pass": "30G",
+    "UniswapV2Pair_burn-noFee-kLastNonZero_pass_rough": "30G",
+    "UniswapV2Pair_burn-noFee-kLastNonZero_fail_rough": "30G",
+    "UniswapV2Pair_burn-noFee-kLastNonZero_pass": "30G",
+    "UniswapV2Pair_burn-back-noFee-kLastNonZero_pass_rough": "30G",
+    "UniswapV2Pair_burn-back-noFee-kLastNonZero_fail_rough": "30G",
+    "UniswapV2Pair_burn-back-noFee-kLastNonZero_pass": "30G",
     "UniswapV2Pair_mint-noFee-first-diff_pass_rough": "30G",
     "UniswapV2Pair_mint-noFee-first-diff_fail_rough": "30G",
     "UniswapV2Pair_mint-noFee-first-diff_pass": "30G",
@@ -96,5 +120,8 @@
     "UniswapV2Pair_skim_pass": "30G"
   },
   "dapp_root": "./uniswap-v2-core",
-  "solc_output_path": "build/Combined-Json.json"
+  "solc_output_path": "build/Combined-Json.json",
+  "dirty_rules": [
+    "./src/dirty_lemmas.k.md"
+  ]
 }
