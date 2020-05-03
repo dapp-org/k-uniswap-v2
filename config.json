@@ -23,7 +23,7 @@
   },
   "timeouts": {
     "UniswapV2Pair_burn-feeMinted_pass_rough": "7d",
-    "UniswapV2Pair_burn-feeMinted_fail_rough": "7d",
+    "UniswapV2Pair_burn-feeMinted_fail_rough": "0",
     "UniswapV2Pair_burn-feeMinted_pass": "7d",
     "UniswapV2Pair_burn-noFee-kLastZero_pass_rough": "7d",
     "UniswapV2Pair_burn-noFee-kLastZero_fail_rough": "7d",
@@ -64,8 +64,8 @@
     "UniswapV2Pair_swap2_fail_rough": "3d",
     "UniswapV2Pair_swap3_pass_rough": "3d",
     "UniswapV2Pair_swap3_fail_rough": "3d",
-    "UniswapV2Pair_swap_pass": "4d",
-    "UniswapV2Pair_swap2_pass": "4d",
+    "UniswapV2Pair_swap_pass": "0",
+    "UniswapV2Pair_swap2_pass": "0",
     "UniswapV2Pair_swap3_pass": "3d",
     "UniswapV2Pair_skim-back_pass": "1d",
     "UniswapV2Pair_skim_pass": "1d"
