@@ -693,7 +693,6 @@ iff in range uint256
     // _mintFee
     RootK
     RootKLast
-    RootK - RootKLast
     Supply * (RootK - RootKLast)
     RootK * 5
     (RootK * 5) + RootKLast
