@@ -347,6 +347,20 @@ rule (B |Int (notMaxUInt160 &Int A)) => B
   andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
 ```
 
+## Z3 non-determinism
+
+Sometimes, the result of a Z3 query is non-deterministic. In the case below, Z3
+is sometimes able to deduce that `chop(X) => X`, but other times it isn't.
+
+This lemma ensures that we always drop the `chop` when the constraints are satisfied.
+
+```k
+rule chop(((pow112 *Int A) /Int B) *Int X) => ((pow112 *Int A) /Int B) *Int X
+        requires A <Int pow112
+        andBool B >Int 0
+        andBool X <Int pow32
+```
+
 ## Packed Words In Memory
 
 Sometimes solidity will try and read a Word from memory containing unaligned data. In that case `K`
