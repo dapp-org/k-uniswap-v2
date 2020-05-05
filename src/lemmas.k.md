@@ -217,7 +217,7 @@ rule takeWordStack(20, #asByteStack(X)) =>
    )
 ```
 
-## Packed Storage { `uint32` `uint112` `uint112` }
+## Packed Storage { `uint32`, `uint112`, `uint112` }
 
 Define the symbolic term representing packed storage:
 
@@ -385,7 +385,7 @@ rule #padToWidth(32, #asByteStack(X /Int Y)) => #asByteStackInWidth(X /Int Y, 32
   andBool #rangeUInt(256, Y)
 ```
 
-## #sqrt
+## `#sqrt`
 
 Placeholder rewrite rule for `Math.sqrt`. This leaves the result of the call to `Math.sqrt` as
 symbolic for now, meaning that the specs are all assuming that `Math.sqrt` is correctly implemented
