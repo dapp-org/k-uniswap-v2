@@ -49,7 +49,7 @@ rule #rangeUInt(32, X) => #range(0 <= X <= maxUInt32)   [macro]
 rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 ```
 
-### Arithmetic
+## Arithmetic
 
 `0` divided by anything is `0`.
 
@@ -127,7 +127,7 @@ rule (X &Int notMaxUInt160) => (notMaxUInt160 &Int X)
 rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
 ```
 
-### Factory pairs array
+## Factory pairs array
 
 `allPairs` is an array which stores the address of every exchange pair created
 using the `Factory`.
@@ -217,7 +217,7 @@ rule takeWordStack(20, #asByteStack(X)) =>
    )
 ```
 
-### Packed Storage { `uint32` `uint112` `uint112` }
+## Packed Storage { `uint32`, `uint112`, `uint112` }
 
 Define the symbolic term representing packed storage:
 
@@ -225,7 +225,7 @@ Define the symbolic term representing packed storage:
 syntax Int ::= "#WordPackUInt112UInt112UInt32" "(" Int "," Int "," Int ")" [function]
 ```
 
-#### Reads
+### Reads
 
 Solidity reads from packed storage locations with the following sequence:
 
@@ -250,7 +250,7 @@ rule maxUInt112 &Int (#WordPackUInt112UInt112UInt32(A, B, C) /Int pow112 ) => B
 rule #WordPackUInt112UInt112UInt32(A, B, C) /Int pow224 => C
 ```
 
-#### Writes
+### Writes
 
 Solidity writes to packed storage locations with the following sequence:
 
@@ -272,7 +272,7 @@ to match on a few different expressions for each write operation.
 The ordering of arguments differs between the various cases to match the bytecode produced by
 solidity.
 
-##### Write `reserve0`
+#### Write `reserve0`
 
 Mask target range to zero:
 
@@ -287,7 +287,7 @@ rule X |Int #WordPackUInt112UInt112UInt32(0, B, C) => #WordPackUInt112UInt112UIn
   requires #rangeUInt(112, X)
 ```
 
-##### Write `reserve1`
+#### Write `reserve1`
 
 The below constant represents `not(maxUInt112 * pow112)`, in hex `0xffffffff0000000000000000000000000000ffffffffffffffffffffffffffff`:
 
@@ -309,7 +309,7 @@ rule (pow112 *Int X) |Int #WordPackUInt112UInt112UInt32(A, 0, C) => #WordPackUIn
   requires #rangeUInt(112, X)
 ```
 
-##### Write `blockTimestampLast`
+#### Write `blockTimestampLast`
 
 Mask target range to zero. Note that solidity uses a slightly different approach here than with the
 other words, and directly applies a mask of `&Int pow224`, instead of bitshifting and inverting as
@@ -326,7 +326,7 @@ rule (X *Int pow224) |Int #WordPackUInt112UInt112UInt32(A, B, 0) => #WordPackUIn
   requires #rangeUInt(32, X)
 ```
 
-### Masking For Address Types (`uint160`)
+## Masking For Address Types (`uint160`)
 
 Address type storage routine.
 
@@ -347,7 +347,21 @@ rule (B |Int (notMaxUInt160 &Int A)) => B
   andBool (#rangeAddress(A) orBool #rangeUInt(256, A))
 ```
 
-### Packed Words In Memory
+## Z3 non-determinism
+
+Sometimes, the result of a Z3 query is non-deterministic. In the case below, Z3
+is sometimes able to deduce that `chop(X) => X`, but other times it isn't.
+
+This lemma ensures that we always drop the `chop` when the constraints are satisfied.
+
+```k
+rule chop(((pow112 *Int A) /Int B) *Int X) => ((pow112 *Int A) /Int B) *Int X
+        requires A <Int pow112
+        andBool B >Int 0
+        andBool X <Int pow32
+```
+
+## Packed Words In Memory
 
 Sometimes solidity will try and read a Word from memory containing unaligned data. In that case `K`
 needs help simplifying the resulting expressions:
@@ -385,7 +399,7 @@ rule #padToWidth(32, #asByteStack(X /Int Y)) => #asByteStackInWidth(X /Int Y, 32
   andBool #rangeUInt(256, Y)
 ```
 
-## #sqrt
+## `#sqrt`
 
 Placeholder rewrite rule for `Math.sqrt`. This leaves the result of the call to `Math.sqrt` as
 symbolic for now, meaning that the specs are all assuming that `Math.sqrt` is correctly implemented
