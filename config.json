@@ -23,7 +23,7 @@
   },
   "timeouts": {
     "UniswapV2Pair_burn-feeMinted_pass_rough": "7d",
-    "UniswapV2Pair_burn-feeMinted_fail_rough": "3d",
+    "UniswapV2Pair_burn-feeMinted_fail_rough": "1d",
     "UniswapV2Pair_burn-feeMinted_pass": "7d",
     "UniswapV2Pair_burn-noFee-kLastZero_pass_rough": "7d",
     "UniswapV2Pair_burn-noFee-kLastZero_fail_rough": "7d",
