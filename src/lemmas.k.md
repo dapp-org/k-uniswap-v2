@@ -55,7 +55,7 @@ rule #rangeUInt(112, X) => #range(0 <= X <= maxUInt112) [macro]
 
 ```k
 rule 0 /Int X => 0
-requires notBool (X ==Int 0)
+requires X =/=Int 0
 ```
 
 Helper for cleaner storage conditions.
@@ -75,20 +75,6 @@ library to the logical `#rangeUInt` conditions expressed within the specs.
 rule A -Word B <=Int A => #rangeUInt(256, A -Int B)
   requires #rangeUInt(256, A)
   andBool #rangeUInt(256, B)
-
-// add
-rule (chop(X +Int Y) >=Int X) => #rangeUInt(256, X +Int Y)
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
-
-rule (X <=Int chop(X +Int Y)) => #rangeUInt(256, X +Int Y)
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
-
-// mul
-rule (chop(X *Int Y) /Int Y ==K X) => #rangeUInt(256, X *Int Y)
-  requires #rangeUInt(256, X)
-  andBool #rangeUInt(256, Y)
 ```
 
 ### Bitwise Modulo
@@ -115,16 +101,17 @@ rule X modInt Y => X
   requires X <Int Y
 ```
 
-### Commutativity For Bitwise `AND`
+### Normal Form for Bitwise `AND`
 
-`K` doesn't know that bitwise `AND` is commutative, so we give it a little helping hand.
+These lemmas ensure that the concrete value is always on the left hand-side of
+the bitwise `AND`:
 
 ```k
-rule (X &Int maxUInt32) => (maxUInt32 &Int X)
-rule (X &Int maxUInt112) => (maxUInt112 &Int X)
-rule (X &Int maxUInt160) => (maxUInt160 &Int X)
-rule (X &Int notMaxUInt160) => (notMaxUInt160 &Int X)
-rule (X &Int notMaxUInt224) => (notMaxUInt224 &Int X)
+rule X &Int maxUInt32 => maxUInt32 &Int X
+rule X &Int maxUInt112 => maxUInt112 &Int X
+rule X &Int maxUInt160 => maxUInt160 &Int X
+rule X &Int notMaxUInt160 => notMaxUInt160 &Int X
+rule X &Int notMaxUInt224 => notMaxUInt224 &Int X
 ```
 
 ### Factory pairs array
@@ -155,9 +142,10 @@ syntax Int ::= "maxPairs"
 rule maxPairs => (maxUInt256 -Int pair0) +Int 1 [macro]
 ```
 
-Important to note is that that there is no guarentee that the storage keys of
-`allPairs` will not collide with storage keys of `getPair`. We make the
-low probablity assumption that there will be no such collision in the factory.
+Important to note is that that there is no guarantee that the storage keys of
+`allPairs` will not collide with storage keys of `getPair`. Because the
+likelihood of such collisions is very low, we declare in these lemmas that they
+can't happen in the factory.
 
 ```k
 rule N +Int pair0 => pair0 +Int N
@@ -184,6 +172,8 @@ contract, formats both addresses with a left shift and then writes them as
 overlapping words to memory. The first 40 bytes is then read back from memory
 to provide the packed result. These rules handle the writing of the shifted
 addresses to memory and the reduction of the resulting byte array.
+
+TODO: would be nice to document the meaning of this 96 with a variable.
 
 ```k
 rule chop(A <<Int 96) => A <<Int 96
