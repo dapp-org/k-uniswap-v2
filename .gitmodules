@@ -4,4 +4,4 @@
   ignore=dirty
 [submodule "deps/klab"]
 	path = deps/klab
-	url = https://github.com/dapphub/klab.git
+	url = https://github.com/kmbarry1/klab.git
