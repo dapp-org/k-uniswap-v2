@@ -93,19 +93,22 @@ rule (chop(X *Int Y) /Int Y ==K X) => #rangeUInt(256, X *Int Y)
 
 ### Bitwise Modulo
 
-The solidity optimizer compiles `block.time % 2**32` into `TIME AND maxUInt32` instead of `TIME
-MOD pow32`. `K` is then unable to reason about the size of the result and so cannot apply further
-simplifications. We therefore rewrite it back to `modInt pow32`.
+The solidity optimizer compiles `block.time % 2**32` to `block.time AND maxUInt32`.
+These lemma ensure the packed storage rules will apply.
 
 ```k
-rule (maxUInt32 &Int X) => (X modInt pow32)
+rule (X &Int Y) <=Int X => true
+  requires X >=Int 0
+
+rule ((maxUInt32 &Int X) *Int pow224) <=Int maxUInt256 => true
 ```
 
-Repeated application of `modInt pow32` can be simplified as follows. This lets us clean the storage
+Repeated application of `modInt` can be simplified as follows. This lets us clean the storage
 conditions in a few specs.
 
 ```k
-rule ((X modInt pow32) modInt pow32) => (X modInt pow32)
+rule ((X modInt Y) modInt Y) => (X modInt Y)
+  requires X >=Int 0
 ```
 
 Simplify idempotent applications of the modulo operation:
